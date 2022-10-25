@@ -1,0 +1,9 @@
+{
+ "recommendations": [
+  "dbaeumer.vscode-eslint",
+  "esbenp.prettier-vscode",
+  "bradlc.vscode-tailwindcss",
+  "aaron-bond.better-comments",
+  "mattpocock.ts-error-translator"
+ ]
+}
