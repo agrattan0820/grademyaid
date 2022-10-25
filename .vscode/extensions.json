@@ -4,6 +4,7 @@
   "esbenp.prettier-vscode",
   "bradlc.vscode-tailwindcss",
   "aaron-bond.better-comments",
-  "mattpocock.ts-error-translator"
+  "mattpocock.ts-error-translator",
+  "formulahendry.auto-rename-tag"
  ]
 }
