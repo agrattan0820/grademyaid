@@ -3,6 +3,7 @@ import Head from "next/head";
 import LoginPage from "../components/login-page";
 import ForgotPassword from "../components/forgot-password";
 import ResetPassword from "../components/resetpass-page";
+import RegisterPage from "../components/register-page";
 
 
 const Home: NextPage = () => {
@@ -20,6 +21,8 @@ const Home: NextPage = () => {
         <ForgotPassword></ForgotPassword>
         {/* reset password component */}
         <ResetPassword></ResetPassword>
+          {/* register page component */}
+        <RegisterPage></RegisterPage>
       </main>
     </div>
   );
