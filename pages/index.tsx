@@ -1,6 +1,9 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import LoginPage from "../components/login-page";
+import ForgotPassword from "../components/forgot-password";
+import ResetPassword from "../components/resetpass-page";
+
 
 const Home: NextPage = () => {
   return (
@@ -11,7 +14,12 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
+        {/* login page component */}
         <LoginPage></LoginPage>
+        {/* forgot password component */}
+        <ForgotPassword></ForgotPassword>
+        {/* reset password component */}
+        <ResetPassword></ResetPassword>
       </main>
     </div>
   );
