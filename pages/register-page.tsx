@@ -1,3 +1,4 @@
+import router from "next/router";
 
 const RegisterPage = () =>{ 
     return (
@@ -26,7 +27,7 @@ const RegisterPage = () =>{
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
              Register
             </button>
-            <a className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" href="#">
+            <a className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onClick={() => router.push('/')}>
              Home
             </a>
           </div>
