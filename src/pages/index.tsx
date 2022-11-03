@@ -5,9 +5,7 @@ import { Auth, ThemeSupa } from '@supabase/auth-ui-react'
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
 
 
-
 const Home: NextPage = () => {
-
   const session = useSession()
   const supabase = useSupabaseClient()
 
@@ -18,6 +16,7 @@ const Home: NextPage = () => {
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
           theme="dark"
+          providers={['google']} //adds google
         />
       ) : (
         <p>Account goes here after email validation</p>
@@ -25,5 +24,7 @@ const Home: NextPage = () => {
     </div>
   );
 };
+
+
 
 export default Home;
