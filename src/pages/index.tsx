@@ -1,7 +1,14 @@
+import { useQuery } from "@tanstack/react-query";
 import type { NextPage } from "next";
 import Head from "next/head";
+import { fetchSchools } from "../utils/queries";
 
 const Home: NextPage = () => {
+  const schoolQuery = useQuery({
+    queryKey: ["schools"],
+    queryFn: fetchSchools,
+  });
+
   return (
     <div>
       <Head>
@@ -12,6 +19,7 @@ const Home: NextPage = () => {
 
       <main>
         <h1 className="text-green-500">Hello world</h1>
+        <pre>{JSON.stringify(schoolQuery, null, 2)}</pre>
       </main>
     </div>
   );
