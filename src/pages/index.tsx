@@ -4,7 +4,6 @@ import Head from "next/head";
 import { Auth, ThemeSupa } from '@supabase/auth-ui-react'
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
 
-
 const Home: NextPage = () => {
   const session = useSession()
   const supabase = useSupabaseClient()
