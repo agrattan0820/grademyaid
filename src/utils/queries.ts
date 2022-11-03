@@ -13,3 +13,11 @@ export const fetchSchools = () =>
       api_key: process.env.NEXT_PUBLIC_COLLEGE_SCORECARD_API_KEY,
     },
   });
+
+export const fetchSchoolNames = () =>
+  axios.get(collegeScorecardURL, {
+    params: {
+      fields: "id,school.name",
+      api_key: process.env.NEXT_PUBLIC_COLLEGE_SCORECARD_API_KEY,
+    },
+  });

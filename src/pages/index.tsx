@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { fetchSchools } from "../utils/queries";
 import LoginPage from "../components/login-page";
+import SchoolSearch from "../components/school-search";
 
 const Home: NextPage = () => {
   const schoolQuery = useQuery({
@@ -21,6 +22,8 @@ const Home: NextPage = () => {
         <h1 className="text-green-500">Hello world</h1>
         {/* login page component */}
         <LoginPage></LoginPage>
+        <SchoolSearch></SchoolSearch>
+        <pre>{JSON.stringify(schoolQuery, null, 2)}</pre>
       </main>
     </div>
   );
