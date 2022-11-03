@@ -1,9 +1,15 @@
+import { useQuery } from "@tanstack/react-query";
 import type { NextPage } from "next";
 import Head from "next/head";
-import LoginPage from "../../components/login-page";
-
+import { fetchSchools } from "../utils/queries";
+import LoginPage from "../components/login-page";
 
 const Home: NextPage = () => {
+  const schoolQuery = useQuery({
+    queryKey: ["schools"],
+    queryFn: fetchSchools,
+  });
+
   return (
     <div>
       <Head>
@@ -12,8 +18,10 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
+        <h1 className="text-green-500">Hello world</h1>
         {/* login page component */}
         <LoginPage></LoginPage>
+        <pre>{JSON.stringify(schoolQuery, null, 2)}</pre>
       </main>
     </div>
   );
