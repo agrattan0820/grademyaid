@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import LoginPage from "../../components/login-page";
-
+import SchoolSearch from "../../components/school-search";
 
 const Home: NextPage = () => {
   return (
@@ -14,6 +14,7 @@ const Home: NextPage = () => {
       <main>
         {/* login page component */}
         <LoginPage></LoginPage>
+        <SchoolSearch></SchoolSearch>
       </main>
     </div>
   );
