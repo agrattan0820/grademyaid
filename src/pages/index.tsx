@@ -17,7 +17,7 @@ const Home: NextPage = () => {
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
           theme="default"
-          providers={['google', 'facebook']} //adds google
+          providers={['google', 'facebook']} //specify google,facebook sso 
         />
       ) : (
         <p>Account goes here after email validation</p>
