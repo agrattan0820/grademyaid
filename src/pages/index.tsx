@@ -20,8 +20,7 @@ const Home: NextPage = () => {
       <main>
         <h1 className="text-green-500">Hello world</h1>
         {/* login page component */}
-        <LoginPage></LoginPage>
-        <pre>{JSON.stringify(schoolQuery, null, 2)}</pre>
+        <SchoolSearch />
       </main>
     </div>
   );
