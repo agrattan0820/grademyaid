@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { Auth, ThemeSupa } from '@supabase/auth-ui-react'
 import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react'
+import LoginPage from "../components/login-page";
 
 
 
@@ -20,7 +21,7 @@ const Home: NextPage = () => {
           providers={['google', 'facebook']} //specify google,facebook sso 
         />
       ) : (
-        <p>Account goes here after email validation</p>
+       <LoginPage></LoginPage>
       )}
     </div>
   );
