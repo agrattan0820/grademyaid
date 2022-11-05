@@ -1,15 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { fetchSchools } from "../utils/queries";
+import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import LoginPage from "../components/login-page";
+import { fetchSchools } from "../utils/queries";
 
 const Home: NextPage = () => {
+  const session = useSession();
+  const supabase = useSupabaseClient();
+
   const schoolQuery = useQuery({
     queryKey: ["schools"],
     queryFn: fetchSchools,
   });
-
   return (
     <div>
       <Head>
@@ -23,6 +27,18 @@ const Home: NextPage = () => {
         <LoginPage></LoginPage>
         <pre>{JSON.stringify(schoolQuery, null, 2)}</pre>
       </main>
+      <div className="flex min-h-screen items-center justify-center bg-gray-100">
+        {!session ? (
+          <Auth
+            supabaseClient={supabase}
+            appearance={{ theme: ThemeSupa }}
+            theme="default"
+            providers={["google", "facebook"]} //specify google,facebook sso
+          />
+        ) : (
+          <LoginPage></LoginPage>
+        )}
+      </div>
     </div>
   );
 };
