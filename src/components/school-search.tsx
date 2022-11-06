@@ -11,7 +11,7 @@ const SchoolSearch = () => {
   };
   const [schoolNames, setSchoolNames] = useState<SchoolOption[]>([]);
 
-  const userInput: string[] = ["pitt"];
+  const userInput: string[] = [];
 
   function handleInputChange(input: string) {
     const replaced = input.split(" ").join("%20");
