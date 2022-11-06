@@ -1,6 +1,6 @@
 // import router from "next/router";
 // import { useQuery } from "@tanstack/react-query";
-import { fetchSchoolNames, getSchoolById } from "../utils/queries";
+import { fetchSchoolNames, fetchSchoolById } from "../utils/queries";
 import Select from "react-select";
 import { useState } from "react";
 
@@ -33,7 +33,7 @@ const SchoolSearch = () => {
     // console.log("School Name:", selection["label"]);
     // console.log("School ID:", selection["value"]);
 
-    getSchoolById(selection["value"]).then(function (result) {
+    fetchSchoolById(selection["value"]).then(function (result) {
       const idData = result.data.results[0];
       console.log(idData);
     });
