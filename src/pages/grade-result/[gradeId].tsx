@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NextPage } from "next";
 import Head from "next/head";
+
 import { useQuery } from "@tanstack/react-query";
 import { FaLink } from "react-icons/fa";
 import { FiShare } from "react-icons/fi";
@@ -134,7 +135,7 @@ const GradeResultPage: NextPage = () => {
             <SchoolInfo
               name={schoolData.school.name}
               cost_attendance={schoolData.latest.cost.attendance.academic_year}
-              city={schoolData.school.name}
+              city={schoolData.school.city}
               state={schoolData.school.state}
               median_10_salary={
                 schoolData.latest.earnings["10_yrs_after_entry"].median
