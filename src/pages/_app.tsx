@@ -11,6 +11,7 @@ const queryClient = new QueryClient();
 function MyApp({
   Component,
   pageProps,
+  
 }: AppProps<{
   initialSession: Session;
 }>) {

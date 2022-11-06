@@ -14,19 +14,11 @@ export const fetchSchools = () =>
     },
   });
 
-export const fetchSchoolNames = (input: string) =>
-  axios.get(collegeScorecardURL + `?&school.name=${input}`, {
-    params: {
-      per_page: 20,
-      fields: "id,school.name",
-      api_key: process.env.NEXT_PUBLIC_COLLEGE_SCORECARD_API_KEY,
-    },
-  });
-
-export const getSchoolById = (value: number) =>
+/** GET: School By Id */
+export const fetchSchoolById = (schoolId: number) =>
   axios.get(collegeScorecardURL, {
     params: {
-      id: value,
+      id: schoolId,
       api_key: process.env.NEXT_PUBLIC_COLLEGE_SCORECARD_API_KEY,
     },
   });
