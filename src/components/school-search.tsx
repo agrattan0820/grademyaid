@@ -45,6 +45,7 @@ const SchoolSearch = () => {
         options={schoolNames}
         onInputChange={handleInputChange}
         onChange={handleSelection}
+        instanceId={"school-search-instance"}
       />
     </div>
   );
