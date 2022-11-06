@@ -1,8 +1,8 @@
 // import router from "next/router";
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 import { fetchSchoolNames } from "../utils/queries";
 import Select from "react-select";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const SchoolSearch = () => {
   type SchoolOption = {
@@ -11,18 +11,12 @@ const SchoolSearch = () => {
   };
   const [schoolNames, setSchoolNames] = useState<SchoolOption[]>([]);
 
-  const userInput: string[] = [];
-
   function handleInputChange(input: string) {
-    const replaced = input.split(" ").join("%20");
-    userInput.push(replaced);
-    userInput.shift();
-    const query = fetchSchoolNames(userInput[userInput.length - 1]);
-    query.then(function (result) {
+    fetchSchoolNames(input).then(function (result) {
       const schoolNameData = result.data.results;
       const optionsArray: SchoolOption[] = [];
       if (schoolNameData) {
-        schoolNameData.forEach((school: any, i: number) => {
+        schoolNameData.forEach((school: unknown, i: number) => {
           const newObject = {
             label: schoolNameData[i]["school.name"],
             value: schoolNameData[i].id,
@@ -34,10 +28,17 @@ const SchoolSearch = () => {
     });
   }
 
+  function handleSelection(selection: unknown) {
+    console.log(selection);
+  }
+
   return (
     <div>
-      <Select options={schoolNames} onInputChange={handleInputChange} />
-      {/* <pre>{out}</pre> */}
+      <Select
+        options={schoolNames}
+        onInputChange={handleInputChange}
+        onChange={handleSelection}
+      />
     </div>
   );
 };
