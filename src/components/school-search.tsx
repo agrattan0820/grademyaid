@@ -1,6 +1,6 @@
 // import router from "next/router";
 // import { useQuery } from "@tanstack/react-query";
-import { fetchSchoolNames } from "../utils/queries";
+import { fetchSchoolNames, getSchoolById } from "../utils/queries";
 import Select from "react-select";
 import { useState } from "react";
 
@@ -28,8 +28,15 @@ const SchoolSearch = () => {
     });
   }
 
-  function handleSelection(selection: unknown) {
-    console.log(selection);
+  function handleSelection(selection: any) {
+    // console.log("School Object:", selection);
+    // console.log("School Name:", selection["label"]);
+    // console.log("School ID:", selection["value"]);
+
+    getSchoolById(selection["value"]).then(function (result) {
+      const idData = result.data.results[0];
+      console.log(idData);
+    });
   }
 
   return (

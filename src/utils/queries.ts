@@ -15,13 +15,18 @@ export const fetchSchools = () =>
   });
 
 export const fetchSchoolNames = (input: string) =>
-  axios.get(
-    `https://api.data.gov/ed/collegescorecard/v1/schools.json?&school.name=${input}`,
-    {
-      params: {
-        per_page: 20,
-        fields: "id,school.name",
-        api_key: process.env.NEXT_PUBLIC_COLLEGE_SCORECARD_API_KEY,
-      },
-    }
-  );
+  axios.get(collegeScorecardURL + `?&school.name=${input}`, {
+    params: {
+      per_page: 20,
+      fields: "id,school.name",
+      api_key: process.env.NEXT_PUBLIC_COLLEGE_SCORECARD_API_KEY,
+    },
+  });
+
+export const getSchoolById = (value: number) =>
+  axios.get(collegeScorecardURL, {
+    params: {
+      id: value,
+      api_key: process.env.NEXT_PUBLIC_COLLEGE_SCORECARD_API_KEY,
+    },
+  });
