@@ -11,42 +11,28 @@ const SchoolSearch = () => {
   };
   const [schoolNames, setSchoolNames] = useState<SchoolOption[]>([]);
 
-  const userInput: string[] = ["new york"];
+  const userInput: string[] = ["pitt"];
 
   function handleInputChange(input: string) {
     const replaced = input.split(" ").join("%20");
     userInput.push(replaced);
     userInput.shift();
-
-    // console.log(userInput);
-    // console.log(userInput[userInput.length - 1]);
+    const query = fetchSchoolNames(userInput[userInput.length - 1]);
+    query.then(function (result) {
+      const schoolNameData = result.data.results;
+      const optionsArray: SchoolOption[] = [];
+      if (schoolNameData) {
+        schoolNameData.forEach((school: any, i: number) => {
+          const newObject = {
+            label: schoolNameData[i]["school.name"],
+            value: schoolNameData[i].id,
+          };
+          optionsArray.push(newObject);
+        });
+        setSchoolNames(optionsArray);
+      }
+    });
   }
-  const schoolNameQuery = useQuery(["inst-names"], () =>
-    fetchSchoolNames(userInput[userInput.length - 1])
-  );
-
-  // const handleInputChange = (input: string) => {
-  //   // eslint-disable-next-line react-hooks/rules-of-hooks
-  //
-
-  //   console.log(input);
-  // };
-
-  useEffect(() => {
-    const schoolNameData = schoolNameQuery.data?.data["results"];
-    const optionsArray: SchoolOption[] = [];
-    if (schoolNameData) {
-      schoolNameData.forEach((school: any, i: number) => {
-        const newObject = {
-          label: schoolNameData[i]["school.name"],
-          value: schoolNameData[i].id,
-        };
-        // console.log(newObject);
-        optionsArray.push(newObject);
-      });
-      setSchoolNames(optionsArray);
-    }
-  }, [schoolNameQuery.data?.data]);
 
   return (
     <div>
