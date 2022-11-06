@@ -11,20 +11,32 @@ const SchoolSearch = () => {
   };
   const [schoolNames, setSchoolNames] = useState<SchoolOption[]>([]);
 
-  const schoolNameQuery = useQuery({
-    queryKey: ["inst-names"],
-    queryFn: fetchSchoolNames,
-  });
+  const userInput: string[] = ["new york"];
 
-  // const out = JSON.stringify(schoolNameData, null, 2);
+  function handleInputChange(input: string) {
+    const replaced = input.split(" ").join("%20");
+    userInput.push(replaced);
+    userInput.shift();
+
+    // console.log(userInput);
+    // console.log(userInput[userInput.length - 1]);
+  }
+  const schoolNameQuery = useQuery(["inst-names"], () =>
+    fetchSchoolNames(userInput[userInput.length - 1])
+  );
+
+  // const handleInputChange = (input: string) => {
+  //   // eslint-disable-next-line react-hooks/rules-of-hooks
+  //
+
+  //   console.log(input);
+  // };
+
   useEffect(() => {
     const schoolNameData = schoolNameQuery.data?.data["results"];
-    // console.log(schoolNameData);
     const optionsArray: SchoolOption[] = [];
     if (schoolNameData) {
-      // console.log(schoolNameData);
       schoolNameData.forEach((school: any, i: number) => {
-        // console.log(schoolNameData["school.name"]);
         const newObject = {
           label: schoolNameData[i]["school.name"],
           value: schoolNameData[i].id,
@@ -34,11 +46,11 @@ const SchoolSearch = () => {
       });
       setSchoolNames(optionsArray);
     }
-  }, [schoolNameQuery]);
+  }, [schoolNameQuery.data?.data]);
 
   return (
     <div>
-      <Select options={schoolNames} />
+      <Select options={schoolNames} onInputChange={handleInputChange} />
       {/* <pre>{out}</pre> */}
     </div>
   );
