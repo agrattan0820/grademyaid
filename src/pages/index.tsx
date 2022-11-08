@@ -15,6 +15,9 @@ const Home: NextPage = () => {
     queryKey: ["schools"],
     queryFn: fetchSchools,
   });
+
+  console.log(session);
+
   return (
     <div>
       <Head>
@@ -25,22 +28,21 @@ const Home: NextPage = () => {
       <main>
         <h1 className="text-green-500">GradeMyAid</h1>
         {/* login page component */}
-        <LoginPage></LoginPage>
+        <div className="flex min-h-screen items-center justify-center bg-gray-100">
+          {!session ? (
+            <Auth
+              supabaseClient={supabase}
+              appearance={{ theme: ThemeSupa }}
+              theme="default"
+              providers={["google", "facebook"]} //specify google,facebook sso
+            />
+          ) : (
+            <LoginPage></LoginPage>
+          )}
+        </div>
         <SchoolSearch></SchoolSearch>
         <pre>{JSON.stringify(schoolQuery, null, 2)}</pre>
       </main>
-      <div className="flex min-h-screen items-center justify-center bg-gray-100">
-        {!session ? (
-          <Auth
-            supabaseClient={supabase}
-            appearance={{ theme: ThemeSupa }}
-            theme="default"
-            providers={["google", "facebook"]} //specify google,facebook sso
-          />
-        ) : (
-          <LoginPage></LoginPage>
-        )}
-      </div>
     </div>
   );
 };
