@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
+import { Auth, ThemeMinimal, ThemeSupa } from "@supabase/auth-ui-react";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
-import LoginPage from "../components/login-page";
 import { fetchSchools } from "../utils/queries";
 import SchoolSearch from "../components/school-search";
+import Account from "../components/Account";
+
 
 const Home: NextPage = () => {
   const session = useSession();
@@ -16,7 +17,35 @@ const Home: NextPage = () => {
     queryFn: fetchSchools,
   });
 
-  console.log(session);
+  async function signOut() {
+    const { error } = await supabase.auth.signOut()
+  }
+
+  // currently have homepage defined in this file, but will move to separate file once we know how to pass supabaseClient to other files
+  const HomePage = () =>{ 
+    return (
+      <div>
+        <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-500 md:text-5xl lg:text-6xl dark:text-white content-top">Rate My Aid </h1>
+        <button className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Dashboard</button>
+        <button className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Settings</button>
+        <button className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" onClick={signOut}>Logout</button>
+        <Account session={session} />
+      </div>
+    );
+  };
+
+  // currently have login page defined in this file, but will move to separate file once we know how to pass supabaseClient to other files
+  const LoginPage = () => {
+    return (
+      <Auth
+      supabaseClient={supabase}
+      appearance={{ theme: ThemeSupa }}
+      theme="default"
+      providers={["google", "facebook"]} //specify google,facebook sso
+      socialLayout="horizontal"
+    />
+    );
+  };
 
   return (
     <div>
@@ -26,19 +55,13 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <h1 className="text-green-500">GradeMyAid</h1>
-        {/* login page component */}
+        
         <div className="flex min-h-screen items-center justify-center bg-gray-100">
-          {!session ? (
-            <Auth
-              supabaseClient={supabase}
-              appearance={{ theme: ThemeSupa }}
-              theme="default"
-              providers={["google", "facebook"]} //specify google,facebook sso
-            />
-          ) : (
-            <LoginPage></LoginPage>
-          )}
+          {!session ? ( //if not logged in 
+              <LoginPage /> 
+          ) : ( //if logged in
+            <HomePage /> 
+            )}
         </div>
         <SchoolSearch></SchoolSearch>
         <pre>{JSON.stringify(schoolQuery, null, 2)}</pre>
@@ -47,4 +70,8 @@ const Home: NextPage = () => {
   );
 };
 
+
+
 export default Home;
+
+
