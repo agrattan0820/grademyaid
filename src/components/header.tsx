@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const Header = () => {
   return (
-    <header className="justify-betwee fixed top-0 flex w-full items-center py-4 px-4">
+    <header className="justify-betwee fixed top-0 z-50 flex w-full items-center py-4 px-4">
       <div className="container mx-auto">
         <h1>
           <Link href="/marketing">

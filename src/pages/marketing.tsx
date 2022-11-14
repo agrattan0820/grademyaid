@@ -1,15 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { FaPiggyBank } from "react-icons/fa";
+import { FaArrowDown, FaPiggyBank } from "react-icons/fa";
 import { fetchSchools } from "../utils/queries";
 import Header from "../components/header";
+import SchoolSearch from "../components/school-search";
+import { ChangeEvent, useState } from "react";
 
 const Marketing: NextPage = () => {
   const schoolQuery = useQuery({
     queryKey: ["schools"],
     queryFn: fetchSchools,
   });
+
+  const [location, setLocation] = useState("");
+
+  const handleRadioClick = (e: ChangeEvent<HTMLInputElement>) => {
+    setLocation(e.target.value);
+  };
 
   return (
     <div>
@@ -20,20 +28,24 @@ const Marketing: NextPage = () => {
       </Head>
       <Header />
       <main>
-        <div className="flex min-h-screen items-center justify-center bg-emerald-100">
+        <section className="relative flex min-h-screen items-center justify-center bg-emerald-100">
           {/* <div className="h-80 w-80 rounded-xl bg-orange-100"></div> */}
           <div className="container mx-auto px-4">
-            <div>
-              <h2 className="relative z-10 mb-4 max-w-xl text-5xl font-medium lg:text-6xl">
-                Grade your financial aid package
-              </h2>
-              <div className="flex space-x-2">
+            <h2 className="relative z-10 mx-auto mb-8 max-w-2xl text-center text-5xl font-black tracking-wide lg:text-7xl">
+              How good is your financial aid?
+            </h2>
+            <div className="mx-auto max-w-lg">
+              <SchoolSearch />
+            </div>
+            <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 transform text-center">
+              <FaArrowDown className=" mx-auto animate-bounce transition" />
+            </div>
+            {/* <div className="flex space-x-2">
                 <button className="flex items-center justify-center rounded bg-violet-300 px-4 py-2 font-bold ring-emerald-100 transition hover:ring-2 focus-visible:ring-2">
                   <span className="mr-2">Start Grade</span>
                 </button>
-              </div>
-            </div>
-            <svg
+              </div> */}
+            {/* <svg
               className="absolute top-0 right-0 z-0 h-[36rem] w-[36rem] overflow-x-hidden"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 600 600"
@@ -44,9 +56,63 @@ const Marketing: NextPage = () => {
                   fill="#34d399"
                 />
               </g>
-            </svg>
+            </svg> */}
           </div>
-        </div>
+        </section>
+        <section className="flex min-h-screen items-center justify-center bg-emerald-400">
+          <div className="container mx-auto px-4">
+            <h2 className="relative z-10 mx-auto mb-8 max-w-3xl text-center text-5xl font-black tracking-wide lg:text-7xl">
+              What type of location is the aid?
+            </h2>
+            <div className="mx-auto text-center">
+              <div className="mx-auto flex w-40 flex-col text-left">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="inState" className="mr-1 text-xl">
+                    In-state
+                  </label>
+                  <input
+                    type="radio"
+                    id="inState"
+                    name="schoolState"
+                    value="inState"
+                    checked={location === "inState"}
+                    onChange={handleRadioClick}
+                    className="text-emerald-800"
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="outState" className="mr-1 text-xl">
+                    Out-of-state
+                  </label>
+                  <input
+                    type="radio"
+                    id="outState"
+                    name="schoolState"
+                    value="outState"
+                    checked={location === "outState"}
+                    onChange={handleRadioClick}
+                    className="text-emerald-800"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="flex min-h-screen items-center justify-center bg-emerald-500">
+          <div className="container mx-auto px-4">
+            <h2 className="relative z-10 mx-auto mb-8 max-w-3xl text-center text-5xl font-black tracking-wide lg:text-7xl">
+              What was your yearly aid amount?
+            </h2>
+            <div className="mx-auto text-center">
+              <input
+                type="number"
+                className="w-80 rounded-md border-2 border-gray-300 px-2 py-1 outline-none focus:border-emerald-200 focus:outline-none"
+                placeholder="Enter your yearly aid amount..."
+                min="0"
+              />
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );

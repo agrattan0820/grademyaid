@@ -45,14 +45,21 @@ const SchoolSearch = () => {
   }
 
   return (
-    <div>
-      <AsyncSelect
-        loadOptions={handleInputChange}
-        onChange={handleSelection}
-        defaultOptions
-        instanceId={"school-search-instance"}
-      />
-    </div>
+    <AsyncSelect
+      loadOptions={handleInputChange}
+      onChange={handleSelection}
+      defaultOptions
+      instanceId={"school-search-instance"}
+      placeholder="Search for a school..."
+      theme={(theme) => ({
+        ...theme,
+        colors: {
+          ...theme.colors,
+          primary25: "#a7f3d0",
+          primary: "#10b981",
+        },
+      })}
+    />
   );
 };
 
