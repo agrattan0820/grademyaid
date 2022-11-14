@@ -77,7 +77,7 @@ const Home: NextPage = () => {
             <HomePage session={session} />
           )}
         </div>
-        <SchoolSearch></SchoolSearch>
+        <SchoolSearch />
         <pre>{JSON.stringify(schoolQuery, null, 2)}</pre>
       </main>
     </div>

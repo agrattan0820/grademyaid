@@ -8,8 +8,8 @@ const collegeScorecardURL =
 export const fetchSchools = () =>
   axios.get(collegeScorecardURL, {
     params: {
-      "school.degrees_awarded.predominant": "2,3",
-      fields: "id,school.name,2020.student.size",
+      per_page: 20,
+      fields: "id,school.name",
       api_key: process.env.NEXT_PUBLIC_COLLEGE_SCORECARD_API_KEY,
     },
   });
