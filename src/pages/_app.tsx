@@ -1,4 +1,4 @@
-import '../styles/globals.css'
+import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider, Session } from "@supabase/auth-helpers-react";
@@ -11,7 +11,6 @@ const queryClient = new QueryClient();
 function MyApp({
   Component,
   pageProps,
-  
 }: AppProps<{
   initialSession: Session;
 }>) {
