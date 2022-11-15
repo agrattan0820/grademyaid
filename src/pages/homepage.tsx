@@ -91,13 +91,18 @@ const Homepage: NextPage = () => {
             <div className="mx-auto max-w-lg">
               <Controller
                 control={control}
-                rules={{ required: true }}
+                rules={{ required: "An institution is required" }}
                 name="school"
                 render={({ field: { onChange } }) => (
                   <SchoolSearch handleChange={onChange} />
                 )}
               />
             </div>
+            {errors?.school && (
+              <div className="mx-auto mt-8 w-80 rounded-md bg-red-50 py-2 px-4 text-center">
+                <p className="text-red-600">{errors.school.message}</p>
+              </div>
+            )}
             {schoolValue && (
               <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 transform text-center">
                 <button
@@ -129,7 +134,7 @@ const Homepage: NextPage = () => {
                     id="inState"
                     value="inState"
                     className="form-radio text-emerald-700 focus:ring-emerald-700"
-                    {...register("location")}
+                    {...register("location", { required: true })}
                   />
                 </div>
                 <div className="flex items-center justify-between">
@@ -141,11 +146,18 @@ const Homepage: NextPage = () => {
                     id="outState"
                     value="outState"
                     className="form-radio text-emerald-700 focus:ring-emerald-700"
-                    {...register("location")}
+                    {...register("location", {
+                      required: "The location field is required",
+                    })}
                   />
                 </div>
               </div>
             </div>
+            {errors?.location && (
+              <div className="mx-auto mt-8 w-80 rounded-md bg-red-50 py-2 px-4 text-center">
+                <p className="text-red-600">{errors.location.message}</p>
+              </div>
+            )}
             {locationValue && (
               <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 transform text-center">
                 <button
@@ -172,17 +184,35 @@ const Homepage: NextPage = () => {
                 className="form-input w-80 rounded-full border-2 border-gray-300 px-4 py-2 ring-gray-300 focus:border-emerald-700 focus:outline-none focus:ring-emerald-700"
                 placeholder="Enter your yearly aid amount..."
                 min="0"
-                {...register("aidAmount")}
+                {...register("aidAmount", {
+                  required: "The aid amount field is required",
+                })}
               />
             </div>
+            {errors?.aidAmount && (
+              <div className="mx-auto mt-8 w-80 rounded-md bg-red-50 py-2 px-4 text-center">
+                <p className="text-red-600">{errors.aidAmount.message}</p>
+              </div>
+            )}
             <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 transform text-center">
-              <button
-                type="button"
-                onClick={handleSubmit(onSubmit)}
-                className="min-w-[180px] rounded-full bg-violet-300 px-4 py-2 font-bold shadow shadow-emerald-600 transition focus-within:scale-105 hover:scale-105"
-              >
-                Get your rating
-              </button>
+              {Object.values(errors)?.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={handleSubmit(onSubmit)}
+                  disabled
+                  className="min-w-[180px] rounded-full bg-red-300 px-4 py-2 font-bold shadow shadow-emerald-600 transition"
+                >
+                  There were errors
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSubmit(onSubmit)}
+                  className="min-w-[180px] rounded-full bg-violet-300 px-4 py-2 font-bold shadow shadow-emerald-600 transition focus-within:scale-105 hover:scale-105"
+                >
+                  Get your rating
+                </button>
+              )}
             </div>
           </div>
         </section>
