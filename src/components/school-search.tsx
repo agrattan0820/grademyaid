@@ -6,10 +6,9 @@ import {
   fetchSchools,
 } from "../utils/queries";
 import AsyncSelect from "react-select/async";
-import { SingleValue } from "react-select";
+import { GroupBase, StylesConfig } from "react-select";
 
 /** TYPES */
-
 type Props = {
   /** onChange handler */
   handleChange: (e?: any) => void;
@@ -20,6 +19,19 @@ type SchoolOption = {
   label: string;
   /** Value of option when selected */
   value: number;
+};
+
+const customStyles: StylesConfig<
+  SchoolOption,
+  false,
+  GroupBase<SchoolOption>
+> = {
+  control: (provided) => ({
+    ...provided,
+    borderRadius: 9999,
+    paddingLeft: ".25rem",
+    paddingRight: ".25rem",
+  }),
 };
 
 const SchoolSearch = ({ handleChange }: Props) => {
@@ -44,15 +56,6 @@ const SchoolSearch = ({ handleChange }: Props) => {
     return optionsArray;
   }
 
-  // function handleSelection(selection: SingleValue<SchoolOption>) {
-  //   if (selection) {
-  //     fetchSchoolById(selection["value"]).then(function (result) {
-  //       const idData = result.data.results[0];
-  //       console.log(idData);
-  //     });
-  //   }
-  // }
-
   return (
     <AsyncSelect
       loadOptions={handleInputChange}
@@ -68,6 +71,7 @@ const SchoolSearch = ({ handleChange }: Props) => {
           primary: "#10b981",
         },
       })}
+      styles={customStyles}
     />
   );
 };

@@ -137,7 +137,7 @@ const Marketing: NextPage = () => {
                     type="radio"
                     id="inState"
                     value="inState"
-                    className="text-emerald-700 focus:ring-emerald-700"
+                    className="form-radio text-emerald-700 focus:ring-emerald-700"
                     {...register("location")}
                   />
                 </div>
@@ -149,7 +149,7 @@ const Marketing: NextPage = () => {
                     type="radio"
                     id="outState"
                     value="outState"
-                    className="text-emerald-700 focus:ring-emerald-700"
+                    className="form-radio text-emerald-700 focus:ring-emerald-700"
                     {...register("location")}
                   />
                 </div>
@@ -178,7 +178,7 @@ const Marketing: NextPage = () => {
             <div className="mx-auto text-center">
               <input
                 type="number"
-                className="w-80 rounded-md border-2 border-gray-300 px-2 py-1 ring-gray-300 focus:border-emerald-700 focus:outline-none focus:ring-emerald-700"
+                className="form-input w-80 rounded-full border-2 border-gray-300 px-4 py-2 ring-gray-300 focus:border-emerald-700 focus:outline-none focus:ring-emerald-700"
                 placeholder="Enter your yearly aid amount..."
                 min="0"
                 {...register("aidAmount")}
@@ -188,7 +188,7 @@ const Marketing: NextPage = () => {
               <button
                 type="button"
                 onClick={handleSubmit(onSubmit)}
-                className="min-w-[180px] rounded-md bg-violet-300 px-4 py-2 font-bold shadow shadow-emerald-600 transition focus-within:scale-105 hover:scale-105"
+                className="min-w-[180px] rounded-full bg-violet-300 px-4 py-2 font-bold shadow shadow-emerald-600 transition focus-within:scale-105 hover:scale-105"
               >
                 Get your rating
               </button>
