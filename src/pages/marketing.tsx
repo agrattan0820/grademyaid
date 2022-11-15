@@ -49,6 +49,7 @@ const Marketing: NextPage = () => {
   const aidRef = useRef<HTMLElement>(null);
 
   /** Animation utils */
+  /** Source for slide scroll animation: https://codesandbox.io/s/kxv7r?file=/src/App.js */
   const spring = useSpring(0);
 
   useLayoutEffect(() => {
