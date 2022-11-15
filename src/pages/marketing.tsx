@@ -85,7 +85,7 @@ const Marketing: NextPage = () => {
                 control={control}
                 rules={{ required: true }}
                 name="school"
-                render={({ field: { onChange, value } }) => (
+                render={({ field: { onChange } }) => (
                   <SchoolSearch handleChange={onChange} />
                 )}
               />
