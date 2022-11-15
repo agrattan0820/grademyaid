@@ -8,6 +8,7 @@ import { FiShare, FiDownload } from "react-icons/fi";
 import { numberWithCommas } from "../../utils/formatters";
 import { fetchSchoolById } from "../../utils/queries";
 import Header from "../../components/header";
+import Button from "../../components/button";
 
 type SchoolInfoProps = {
   name: string;
@@ -150,16 +151,14 @@ const GradeResultPage: NextPage = () => {
           )}
         </div>
         <div className="flex space-x-4">
-          <button className="flex items-center justify-center rounded bg-rose-300 px-4 py-2 font-bold ring-emerald-100 transition hover:ring-2 focus-visible:ring-2">
-            <span className="mr-2">Share Grade</span> <FiDownload />
-          </button>
+          <Button color="rose" label="Save Grade" icon={<FiDownload />} />
           <div className="relative z-10">
-            <button
+            <Button
               onClick={shareLink}
-              className="flex items-center justify-center rounded bg-violet-300 px-4 py-2 font-bold ring-emerald-100 transition hover:ring-2 focus-visible:ring-2"
-            >
-              <span className="mr-2">Share Grade</span> <FiShare />
-            </button>
+              color="violet"
+              label="Share Grade"
+              icon={<FiShare />}
+            />
             <div
               // Role alert and aria-live announce to screen readers
               role="alert"
