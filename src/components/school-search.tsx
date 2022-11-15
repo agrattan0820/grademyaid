@@ -8,12 +8,21 @@ import {
 import AsyncSelect from "react-select/async";
 import { SingleValue } from "react-select";
 
-const SchoolSearch = () => {
-  type SchoolOption = {
-    label: string;
-    value: number;
-  };
+/** TYPES */
 
+type Props = {
+  /** onChange handler */
+  handleChange: (e?: any) => void;
+};
+
+type SchoolOption = {
+  /** Label shown within select */
+  label: string;
+  /** Value of option when selected */
+  value: number;
+};
+
+const SchoolSearch = ({ handleChange }: Props) => {
   async function handleInputChange(input: string) {
     let result;
     if (!input) {
@@ -35,19 +44,19 @@ const SchoolSearch = () => {
     return optionsArray;
   }
 
-  function handleSelection(selection: SingleValue<SchoolOption>) {
-    if (selection) {
-      fetchSchoolById(selection["value"]).then(function (result) {
-        const idData = result.data.results[0];
-        console.log(idData);
-      });
-    }
-  }
+  // function handleSelection(selection: SingleValue<SchoolOption>) {
+  //   if (selection) {
+  //     fetchSchoolById(selection["value"]).then(function (result) {
+  //       const idData = result.data.results[0];
+  //       console.log(idData);
+  //     });
+  //   }
+  // }
 
   return (
     <AsyncSelect
       loadOptions={handleInputChange}
-      onChange={handleSelection}
+      onChange={handleChange}
       defaultOptions
       instanceId={"school-search-instance"}
       placeholder="Search for a school..."

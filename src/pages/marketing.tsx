@@ -1,22 +1,67 @@
-import { useQuery } from "@tanstack/react-query";
+import { useLayoutEffect, useRef } from "react";
 import type { NextPage } from "next";
+import { useQuery } from "@tanstack/react-query";
 import Head from "next/head";
-import { FaArrowDown, FaPiggyBank } from "react-icons/fa";
+import { FaArrowDown } from "react-icons/fa";
+import { useForm, Controller } from "react-hook-form";
+import { useSpring } from "framer-motion";
+
 import { fetchSchools } from "../utils/queries";
 import Header from "../components/header";
 import SchoolSearch from "../components/school-search";
-import { ChangeEvent, useState } from "react";
+
+/** TYPES */
+type FormValues = {
+  /** School choice */
+  school: {
+    value: string;
+    label: string;
+  };
+  /** Whether the aid is for in-state or out-of-state */
+  location: string;
+  /** Amount of aid the institution provides the student */
+  aidAmount: number;
+};
 
 const Marketing: NextPage = () => {
+  /** Form State */
+  const {
+    register,
+    handleSubmit,
+    watch,
+    control,
+    formState: { isSubmitting, isSubmitSuccessful, errors },
+  } = useForm<FormValues>();
+  const schoolValue = watch("school")?.value;
+  const locationValue = watch("location");
+  const aidAmountValue = watch("aidAmount");
+
+  const onSubmit = (data: FormValues) => console.log(data);
+
+  /** Data Fetching */
   const schoolQuery = useQuery({
     queryKey: ["schools"],
     queryFn: fetchSchools,
   });
 
-  const [location, setLocation] = useState("");
+  /** Slide Refs */
+  const locationRef = useRef<HTMLElement>(null);
+  const aidRef = useRef<HTMLElement>(null);
 
-  const handleRadioClick = (e: ChangeEvent<HTMLInputElement>) => {
-    setLocation(e.target.value);
+  /** Animation utils */
+  const spring = useSpring(0);
+
+  useLayoutEffect(() => {
+    spring.onChange((latest) => {
+      window.scrollTo(0, latest);
+    });
+  }, [spring]);
+
+  const moveTo = (to: any) => {
+    spring.set(window.pageYOffset, false);
+    setTimeout(() => {
+      spring.set(to);
+    }, 50);
   };
 
   return (
@@ -31,15 +76,29 @@ const Marketing: NextPage = () => {
         <section className="relative flex min-h-screen items-center justify-center bg-emerald-100">
           {/* <div className="h-80 w-80 rounded-xl bg-orange-100"></div> */}
           <div className="container mx-auto px-4">
-            <h2 className="relative z-10 mx-auto mb-8 max-w-2xl text-center text-5xl font-black tracking-wide lg:text-7xl">
-              How good is your financial aid?
+            <h2 className="relative z-10 mx-auto mb-8 max-w-xl text-center text-5xl font-black tracking-wide lg:max-w-2xl lg:text-7xl">
+              How good is your financial aid? 💸
             </h2>
             <div className="mx-auto max-w-lg">
-              <SchoolSearch />
+              <Controller
+                control={control}
+                rules={{ required: true }}
+                name="school"
+                render={({ field: { onChange, value } }) => (
+                  <SchoolSearch handleChange={onChange} />
+                )}
+              />
             </div>
-            <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 transform text-center">
-              <FaArrowDown className=" mx-auto animate-bounce transition" />
-            </div>
+            {schoolValue && (
+              <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 transform text-center">
+                <button
+                  type="button"
+                  onClick={() => moveTo(locationRef?.current?.offsetTop)}
+                >
+                  <FaArrowDown className="mx-auto animate-bounce text-2xl transition" />
+                </button>
+              </div>
+            )}
             {/* <div className="flex space-x-2">
                 <button className="flex items-center justify-center rounded bg-violet-300 px-4 py-2 font-bold ring-emerald-100 transition hover:ring-2 focus-visible:ring-2">
                   <span className="mr-2">Start Grade</span>
@@ -59,9 +118,12 @@ const Marketing: NextPage = () => {
             </svg> */}
           </div>
         </section>
-        <section className="flex min-h-screen items-center justify-center bg-emerald-400">
+        <section
+          className="relative flex min-h-screen items-center justify-center bg-emerald-400"
+          ref={locationRef}
+        >
           <div className="container mx-auto px-4">
-            <h2 className="relative z-10 mx-auto mb-8 max-w-3xl text-center text-5xl font-black tracking-wide lg:text-7xl">
+            <h2 className="relative z-10 mx-auto mb-8 max-w-xl text-center text-5xl font-black tracking-wide lg:max-w-3xl lg:text-7xl">
               What type of location is the aid?
             </h2>
             <div className="mx-auto text-center">
@@ -73,11 +135,9 @@ const Marketing: NextPage = () => {
                   <input
                     type="radio"
                     id="inState"
-                    name="schoolState"
                     value="inState"
-                    checked={location === "inState"}
-                    onChange={handleRadioClick}
-                    className="text-emerald-800"
+                    className="text-emerald-700 focus:ring-emerald-700"
+                    {...register("location")}
                   />
                 </div>
                 <div className="flex items-center justify-between">
@@ -87,29 +147,50 @@ const Marketing: NextPage = () => {
                   <input
                     type="radio"
                     id="outState"
-                    name="schoolState"
                     value="outState"
-                    checked={location === "outState"}
-                    onChange={handleRadioClick}
-                    className="text-emerald-800"
+                    className="text-emerald-700 focus:ring-emerald-700"
+                    {...register("location")}
                   />
                 </div>
               </div>
             </div>
+            {locationValue && (
+              <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 transform text-center">
+                <button
+                  type="button"
+                  onClick={() => moveTo(aidRef?.current?.offsetTop)}
+                >
+                  <FaArrowDown className="mx-auto animate-bounce text-2xl transition" />
+                </button>
+              </div>
+            )}
           </div>
         </section>
-        <section className="flex min-h-screen items-center justify-center bg-emerald-500">
+        <section
+          className="relative flex min-h-screen items-center justify-center bg-emerald-500"
+          ref={aidRef}
+        >
           <div className="container mx-auto px-4">
-            <h2 className="relative z-10 mx-auto mb-8 max-w-3xl text-center text-5xl font-black tracking-wide lg:text-7xl">
+            <h2 className="relative z-10 mx-auto mb-8 max-w-xl text-center text-5xl font-black tracking-wide lg:max-w-3xl lg:text-7xl">
               What was your yearly aid amount?
             </h2>
             <div className="mx-auto text-center">
               <input
                 type="number"
-                className="w-80 rounded-md border-2 border-gray-300 px-2 py-1 outline-none focus:border-emerald-200 focus:outline-none"
+                className="w-80 rounded-md border-2 border-gray-300 px-2 py-1 ring-gray-300 focus:border-emerald-700 focus:outline-none focus:ring-emerald-700"
                 placeholder="Enter your yearly aid amount..."
                 min="0"
+                {...register("aidAmount")}
               />
+            </div>
+            <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 transform text-center">
+              <button
+                type="button"
+                onClick={handleSubmit(onSubmit)}
+                className="min-w-[180px] rounded-md bg-violet-300 px-4 py-2 font-bold shadow shadow-emerald-600 transition focus-within:scale-105 hover:scale-105"
+              >
+                Get your rating
+              </button>
             </div>
           </div>
         </section>
