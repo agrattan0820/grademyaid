@@ -23,7 +23,7 @@ type FormValues = {
   aidAmount: number;
 };
 
-const Marketing: NextPage = () => {
+const Homepage: NextPage = () => {
   /** Form State */
   const {
     register,
@@ -200,4 +200,4 @@ const Marketing: NextPage = () => {
   );
 };
 
-export default Marketing;
+export default Homepage;

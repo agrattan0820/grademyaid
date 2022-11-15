@@ -6,7 +6,7 @@ type Props = {
   /** Background color of the button */
   color: ColorType;
   /** Text of the button */
-  label: string;
+  label?: string;
   /** Icon contained within the button */
   icon?: ReactNode;
   /** onClick event of the button */
@@ -26,9 +26,11 @@ const Button = ({ color, label, icon, onClick, outline }: Props) => {
       ${color === "black" && !outline && "bg-black text-white"}
       ${outline && "bg-none"}
       ${outline && color === "black" && "border-4 border-black"}
+      ${!label && icon && "h-12 w-12 min-w-0"}
       `}
     >
-      <span className={icon ? "mr-2" : ""}>{label}</span> <span>{icon}</span>
+      {label && <span className={icon ? "mr-2" : ""}>{label}</span>}
+      <span>{icon}</span>
     </button>
   );
 };

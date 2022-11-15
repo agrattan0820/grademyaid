@@ -3,8 +3,8 @@ import { NextPage } from "next";
 import Head from "next/head";
 
 import { useQuery } from "@tanstack/react-query";
-import { FaLink } from "react-icons/fa";
-import { FiShare, FiDownload } from "react-icons/fi";
+import { FaHeart, FaLink } from "react-icons/fa";
+import { FiShare } from "react-icons/fi";
 import { numberWithCommas } from "../../utils/formatters";
 import { fetchSchoolById } from "../../utils/queries";
 import Header from "../../components/header";
@@ -151,7 +151,7 @@ const GradeResultPage: NextPage = () => {
           )}
         </div>
         <div className="flex space-x-4">
-          <Button color="rose" label="Save Grade" icon={<FiDownload />} />
+          <Button color="rose" label="Save Grade" icon={<FaHeart />} />
           <div className="relative z-10">
             <Button
               onClick={shareLink}
