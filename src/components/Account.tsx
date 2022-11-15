@@ -123,15 +123,17 @@ export default function Account({ session }: { session: Session }) {
           Sign Out
         </button>
       </div>
-      <Avatar
-        uid={username}
-        url={avatar_url}
-        size={150}
-        onUpload={(url) => {
-          setAvatarUrl(url);
-          updateProfile({ username, website, avatar_url: url });
-        }}
-      />
+      {username && (
+        <Avatar
+          uid={username}
+          url={avatar_url}
+          size={150}
+          onUpload={(url) => {
+            setAvatarUrl(url);
+            updateProfile({ username, website, avatar_url: url });
+          }}
+        />
+      )}
     </div>
   );
 }
