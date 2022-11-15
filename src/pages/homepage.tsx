@@ -9,6 +9,7 @@ import { useSpring } from "framer-motion";
 import { fetchSchools } from "../utils/queries";
 import Header from "../components/header";
 import SchoolSearch from "../components/school-search";
+import { useRouter } from "next/router";
 
 /** TYPES */
 type FormValues = {
@@ -24,6 +25,9 @@ type FormValues = {
 };
 
 const Homepage: NextPage = () => {
+  /** Next.js router */
+  const router = useRouter();
+
   /** Form State */
   const {
     register,
@@ -36,7 +40,11 @@ const Homepage: NextPage = () => {
   const locationValue = watch("location");
   const aidAmountValue = watch("aidAmount");
 
-  const onSubmit = (data: FormValues) => console.log(data);
+  const onSubmit = (data: FormValues) => {
+    console.log(data);
+    // TODO: Conditional grade-result page based on supabase grade creation
+    router.push("/grade-result/1");
+  };
 
   /** Data Fetching */
   const schoolQuery = useQuery({
@@ -100,23 +108,6 @@ const Homepage: NextPage = () => {
                 </button>
               </div>
             )}
-            {/* <div className="flex space-x-2">
-                <button className="flex items-center justify-center rounded bg-violet-300 px-4 py-2 font-bold ring-emerald-100 transition hover:ring-2 focus-visible:ring-2">
-                  <span className="mr-2">Start Grade</span>
-                </button>
-              </div> */}
-            {/* <svg
-              className="absolute top-0 right-0 z-0 h-[36rem] w-[36rem] overflow-x-hidden"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 600 600"
-            >
-              <g transform="translate(300,300)">
-                <path
-                  d="M108.7,-102.8C139.7,-47.8,163,-2.6,157.3,41.4C151.6,85.4,117,128.3,71.9,150.5C26.8,172.7,-28.9,174.2,-85.4,155.4C-141.9,136.6,-199.1,97.6,-217.2,42.6C-235.3,-12.3,-214.2,-83.2,-171.5,-140.9C-128.7,-198.7,-64.4,-243.3,-12.8,-233.2C38.8,-223,77.7,-157.9,108.7,-102.8Z"
-                  fill="#34d399"
-                />
-              </g>
-            </svg> */}
           </div>
         </section>
         <section
