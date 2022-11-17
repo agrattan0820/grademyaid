@@ -85,13 +85,8 @@ const dashboardPage = () => {
         </div>
         {/* End Grade side bar element */}
 
-<<<<<<< Updated upstream
         <div className="flex flex-col">
           <button className="rounded bg-green-400 py-2">Logout</button>
-=======
-        <div className="flex flex-col hover:bg-gray-600">
-          <button className="rounded bg-gray-500 py-2">Logout</button>
->>>>>>> Stashed changes
         </div>
       </div>
       <div className="flex flex-auto">
