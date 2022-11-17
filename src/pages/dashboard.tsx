@@ -3,7 +3,7 @@ import router from "next/router";
 const dashboardPage = () => {
   return (
     <div className="flex flex-row">
-      <div className="w-45 flex h-screen flex-col justify-between bg-gray-400">
+      <div className="w-45 flex h-screen flex-col justify-between bg-green-300">
         <div className="text-3x1 flex items-center justify-between px-5 text-gray-900">
           <b>Quick Access</b>
         </div>
@@ -86,7 +86,7 @@ const dashboardPage = () => {
         {/* End Grade side bar element */}
 
         <div className="flex flex-col">
-          <button className="rounded bg-gray-500 py-2">Logout</button>
+          <button className="rounded bg-green-400 py-2">Logout</button>
         </div>
       </div>
     </div>
