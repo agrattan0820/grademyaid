@@ -85,11 +85,42 @@ const dashboardPage = () => {
         </div>
         {/* End Grade side bar element */}
 
+<<<<<<< Updated upstream
         <div className="flex flex-col">
           <button className="rounded bg-green-400 py-2">Logout</button>
+=======
+        <div className="flex flex-col hover:bg-gray-600">
+          <button className="rounded bg-gray-500 py-2">Logout</button>
+>>>>>>> Stashed changes
         </div>
       </div>
-    </div>
+      <div className="flex flex-auto">
+        <div className="flex flex-col">
+          <div className="flex flex-col bg-white">
+            <div className="flex flex-row space-x-3">
+              <h4 className="text-bold p-1">Dashboard</h4>
+            </div>
+          </div>
+
+          <div className="min-h-screen bg-red-200">
+            <div className="mt-8 grid gap-10 p-4 sm:grid-cols-2 lg:grid-cols-3 ">
+              <div className="flex items-center bg-white">
+                <div className="text-sm">Colleges you have scores for</div>
+                <div className="flex items-center pt-1">
+                  <div className="text-3x1">44</div>
+                </div>
+              </div>
+              <div className="flex items-center bg-white">
+                <div className="text-sm">Colleges you have scores for</div>
+                <div className="flex items-center pt-1">
+                  <div className="text-3x1">44</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> // last one
   );
 };
 
