@@ -20,7 +20,7 @@ export const useStore = create<StoreState>()(
         setGradeId: (id: number) => set({ gradeId: id }),
       }),
       {
-        name: `grader-storage`,
+        name: `grademyaid-storage`,
       }
     )
   )
