@@ -1,10 +1,6 @@
 import { FaHeart, FaPiggyBank } from "react-icons/fa";
 import Link from "next/link";
-import {
-  useSession,
-  useSupabaseClient,
-  Session,
-} from "@supabase/auth-helpers-react";
+import { useSession } from "@supabase/auth-helpers-react";
 
 import Button from "./button";
 
