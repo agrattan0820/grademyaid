@@ -1,91 +1,238 @@
-import { useQuery } from "@tanstack/react-query";
+import { useLayoutEffect, useRef, useState } from "react";
 import type { NextPage } from "next";
+import { useQuery } from "@tanstack/react-query";
 import Head from "next/head";
-import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
-import {
-  useSession,
-  useSupabaseClient,
-  Session,
-} from "@supabase/auth-helpers-react";
+import { FaArrowDown } from "react-icons/fa";
+import { useForm, Controller } from "react-hook-form";
+import { useSpring } from "framer-motion";
+
 import { fetchSchools } from "../utils/queries";
-import Account from "../components/Account";
-import Link from "next/link";
+import Header from "../components/header";
+import SchoolSearch from "../components/school-search";
+import { useRouter } from "next/router";
+import { calculateScore, LocationType } from "../utils/calculate-score";
+import { useGradeMutation } from "../utils/hooks/use-grade-mutate";
 
-const Home: NextPage = () => {
-  const session = useSession();
-  const supabase = useSupabaseClient();
+/** TYPES */
+type FormValues = {
+  /** School choice */
+  school: {
+    value: number;
+    label: string;
+  };
+  /** Whether the aid is for in-state or out-of-state */
+  location: LocationType;
+  /** Amount of aid the institution provides the student */
+  aidAmount: number;
+};
 
-  const schoolQuery = useQuery({
-    queryKey: ["schools"],
-    queryFn: fetchSchools,
-  });
+const Homepage: NextPage = () => {
+  /** Next.js router */
+  const router = useRouter();
 
-  async function signOut() {
-    const { error } = await supabase.auth.signOut();
-  }
+  /** Form State */
+  const {
+    register,
+    handleSubmit,
+    watch,
+    control,
+    formState: { isSubmitting, isSubmitSuccessful, errors },
+  } = useForm<FormValues>();
+  const [loading, setLoading] = useState(false);
+  const schoolValue = watch("school")?.value;
+  const locationValue = watch("location");
+  const gradeMutation = useGradeMutation();
 
-  // currently have homepage defined in this file, but will move to separate file once we know how to pass supabaseClient to other files
-  const HomePage = ({ session }: { session: Session }) => {
-    return (
-      <div>
-        <h1 className="content-top mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-500 dark:text-white md:text-5xl lg:text-6xl">
-          grademyaid{" "}
-        </h1>
-        <button className="mr-2 mb-2 rounded-full border border-gray-200 bg-white py-2.5 px-5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
-          Dashboard
-        </button>
-        <button className="mr-2 mb-2 rounded-full border border-gray-200 bg-white py-2.5 px-5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
-          Settings
-        </button>
-        <Link href="/homepage">
-          <button className="mr-2 mb-2 rounded-full border border-gray-200 bg-white py-2.5 px-5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
-            Homepage
-          </button>
-        </Link>
-        <button
-          className="mr-2 mb-2 rounded-full border border-gray-200 bg-white py-2.5 px-5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-          onClick={signOut}
-        >
-          Logout
-        </button>
-        <Account session={session} />
-      </div>
+  const onSubmit = async (data: FormValues) => {
+    setLoading(true);
+    console.log(data);
+    const scoreResult = await calculateScore(
+      data.school.value,
+      data.aidAmount,
+      data.location
     );
+    const gradeResult = await gradeMutation.mutateAsync({
+      schoolId: data.school.value,
+      aidAmount: data.aidAmount,
+      location: data.location,
+      gradeNum: scoreResult,
+    });
+    console.log("Score Result:", scoreResult);
+    console.log("Grade Result:", gradeResult);
+    if (!scoreResult || !gradeResult) {
+      setLoading(false);
+    } else {
+      router.push(`/grade-result/${gradeResult.grade_id}`);
+    }
   };
 
-  // currently have login page defined in this file, but will move to separate file once we know how to pass supabaseClient to other files
-  const LoginPage = () => {
-    return (
-      <Auth
-        supabaseClient={supabase}
-        appearance={{ theme: ThemeSupa }}
-        theme="default"
-        providers={["google", "facebook"]} //specify google,facebook sso
-        socialLayout="horizontal"
-      />
-    );
+  /** Slide Refs */
+  const locationRef = useRef<HTMLElement>(null);
+  const aidRef = useRef<HTMLElement>(null);
+
+  /** Animation utils */
+  /** Source for slide scroll animation: https://codesandbox.io/s/kxv7r?file=/src/App.js */
+  const spring = useSpring(0);
+
+  useLayoutEffect(() => {
+    spring.onChange((latest) => {
+      window.scrollTo(0, latest);
+    });
+  }, [spring]);
+
+  const moveTo = (to: any) => {
+    spring.set(window.pageYOffset, false);
+    setTimeout(() => {
+      spring.set(to);
+    }, 50);
   };
 
   return (
     <div>
       <Head>
-        <title>grademyaid</title>
+        <title>GradeMyAid</title>
         <meta name="description" content="Generated by create next app" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Header />
       <main>
-        <div className="flex min-h-screen items-center justify-center bg-gray-100">
-          {!session ? ( //if not logged in
-            <LoginPage />
-          ) : (
-            //if logged in
-            <HomePage session={session} />
-          )}
-        </div>
-        <pre>{JSON.stringify(schoolQuery, null, 2)}</pre>
+        <section className="relative flex min-h-screen items-center justify-center bg-emerald-100">
+          {/* <div className="h-80 w-80 rounded-xl bg-orange-100"></div> */}
+          <div className="container mx-auto px-4">
+            <h2 className="relative z-10 mx-auto mb-8 max-w-xl text-center text-5xl font-black tracking-wide lg:max-w-2xl lg:text-7xl">
+              How good is your financial aid? 💸
+            </h2>
+            <div className="mx-auto max-w-lg">
+              <Controller
+                control={control}
+                rules={{ required: "An institution is required" }}
+                name="school"
+                render={({ field: { onChange } }) => (
+                  <SchoolSearch handleChange={onChange} />
+                )}
+              />
+            </div>
+            {errors?.school && (
+              <div className="mx-auto mt-8 w-80 rounded-md bg-red-50 py-2 px-4 text-center">
+                <p className="text-red-600">{errors.school.message}</p>
+              </div>
+            )}
+            {schoolValue && (
+              <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 transform text-center">
+                <button
+                  type="button"
+                  onClick={() => moveTo(locationRef?.current?.offsetTop)}
+                >
+                  <FaArrowDown className="mx-auto animate-bounce text-2xl transition" />
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+        <section
+          className="relative flex min-h-screen items-center justify-center bg-emerald-400"
+          ref={locationRef}
+        >
+          <div className="container mx-auto px-4">
+            <h2 className="relative z-10 mx-auto mb-8 max-w-xl text-center text-5xl font-black tracking-wide lg:max-w-3xl lg:text-7xl">
+              What type of location is the aid?
+            </h2>
+            <div className="mx-auto text-center">
+              <div className="mx-auto flex w-40 flex-col text-left">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="inState" className="mr-1 text-xl">
+                    In-state
+                  </label>
+                  <input
+                    type="radio"
+                    id="inState"
+                    value="inState"
+                    className="form-radio text-emerald-700 focus:ring-emerald-700"
+                    {...register("location", { required: true })}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="outState" className="mr-1 text-xl">
+                    Out-of-state
+                  </label>
+                  <input
+                    type="radio"
+                    id="outState"
+                    value="outState"
+                    className="form-radio text-emerald-700 focus:ring-emerald-700"
+                    {...register("location", {
+                      required: "The location field is required",
+                    })}
+                  />
+                </div>
+              </div>
+            </div>
+            {errors?.location && (
+              <div className="mx-auto mt-8 w-80 rounded-md bg-red-50 py-2 px-4 text-center">
+                <p className="text-red-600">{errors.location.message}</p>
+              </div>
+            )}
+            {locationValue && (
+              <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 transform text-center">
+                <button
+                  type="button"
+                  onClick={() => moveTo(aidRef?.current?.offsetTop)}
+                >
+                  <FaArrowDown className="mx-auto animate-bounce text-2xl transition" />
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+        <section
+          className="relative flex min-h-screen items-center justify-center bg-emerald-500"
+          ref={aidRef}
+        >
+          <div className="container mx-auto px-4">
+            <h2 className="relative z-10 mx-auto mb-8 max-w-xl text-center text-5xl font-black tracking-wide lg:max-w-3xl lg:text-7xl">
+              What was your yearly aid amount?
+            </h2>
+            <div className="mx-auto text-center">
+              <input
+                type="number"
+                className="form-input w-80 rounded-full border-2 border-gray-300 px-4 py-2 ring-gray-300 focus:border-emerald-700 focus:outline-none focus:ring-emerald-700"
+                placeholder="Enter your yearly aid amount..."
+                min="0"
+                {...register("aidAmount", {
+                  required: "The aid amount field is required",
+                })}
+              />
+            </div>
+            {errors?.aidAmount && (
+              <div className="mx-auto mt-8 w-80 rounded-md bg-red-50 py-2 px-4 text-center">
+                <p className="text-red-600">{errors.aidAmount.message}</p>
+              </div>
+            )}
+            <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 transform text-center">
+              {Object.values(errors)?.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={handleSubmit(onSubmit)}
+                  disabled
+                  className="min-w-[180px] rounded-full bg-red-300 px-4 py-2 font-bold shadow shadow-emerald-600 transition"
+                >
+                  There were errors
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSubmit(onSubmit)}
+                  className="min-w-[180px] rounded-full bg-violet-300 px-4 py-2 font-bold shadow shadow-emerald-600 transition focus-within:scale-105 hover:scale-105"
+                >
+                  {isSubmitting || loading ? "Loading..." : "Get your rating"}
+                </button>
+              )}
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );
 };
 
-export default Home;
+export default Homepage;

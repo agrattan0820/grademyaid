@@ -184,7 +184,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
             color="emerald"
             label="Do Another Grade"
             icon={<FiRefreshCw />}
-            onClick={() => router.push("/homepage")}
+            onClick={() => router.push("/")}
           />
         </div>
       </main>
