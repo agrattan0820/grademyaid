@@ -12,7 +12,7 @@ const Header = () => {
   const session = useSession();
 
   return (
-    <header className="fixed top-0 z-50 w-full py-4">
+    <header className="fixed top-0 z-50 w-full bg-emerald-100 py-4 md:bg-transparent">
       <div className="container mx-auto flex items-center justify-between px-4">
         <h1>
           <Link href="/homepage">

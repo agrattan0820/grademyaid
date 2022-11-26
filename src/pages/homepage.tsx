@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import type { NextPage } from "next";
 import { useQuery } from "@tanstack/react-query";
 import Head from "next/head";
@@ -10,16 +10,18 @@ import { fetchSchools } from "../utils/queries";
 import Header from "../components/header";
 import SchoolSearch from "../components/school-search";
 import { useRouter } from "next/router";
+import { calculateScore, LocationType } from "../utils/calculate-score";
+import { useGradeMutation } from "../utils/hooks/use-grade-mutate";
 
 /** TYPES */
 type FormValues = {
   /** School choice */
   school: {
-    value: string;
+    value: number;
     label: string;
   };
   /** Whether the aid is for in-state or out-of-state */
-  location: string;
+  location: LocationType;
   /** Amount of aid the institution provides the student */
   aidAmount: number;
 };
@@ -36,21 +38,33 @@ const Homepage: NextPage = () => {
     control,
     formState: { isSubmitting, isSubmitSuccessful, errors },
   } = useForm<FormValues>();
+  const [loading, setLoading] = useState(false);
   const schoolValue = watch("school")?.value;
   const locationValue = watch("location");
-  const aidAmountValue = watch("aidAmount");
+  const gradeMutation = useGradeMutation();
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
+    setLoading(true);
     console.log(data);
-    // TODO: Conditional grade-result page based on supabase grade creation
-    router.push("/grade-result/1");
+    const scoreResult = await calculateScore(
+      data.school.value,
+      data.aidAmount,
+      data.location
+    );
+    const gradeResult = await gradeMutation.mutateAsync({
+      schoolId: data.school.value,
+      aidAmount: data.aidAmount,
+      location: data.location,
+      gradeNum: scoreResult,
+    });
+    console.log("Score Result:", scoreResult);
+    console.log("Grade Result:", gradeResult);
+    if (!scoreResult || !gradeResult) {
+      setLoading(false);
+    } else {
+      router.push(`/grade-result/${gradeResult.grade_id}`);
+    }
   };
-
-  /** Data Fetching */
-  const schoolQuery = useQuery({
-    queryKey: ["schools"],
-    queryFn: fetchSchools,
-  });
 
   /** Slide Refs */
   const locationRef = useRef<HTMLElement>(null);
@@ -210,7 +224,7 @@ const Homepage: NextPage = () => {
                   onClick={handleSubmit(onSubmit)}
                   className="min-w-[180px] rounded-full bg-violet-300 px-4 py-2 font-bold shadow shadow-emerald-600 transition focus-within:scale-105 hover:scale-105"
                 >
-                  Get your rating
+                  {isSubmitting || loading ? "Loading..." : "Get your rating"}
                 </button>
               )}
             </div>

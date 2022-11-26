@@ -25,7 +25,11 @@ const getUser = async (userId: string | undefined) => {
 
 export default async function useUser() {
   const user = await supabase.auth.getUser();
-  return useQuery(["user"], () => getUser(user?.data.user?.id), {
-    enabled: !!user.data.user?.id,
-  });
+  return useQuery(
+    ["user", user?.data.user?.id],
+    () => getUser(user?.data.user?.id),
+    {
+      enabled: !!user.data.user?.id,
+    }
+  );
 }
