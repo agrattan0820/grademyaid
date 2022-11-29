@@ -59,7 +59,7 @@ export interface Database {
         Row: {
           grade_id: number
           school_id: number
-          account_id: number
+          account_id: number | null
           grade_num: number | null
           financial_aid: number | null
           in_out_loc: string | null
@@ -67,7 +67,7 @@ export interface Database {
         Insert: {
           grade_id?: number
           school_id: number
-          account_id: number
+          account_id?: number | null
           grade_num?: number | null
           financial_aid?: number | null
           in_out_loc?: string | null
@@ -75,7 +75,7 @@ export interface Database {
         Update: {
           grade_id?: number
           school_id?: number
-          account_id?: number
+          account_id?: number | null
           grade_num?: number | null
           financial_aid?: number | null
           in_out_loc?: string | null
@@ -122,47 +122,6 @@ export interface Database {
           saved_grade_id?: number
           grade_id?: number
           account_id?: number
-        }
-      }
-      school: {
-        Row: {
-          school_id: number
-          api_id: number | null
-          school_name: string | null
-          city: string | null
-          zip: number | null
-          website: string | null
-          net_price_calculator_link: string | null
-          in_state_tuition: unknown | null
-          out_state_tuition: unknown | null
-          net_instate: unknown | null
-          net_outstate: unknown | null
-        }
-        Insert: {
-          school_id?: number
-          api_id?: number | null
-          school_name?: string | null
-          city?: string | null
-          zip?: number | null
-          website?: string | null
-          net_price_calculator_link?: string | null
-          in_state_tuition?: unknown | null
-          out_state_tuition?: unknown | null
-          net_instate?: unknown | null
-          net_outstate?: unknown | null
-        }
-        Update: {
-          school_id?: number
-          api_id?: number | null
-          school_name?: string | null
-          city?: string | null
-          zip?: number | null
-          website?: string | null
-          net_price_calculator_link?: string | null
-          in_state_tuition?: unknown | null
-          out_state_tuition?: unknown | null
-          net_instate?: unknown | null
-          net_outstate?: unknown | null
         }
       }
     }
