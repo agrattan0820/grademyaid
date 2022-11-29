@@ -13,11 +13,6 @@ import Account from "../components/Account";
 import Link from "next/link";
 
 const dashboardPage = () => {
-  const supabase = useSupabaseClient();
-
-  async function signOut() {
-    const { error } = await supabase.auth.signOut();
-  }
   return (
     <div className="bg-green-100">
       <div className="flex flex-row">
