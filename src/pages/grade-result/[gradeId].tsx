@@ -134,6 +134,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
 
   const schoolData = !school.isLoading && school.data?.data?.results[0];
 
+
   console.log(schoolData);
 
   return (
@@ -176,7 +177,11 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
         </div>
         <div className="flex flex-col items-center justify-center space-y-4">
           <div className="flex space-x-4">
-            <Button color="rose" label="Save Grade" icon={<FaHeart />} onClick={saveGradeHelper(user?.id, gradeId)} />
+            <Button 
+            color="rose" label="Save Grade" 
+            icon={<FaHeart />} 
+            onClick={() => saveGradeHelper((user?.id as any), (gradeId as any))}
+            />
             <div className="relative z-10">
               <Button
                 onClick={shareLink}
