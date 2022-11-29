@@ -12,6 +12,8 @@ import { useGrade, getGrade } from "../../utils/hooks/use-grade";
 import { Database } from "../../utils/database.types";
 import { useSchool } from "../../utils/hooks/use-school";
 import { fetchSchoolById } from "../../utils/queries";
+import { saveGrade } from "../../utils/hooks/use-save-grade-mutation";
+import { useUser } from "@supabase/auth-helpers-react";
 
 type SchoolInfoProps = {
   name: string;
@@ -57,6 +59,7 @@ const SchoolInfo = ({
     </section>
   );
 };
+
 
 type PageProps = {
   grade: Database["public"]["Tables"]["grade"]["Row"];
@@ -114,6 +117,21 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
     }
   };
 
+  // function to save the grade to the database:
+  const user = useUser(); 
+ 
+  const saveGradeHelper = (user: number, gradeId: string) => { 
+    if(user && gradeId){
+      console.log("Saving Grade To DB")
+      saveGrade({gradeId: Number.parseInt(gradeId as string), accountId: user })
+    }
+    // if no user
+    if(!user || !gradeId){
+      // if no user or grade id: 
+      console.log('Error Saving Grade')
+    }
+  };
+
   const schoolData = !school.isLoading && school.data?.data?.results[0];
 
   console.log(schoolData);
@@ -158,7 +176,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
         </div>
         <div className="flex flex-col items-center justify-center space-y-4">
           <div className="flex space-x-4">
-            <Button color="rose" label="Save Grade" icon={<FaHeart />} />
+            <Button color="rose" label="Save Grade" icon={<FaHeart />} onClick={saveGradeHelper(user?.id, gradeId)} />
             <div className="relative z-10">
               <Button
                 onClick={shareLink}
