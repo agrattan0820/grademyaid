@@ -22,6 +22,7 @@ export const saveGrade = async ({
       .single();
   
     if (error) {
+      console.log("error heree!!!!!", error)
       throw new Error(error.message);
     }
   
