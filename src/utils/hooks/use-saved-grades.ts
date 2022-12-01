@@ -27,7 +27,11 @@ export const getSavedGrades = async (accountId: string) => {
 };
 
 export function useSavedGrades(accountId: string, initialData?: any) {
-  return useQuery(["grade", accountId], () => getSavedGrades(accountId), {
-    initialData: initialData,
-  });
+  return useQuery(
+    ["saved-grades", accountId],
+    () => getSavedGrades(accountId),
+    {
+      initialData: initialData,
+    }
+  );
 }
