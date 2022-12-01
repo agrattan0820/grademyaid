@@ -1,12 +1,10 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import type { NextPage } from "next";
-import { useQuery } from "@tanstack/react-query";
 import Head from "next/head";
 import { FaArrowDown } from "react-icons/fa";
 import { useForm, Controller } from "react-hook-form";
 import { useSpring } from "framer-motion";
 
-import { fetchSchools } from "../utils/queries";
 import Header from "../components/header";
 import SchoolSearch from "../components/school-search";
 import { useRouter } from "next/router";
