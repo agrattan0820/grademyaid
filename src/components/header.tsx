@@ -32,10 +32,10 @@ const Header = () => {
             </>
           ) : (
             <>
-              <Link href="/old-homepage">
+              <Link href="/dashboard">
                 <Button color="black" label="Dashboard" />
               </Link>
-              <Link href="/old-homepage">
+              <Link href="/dashboard">
                 <Button color="black" icon={<FaHeart />} outline />
               </Link>
             </>
