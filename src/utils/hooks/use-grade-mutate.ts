@@ -4,7 +4,7 @@ import supabase from "../supabase";
 
 type PostGradeProps = {
   gradeNum: number;
-  userId?: number;
+  userId?: string;
   location: LocationType;
   aidAmount: number;
   schoolId: number;
