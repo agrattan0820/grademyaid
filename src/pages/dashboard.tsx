@@ -4,12 +4,34 @@ import {
   useSupabaseClient,
   Session,
 } from "@supabase/auth-helpers-react";
+import { useState } from "react";
+import { type } from "os";
 
 const DashboardPage = () => {
   const supabase = useSupabaseClient();
 
+  type pageTypes = "dashboard" | "grades" | "colleges";
+
+  const [pageName, setPageName] = useState<pageTypes>("dashboard");
+
   async function signOut() {
     const { error } = await supabase.auth.signOut();
+  }
+
+  async function selectDashboard() {
+    setPageName("dashboard");
+  }
+
+  async function selectGrades() {
+    setPageName("grades");
+  }
+
+  async function selectColleges() {
+    setPageName("colleges");
+  }
+
+  async function selectGetGrade() {
+    router.push(`/`);
   }
 
   return (
@@ -22,26 +44,38 @@ const DashboardPage = () => {
           {/* Start Side Bar element */}
           <div className="flex flex-auto flex-col ">
             {/* Start dashboard sidebar element*/}
-            <button className="boarder rounded py-2 hover:text-white">
+            <button
+              className="boarder rounded py-2 hover:text-white"
+              onClick={selectDashboard}
+            >
               <b>Dashboard </b>
             </button>
             {/* End dashboard sidebar element*/}
 
             {/* Start Saved Grades side bar element */}
-            <button className="boarder rounded py-2 hover:text-white">
+            <button
+              className="boarder rounded py-2 hover:text-white"
+              onClick={selectGrades}
+            >
               <b>Saved Grades</b>
             </button>
             {/* End Saved Grades side bar element*/}
 
             {/* Start Saved Colleges side bar element */}
-            <button className="boarder rounde py-2 hover:text-white">
+            <button
+              className="boarder rounde py-2 hover:text-white"
+              onClick={selectColleges}
+            >
               <b>Saved Colleges </b>
             </button>
             {/* End Saved Colleges side bar element */}
 
             {/* Start Grade side bar element */}
 
-            <button className="boarder rounded  py-2 hover:text-white">
+            <button
+              className="boarder rounded  py-2 hover:text-white"
+              onClick={selectGetGrade}
+            >
               <b>Get Grade </b>
             </button>
             {/* End Grade side bar element */}
@@ -57,31 +91,27 @@ const DashboardPage = () => {
             </button>
           </div>
         </div>
-        <div className="flex flex-auto">
-          <div className="flex flex-col">
-            <div className="flex flex-col bg-green-100">
-              <div className="flex flex-row space-x-3">
-                <h4 className="text-bold p-1">Dashboard</h4>
-              </div>
-            </div>
+        <div>
+          {
+            // === compares types as well as the value
+            pageName === "dashboard" && (
+              <div>Hello this is the Dashboard Page</div>
+            )
+          }
 
-            <div className="min-h-screen">
-              <div className="mt-8 grid gap-10 p-4 sm:grid-cols-2 lg:grid-cols-3 ">
-                <div className="flex items-center bg-green-100">
-                  <div className="text-sm">Colleges you have scores for</div>
-                  <div className="flex items-center pt-1">
-                    <div className="text-3x1">44</div>
-                  </div>
-                </div>
-                <div className="flex items-center bg-green-100">
-                  <div className="text-sm">Colleges you have scores for</div>
-                  <div className="flex items-center pt-1">
-                    <div className="text-3x1">44</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {
+            // === compares types as well as the value
+            pageName === "grades" && (
+              <div>Hello this is the Saved Grade Page </div>
+            )
+          }
+
+          {
+            // === compares types as well as the value
+            pageName === "colleges" && (
+              <div>Hello this is the Saved College Page</div>
+            )
+          }
         </div>
       </div>
     </div>
