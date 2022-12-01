@@ -11,74 +11,74 @@ export interface Database {
     Tables: {
       account: {
         Row: {
-          account_id: number
           username: string | null
           password: string | null
           account_type: string | null
           fname: string | null
           lname: string | null
           email: string | null
+          account_id: string
         }
         Insert: {
-          account_id?: number
           username?: string | null
           password?: string | null
           account_type?: string | null
           fname?: string | null
           lname?: string | null
           email?: string | null
+          account_id: string
         }
         Update: {
-          account_id?: number
           username?: string | null
           password?: string | null
           account_type?: string | null
           fname?: string | null
           lname?: string | null
           email?: string | null
+          account_id?: string
         }
       }
       favorited_schools: {
         Row: {
           fav_school_id: number
           school_id: number
-          account_id: number
+          account_id: string | null
         }
         Insert: {
           fav_school_id?: number
           school_id: number
-          account_id: number
+          account_id?: string | null
         }
         Update: {
           fav_school_id?: number
           school_id?: number
-          account_id?: number
+          account_id?: string | null
         }
       }
       grade: {
         Row: {
           grade_id: number
           school_id: number
-          account_id: number | null
           grade_num: number | null
           financial_aid: number | null
           in_out_loc: string | null
+          account_id: string | null
         }
         Insert: {
           grade_id?: number
           school_id: number
-          account_id?: number | null
           grade_num?: number | null
           financial_aid?: number | null
           in_out_loc?: string | null
+          account_id?: string | null
         }
         Update: {
           grade_id?: number
           school_id?: number
-          account_id?: number | null
           grade_num?: number | null
           financial_aid?: number | null
           in_out_loc?: string | null
+          account_id?: string | null
         }
       }
       profiles: {
@@ -111,17 +111,17 @@ export interface Database {
         Row: {
           saved_grade_id: number
           grade_id: number
-          account_id: number
+          account_id: string
         }
         Insert: {
           saved_grade_id?: number
           grade_id: number
-          account_id: number
+          account_id: string
         }
         Update: {
           saved_grade_id?: number
           grade_id?: number
-          account_id?: number
+          account_id?: string
         }
       }
     }
