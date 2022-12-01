@@ -54,17 +54,17 @@ const Home: NextPage = () => {
   };
 
   // currently have login page defined in this file, but will move to separate file once we know how to pass supabaseClient to other files
-  const LoginPage = () => {
-    return (
-      <Auth
-        supabaseClient={supabase}
-        appearance={{ theme: ThemeSupa }}
-        theme="default"
-        providers={["google", "facebook"]} //specify google,facebook sso
-        socialLayout="horizontal"
-      />
-    );
-  };
+  // const LoginPage = () => {
+  //   return (
+  //     <Auth
+  //       supabaseClient={supabase}
+  //       appearance={{ theme: ThemeSupa }}
+  //       theme="default"
+  //       providers={["google", "facebook"]} //specify google,facebook sso
+  //       socialLayout="horizontal"
+  //     />
+  //   );
+  // };
 
   return (
     <div>
@@ -76,7 +76,7 @@ const Home: NextPage = () => {
       <main>
         <div className="flex min-h-screen items-center justify-center bg-gray-100">
           {!session ? ( //if not logged in
-            <LoginPage />
+            <p>Blah</p>
           ) : (
             //if logged in
             <HomePage session={session} />
