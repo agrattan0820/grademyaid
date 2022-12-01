@@ -96,27 +96,43 @@ const DashboardPage = () => {
                 </button>
               </div>
             </div>
-            <div>
-              {
-                // === compares types as well as the value
-                pageName === "dashboard" && (
-                  <div>Hello this is the Dashboard Page</div>
-                )
-              }
+            <div className="flex w-full items-center justify-center">
+              <div>
+                {
+                  // === compares types as well as the value
+                  pageName === "dashboard" && (
+                    <div>
+                      {!user.isLoading ? (
+                        <div>
+                          <p>Username: {user.data?.username}</p>
+                          <p>
+                            Name: {user.data?.fname} {user.data?.lname}
+                          </p>
+                          <p>Email: {user.data?.email}</p>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center">
+                          <p>Loading...</p>
+                        </div>
+                      )}
+                    </div>
+                  )
+                }
 
-              {
-                // === compares types as well as the value
-                pageName === "grades" && (
-                  <div>Hello this is the Saved Grade Page </div>
-                )
-              }
+                {
+                  // === compares types as well as the value
+                  pageName === "grades" && (
+                    <div>Hello this is the Saved Grade Page </div>
+                  )
+                }
 
-              {
-                // === compares types as well as the value
-                pageName === "colleges" && (
-                  <div>Hello this is the Saved College Page</div>
-                )
-              }
+                {
+                  // === compares types as well as the value
+                  pageName === "colleges" && (
+                    <div>Hello this is the Saved College Page</div>
+                  )
+                }
+              </div>
             </div>
           </div>
         </div>
