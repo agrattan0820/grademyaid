@@ -1,8 +1,8 @@
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
+import supabase from "../utils/supabase";
 
 const LoginPage = () => {
-  const supabase = useSupabaseClient();
+  console.log(supabase);
 
   return (
     <Auth
