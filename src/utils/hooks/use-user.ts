@@ -1,12 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import supabase from "../supabase";
 
-const getUser = async (userId: string | undefined) => {
-  if (userId) {
+const getUser = async () => {
+  const user = await supabase.auth.getUser();
+
+  if (user.data.user?.id) {
     const { data, error } = await supabase
       .from("account")
       .select()
-      .eq("id", userId)
+      .eq("id", user.data.user?.id)
       .single();
 
     if (error) {
@@ -23,13 +25,6 @@ const getUser = async (userId: string | undefined) => {
   return undefined;
 };
 
-export default async function useUser() {
-  const user = await supabase.auth.getUser();
-  return useQuery(
-    ["user", user?.data.user?.id],
-    () => getUser(user?.data.user?.id),
-    {
-      enabled: !!user.data.user?.id,
-    }
-  );
+export default function useUser() {
+  return useQuery(["user"], () => getUser());
 }
