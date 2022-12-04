@@ -30,25 +30,25 @@ export interface Database {
         Row: {
           grade_id: number
           school_id: number
-          grade_num: number | null
-          financial_aid: number | null
-          in_out_loc: string | null
+          grade_num: number
+          financial_aid: number
+          in_out_loc: string
           account_id: string | null
         }
         Insert: {
           grade_id?: number
           school_id: number
-          grade_num?: number | null
-          financial_aid?: number | null
-          in_out_loc?: string | null
+          grade_num: number
+          financial_aid: number
+          in_out_loc: string
           account_id?: string | null
         }
         Update: {
           grade_id?: number
           school_id?: number
-          grade_num?: number | null
-          financial_aid?: number | null
-          in_out_loc?: string | null
+          grade_num?: number
+          financial_aid?: number
+          in_out_loc?: string
           account_id?: string | null
         }
       }
