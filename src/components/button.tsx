@@ -24,9 +24,9 @@ const Button = ({ color, label, icon, onClick, outline }: Props) => {
       ${color === "rose" && "bg-rose-300 ring-rose-400"}
       ${color === "emerald" && "bg-emerald-300 ring-emerald-400"}
       ${color === "sky" && "bg-sky-300 ring-sky-400"}
-      ${color === "black" && !outline && "bg-black text-white ring-white"}
+      ${color === "black" && !outline && "bg-black text-white"}
       ${outline && "bg-none"}
-      ${outline && color === "black" && "border-4 border-black ring-white"}
+      ${outline && color === "black" && "border-4 border-black"}
       ${!label && icon && "h-12 w-12 min-w-0"}
       `}
     >
