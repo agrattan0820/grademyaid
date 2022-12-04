@@ -31,6 +31,8 @@ import {
   getFavoriteSchoolById,
 } from "../../utils/hooks/use-favorited-schools";
 import { calculateStudentPrice } from "../../utils/calculate-score";
+import { difference } from "@tanstack/query-core/build/lib/utils";
+
 
 type SchoolInfoProps = {
   name: string;
@@ -43,6 +45,7 @@ type SchoolInfoProps = {
   graduation_rate: string;
   transfer_rate: string;
   location: "in_state" | "out_of_state";
+
 };
 
 const SchoolInfo = ({
@@ -56,6 +59,7 @@ const SchoolInfo = ({
   graduation_rate,
   transfer_rate,
   location,
+  
 }: SchoolInfoProps) => {
   return (
     <section className="mb-8 max-w-xl md:mb-0">
@@ -76,10 +80,28 @@ const SchoolInfo = ({
           <p className="font-bold">Average net price per year</p>
           <p>${numberWithCommas(net_price)}</p>
         </li>
+        <details>
+            <summary className="text-sm text-black-500 underline">
+             More Info
+            </summary>
+            <p className="text-sm text-black-500">
+              The average net price is the average cost of attendance after
+              financial aid for students who receive aid. This is the average
+              amount of money students pay after receiving financial aid.
+            </p>
+          </details>
         <li className="flex justify-between md:text-lg">
           <p className="font-bold">Median 10 year salary</p>
           <p>${numberWithCommas(median_10_salary)}</p>
         </li>
+        <details>
+            <summary className="text-sm text-black-500 underline">
+             More Info
+            </summary>
+            <p className="text-sm text-black-500">
+             {name} has a median 10 year salary of ${numberWithCommas(median_10_salary)}.
+            </p>
+          </details>
         <li className="flex justify-between md:text-lg">
           <p className="font-bold">Graduation Rate</p>
           <p>{graduation_rate}</p>
@@ -96,6 +118,20 @@ const SchoolInfo = ({
           <p className="font-bold">Your net price</p>
           <p>${numberWithCommas(grade_net_price)}</p>
         </li>
+        <li className="flex justify-between md:text-lg">
+          <p className="font-bold">Price difference</p>
+         {grade_net_price - net_price > 0 ? <p className="bg-rose-500 rounded-lg ring-offset-4  decoration-red-700 p-1">+${numberWithCommas(grade_net_price - net_price)}</p> : <p className="bg-green-500 rounded-lg ring-offset-8  decoration-green-700 p-1">-${numberWithCommas(Math.abs(grade_net_price - net_price))}</p>}
+        </li>
+        <details>
+            <summary className="text-sm text-black-500 underline">
+             More Info
+            </summary>
+            <p className="text-sm text-black-500">
+              Price difference is the aveage net tuition - your net tuition.
+              If the price difference is green, you are saving that much more than the average student.
+              If the price difference is red, you are spending that much more more than the average student pear year.
+            </p>
+          </details>
       </ul>
     </section>
   );
@@ -152,6 +188,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
   const [favoriteWarning, setFavoriteWarning] = useState(false);
   const [isSaved, setIsSaved] = useState(!!props.saveGrade);
   const [isFavorited, setIsFavorited] = useState(!!props.favoriteSchool);
+
 
   const user = useUser();
 
@@ -245,6 +282,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
     }, 2000);
   };
 
+  console.log(schoolData);
   return (
     <div>
       <Head>
@@ -270,7 +308,8 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
           </section>
           {schoolData ? (
             <SchoolInfo
-              name={schoolData.school.name}
+
+              name={schoolData.school.name }
               city={schoolData.school.city}
               state={schoolData.school.state}
               tuition={schoolData.latest.cost.tuition[location]}
