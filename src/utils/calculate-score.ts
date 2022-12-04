@@ -162,5 +162,5 @@ export async function calculateScore(
   score += scoreDifferential(medianEarningsDifference, "lesser");
   score += scoreDifferential(transferDifference, "lesser");
 
-  return range(-10, 10, 0, 10, score);
+  return Number.parseFloat(range(-10, 10, 0, 10, score).toFixed(1));
 }

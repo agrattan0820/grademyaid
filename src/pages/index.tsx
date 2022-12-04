@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { FaArrowDown } from "react-icons/fa";
@@ -10,6 +10,8 @@ import SchoolSearch from "../components/school-search";
 import { useRouter } from "next/router";
 import { calculateScore, LocationType } from "../utils/calculate-score";
 import { useGradeMutation } from "../utils/hooks/use-grade-mutate";
+import { useUser } from "@supabase/auth-helpers-react";
+import { upsertProfile } from "../utils/hooks/use-profile";
 
 /** TYPES */
 type FormValues = {
@@ -27,6 +29,7 @@ type FormValues = {
 const Homepage: NextPage = () => {
   /** Next.js router */
   const router = useRouter();
+  const user = useUser();
 
   /** Form State */
   const {
@@ -40,6 +43,12 @@ const Homepage: NextPage = () => {
   const schoolValue = watch("school")?.value;
   const locationValue = watch("location");
   const gradeMutation = useGradeMutation();
+
+  useEffect(() => {
+    if (user) {
+      upsertProfile(user);
+    }
+  }, [user]);
 
   const onSubmit = async (data: FormValues) => {
     setLoading(true);

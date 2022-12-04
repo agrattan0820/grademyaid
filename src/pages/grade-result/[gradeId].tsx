@@ -3,7 +3,7 @@ import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import { FaHeart, FaLink } from "react-icons/fa";
+import { FaHeart, FaLink, FaRegHeart } from "react-icons/fa";
 import { FiRefreshCw, FiShare } from "react-icons/fi";
 import { numberWithCommas } from "../../utils/formatters";
 import Header from "../../components/header";
@@ -14,6 +14,11 @@ import { useSchool } from "../../utils/hooks/use-school";
 import { fetchSchoolById } from "../../utils/queries";
 import { saveGrade } from "../../utils/hooks/use-save-grade-mutation";
 import { useUser } from "@supabase/auth-helpers-react";
+import {
+  deleteSavedGradeById,
+  getSavedGradeById,
+} from "../../utils/hooks/use-saved-grade-id";
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 
 type SchoolInfoProps = {
   name: string;
@@ -60,11 +65,34 @@ const SchoolInfo = ({
   );
 };
 
-
 type PageProps = {
   grade: Database["public"]["Tables"]["grade"]["Row"];
   // TODO: Type school response
   school: any;
+  savedGrade: {
+    grade_id: number;
+  } & {
+    grade:
+      | ({
+          school_id: number;
+        } & {
+          grade_num: number | null;
+        } & {
+          financial_aid: number | null;
+        } & {
+          in_out_loc: string | null;
+        })
+      | ({
+          school_id: number;
+        } & {
+          grade_num: number | null;
+        } & {
+          financial_aid: number | null;
+        } & {
+          in_out_loc: string | null;
+        })[]
+      | null;
+  };
 };
 
 const GradeResultPage: NextPage<PageProps> = (props) => {
@@ -78,17 +106,19 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
    */
   const router = useRouter();
   const [copying, setCopying] = useState(false);
-  const [scoreResult, setScoreResult] = useState({
-    gradeNumber: 10,
-    schoolId: 100654,
-    userId: 3,
-    financialAidAmount: 12000,
-    inOutState: "IN-STATE",
-  });
-  const { gradeId } = router.query;
-  const grade = useGrade(Number.parseInt(gradeId as string), props.grade);
-  const schoolId = props.grade.school_id;
+  const [saveWarning, setSaveWarning] = useState(false);
+  const [isSaved, setIsSaved] = useState(!!props.savedGrade);
 
+  const user = useUser();
+
+  // Grade fetching
+  const { gradeId: routerGradeId } = router.query;
+  const gradeId = Number.parseInt(routerGradeId as string);
+
+  const grade = useGrade(gradeId, props.grade);
+
+  // School fetching
+  const schoolId = props.grade.school_id;
   const school = useSchool(schoolId, props.school);
 
   /**  Function for share button that either copies the link to clipboard or activates the mobile share if available */
@@ -118,24 +148,31 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
   };
 
   // function to save the grade to the database:
-  const user = useUser(); 
- 
-  const saveGradeHelper = (user: number, gradeId: string) => { 
-    if(user && gradeId){
-      console.log("Saving Grade To DB")
-      saveGrade({gradeId: Number.parseInt(gradeId as string), accountId: user })
-    }
-    // if no user
-    if(!user || !gradeId){
-      // if no user or grade id: 
-      console.log('Error Saving Grade')
+  const saveGradeHelper = async (userId: string, gradeId: number) => {
+    const gradeExistsAlready = await getSavedGradeById(gradeId, userId);
+
+    if (gradeExistsAlready) {
+      console.log("Unsaving Grade");
+      await deleteSavedGradeById(gradeId, userId);
+      setIsSaved(false);
+    } else {
+      console.log("Saving Grade");
+      await saveGrade({
+        gradeId: gradeId,
+        accountId: userId,
+      });
+      setIsSaved(true);
     }
   };
 
-  const schoolData = !school.isLoading && school.data?.data?.results[0];
+  const showLoginWarning = () => {
+    setSaveWarning(true);
+    setTimeout(() => {
+      setSaveWarning(false);
+    }, 2000);
+  };
 
-
-  console.log(schoolData);
+  const schoolData = props.school && props.school?.results[0];
 
   return (
     <div>
@@ -160,7 +197,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
             )}
             <p className="-mt-8 font-bold">out of 10</p>
           </section>
-          {!school.isLoading && schoolData ? (
+          {schoolData ? (
             <SchoolInfo
               name={schoolData.school.name}
               city={schoolData.school.city}
@@ -177,11 +214,34 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
         </div>
         <div className="flex flex-col items-center justify-center space-y-4">
           <div className="flex space-x-4">
-            <Button 
-            color="rose" label="Save Grade" 
-            icon={<FaHeart />} 
-            onClick={() => saveGradeHelper((user?.id as any), (gradeId as any))}
-            />
+            <div className="relative z-10">
+              <Button
+                color="rose"
+                label="Save Grade"
+                icon={isSaved ? <FaHeart /> : <FaRegHeart />}
+                onClick={() =>
+                  user && gradeId
+                    ? saveGradeHelper(user?.id, gradeId)
+                    : showLoginWarning()
+                }
+              />
+              <div
+                // Role alert and aria-live announce to screen readers
+                role="alert"
+                aria-live="polite"
+                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-56 max-w-3xl origin-center rounded-md bg-rose-300 px-4 py-2 text-center text-sm font-bold ${
+                  saveWarning && "animate-popup"
+                }`}
+              >
+                <p
+                  className={`${
+                    !saveWarning && "hidden"
+                  } flex items-center justify-center`}
+                >
+                  Login first to save a grade!
+                </p>
+              </div>
+            </div>
             <div className="relative z-10">
               <Button
                 onClick={shareLink}
@@ -218,9 +278,21 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
 export default GradeResultPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const supabase = createServerSupabaseClient(context);
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   const { gradeId } = context.query;
   const grade = await getGrade(Number.parseInt(gradeId as string));
+
   const schoolResponse = await fetchSchoolById(grade.school_id);
   const school = schoolResponse.data;
-  return { props: { grade, school } };
+
+  const saveGrade = session?.user.id
+    ? await getSavedGradeById(grade.grade_id, session?.user.id)
+    : null;
+
+  return { props: { grade, school, saveGrade } };
 };
