@@ -52,6 +52,8 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
     router.push(`/`);
   }
 
+  console.log(props.user);
+
   return (
     <div>
       <Head>
@@ -131,18 +133,19 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
             {
               // === compares types as well as the value
               pageName === "account" && (
-                <div className="mx-auto flex h-96 w-96 flex-col items-center justify-center rounded-2xl bg-white p-8 shadow shadow-emerald-200">
+                <div className="mx-auto flex h-48 w-96 flex-col items-center justify-center space-y-4 rounded-2xl bg-white p-8 shadow shadow-emerald-200">
+                  {props.user.user_metadata.full_name && (
+                    <div className="flex w-full justify-between">
+                      <p className="font-bold">Name:</p>
+                      <p>{props.user.user_metadata.full_name}</p>
+                    </div>
+                  )}
                   <div className="flex w-full justify-between">
-                    <p>Email:</p>
+                    <p className="font-bold">Email:</p>
                     <p>{props.user.email}</p>
                   </div>
                   <div>
-                    <button
-                      className="boarder rounded-full bg-emerald-400 px-4 py-2 hover:text-white"
-                      onClick={signOut}
-                    >
-                      <b>Logout</b>
-                    </button>
+                    <Button color="rose" label="Logout" onClick={signOut} />
                   </div>
                 </div>
               )
