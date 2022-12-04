@@ -3,7 +3,13 @@ import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import { FaHeart, FaLink } from "react-icons/fa";
+import {
+  FaBookmark,
+  FaHeart,
+  FaLink,
+  FaRegBookmark,
+  FaRegHeart,
+} from "react-icons/fa";
 import { FiRefreshCw, FiShare } from "react-icons/fi";
 import { numberWithCommas } from "../../utils/formatters";
 import Header from "../../components/header";
@@ -12,25 +18,44 @@ import { useGrade, getGrade } from "../../utils/hooks/use-grade";
 import { Database } from "../../utils/database.types";
 import { useSchool } from "../../utils/hooks/use-school";
 import { fetchSchoolById } from "../../utils/queries";
-import { saveGrade } from "../../utils/hooks/use-save-grade-mutation";
+import {
+  saveGrade,
+  deleteSavedGrade,
+} from "../../utils/hooks/use-saved-grades";
 import { useUser } from "@supabase/auth-helpers-react";
+import { getSavedGradeById } from "../../utils/hooks/use-saved-grade-id";
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import {
+  deleteFavoritedSchool,
+  favoriteSchool,
+  getFavoriteSchoolById,
+} from "../../utils/hooks/use-favorited-schools";
+import { calculateStudentPrice } from "../../utils/calculate-score";
 
 type SchoolInfoProps = {
   name: string;
   city: string;
   state: string;
+  tuition: number;
   net_price: number;
+  grade_net_price: number;
   median_10_salary: number;
-  average_loan: number;
+  graduation_rate: string;
+  transfer_rate: string;
+  location: "in_state" | "out_of_state";
 };
 
 const SchoolInfo = ({
   name,
   city,
   state,
+  tuition,
   net_price,
+  grade_net_price,
   median_10_salary,
-  average_loan,
+  graduation_rate,
+  transfer_rate,
+  location,
 }: SchoolInfoProps) => {
   return (
     <section className="mb-8 max-w-xl md:mb-0">
@@ -44,27 +69,71 @@ const SchoolInfo = ({
       </div>
       <ul>
         <li className="flex justify-between md:text-lg">
+          <p className="font-bold">Tuition per year</p>
+          <p>${numberWithCommas(tuition)}</p>
+        </li>
+        <li className="flex justify-between md:text-lg">
           <p className="font-bold">Average net price per year</p>
           <p>${numberWithCommas(net_price)}</p>
         </li>
         <li className="flex justify-between md:text-lg">
-          <p className="font-bold">Average loan amount</p>
-          <p>${numberWithCommas(average_loan)}</p>
-        </li>
-        <li className="flex justify-between md:text-lg">
           <p className="font-bold">Median 10 year salary</p>
           <p>${numberWithCommas(median_10_salary)}</p>
+        </li>
+        <li className="flex justify-between md:text-lg">
+          <p className="font-bold">Graduation Rate</p>
+          <p>{graduation_rate}</p>
+        </li>
+        <li className="mb-8 flex justify-between md:text-lg">
+          <p className="font-bold">Transfer Rate</p>
+          <p>{transfer_rate}</p>
+        </li>
+        <li className="flex justify-between md:text-lg">
+          <p className="font-bold">Your location</p>
+          <p>{location === "in_state" ? "In-state" : "Out-of-state"}</p>
+        </li>
+        <li className="flex justify-between md:text-lg">
+          <p className="font-bold">Your net price</p>
+          <p>${numberWithCommas(grade_net_price)}</p>
         </li>
       </ul>
     </section>
   );
 };
 
-
 type PageProps = {
   grade: Database["public"]["Tables"]["grade"]["Row"];
   // TODO: Type school response
   school: any;
+  saveGrade: {
+    grade_id: number;
+  } & {
+    grade:
+      | ({
+          school_id: number;
+        } & {
+          grade_num: number | null;
+        } & {
+          financial_aid: number | null;
+        } & {
+          in_out_loc: string | null;
+        })
+      | ({
+          school_id: number;
+        } & {
+          grade_num: number | null;
+        } & {
+          financial_aid: number | null;
+        } & {
+          in_out_loc: string | null;
+        })[]
+      | null;
+  };
+  favoriteSchool: {
+    fav_school_id: number;
+    school_id: number;
+    account_id: string | null;
+  } | null;
 };
 
 const GradeResultPage: NextPage<PageProps> = (props) => {
@@ -76,24 +145,30 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
    * - Show share button
    * - Show save button
    */
+
   const router = useRouter();
   const [copying, setCopying] = useState(false);
-  const [scoreResult, setScoreResult] = useState({
-    gradeNumber: 10,
-    schoolId: 100654,
-    userId: 3,
-    financialAidAmount: 12000,
-    inOutState: "IN-STATE",
-  });
-  const { gradeId } = router.query;
-  const grade = useGrade(Number.parseInt(gradeId as string), props.grade);
-  const schoolId = props.grade.school_id;
+  const [saveWarning, setSaveWarning] = useState(false);
+  const [favoriteWarning, setFavoriteWarning] = useState(false);
+  const [isSaved, setIsSaved] = useState(!!props.saveGrade);
+  const [isFavorited, setIsFavorited] = useState(!!props.favoriteSchool);
 
+  const user = useUser();
+
+  // Grade fetching
+  const { gradeId: routerGradeId } = router.query;
+  const gradeId = Number.parseInt(routerGradeId as string);
+  const grade = useGrade(gradeId, props.grade);
+  const location =
+    props?.grade?.in_out_loc === "inState" ? "in_state" : "out_of_state";
+
+  // School fetching
+  const schoolId = props.grade?.school_id;
   const school = useSchool(schoolId, props.school);
+  const schoolData = props.school && props.school?.results[0];
 
   /**  Function for share button that either copies the link to clipboard or activates the mobile share if available */
-  const shareLink = () => {
-    console.log("clicked!");
+  const onShareClick = () => {
     if (navigator.share) {
       navigator
         .share({
@@ -117,25 +192,58 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
     }
   };
 
-  // function to save the grade to the database:
-  const user = useUser(); 
- 
-  const saveGradeHelper = (user: number, gradeId: string) => { 
-    if(user && gradeId){
-      console.log("Saving Grade To DB")
-      saveGrade({gradeId: Number.parseInt(gradeId as string), accountId: user })
-    }
-    // if no user
-    if(!user || !gradeId){
-      // if no user or grade id: 
-      console.log('Error Saving Grade')
+  const onSaveGradeClick = async (userId: string, gradeId: number) => {
+    const gradeExistsAlready = await getSavedGradeById(gradeId, userId);
+
+    if (gradeExistsAlready) {
+      console.log("Unsaving Grade");
+      await deleteSavedGrade(gradeId, userId);
+      setIsSaved(false);
+    } else {
+      console.log("Saving Grade");
+      await saveGrade({
+        gradeId: gradeId,
+        accountId: userId,
+      });
+      setIsSaved(true);
     }
   };
 
-  const schoolData = !school.isLoading && school.data?.data?.results[0];
+  /** If User is not defined show a warning when pressing the save grade button */
+  const showSaveLoginWarning = () => {
+    setSaveWarning(true);
+    setTimeout(() => {
+      setSaveWarning(false);
+    }, 2000);
+  };
 
+  const onFavoriteSchoolClick = async (userId: string, schoolId: number) => {
+    const favoritedSchoolAlready = await getFavoriteSchoolById(
+      schoolId,
+      userId
+    );
 
-  console.log(schoolData);
+    if (favoritedSchoolAlready) {
+      console.log("Unfavoriting School");
+      await deleteFavoritedSchool(schoolId, userId);
+      setIsFavorited(false);
+    } else {
+      console.log("Favoriting School");
+      await favoriteSchool({
+        schoolId: schoolId,
+        accountId: userId,
+      });
+      setIsFavorited(true);
+    }
+  };
+
+  /** If User is not defined show a warning when pressing the favorite shchool button */
+  const showFavoriteLoginWarning = () => {
+    setFavoriteWarning(true);
+    setTimeout(() => {
+      setFavoriteWarning(false);
+    }, 2000);
+  };
 
   return (
     <div>
@@ -160,16 +268,32 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
             )}
             <p className="-mt-8 font-bold">out of 10</p>
           </section>
-          {!school.isLoading && schoolData ? (
+          {schoolData ? (
             <SchoolInfo
               name={schoolData.school.name}
               city={schoolData.school.city}
               state={schoolData.school.state}
+              tuition={schoolData.latest.cost.tuition[location]}
               median_10_salary={
                 schoolData.latest.earnings["10_yrs_after_entry"].median
               }
               net_price={schoolData.latest.cost.avg_net_price.overall}
-              average_loan={schoolData.latest.aid.loan_principal}
+              grade_net_price={calculateStudentPrice(
+                schoolData,
+                props.grade?.financial_aid as number,
+                location
+              )}
+              graduation_rate={
+                (schoolData.latest.completion.consumer_rate * 100).toFixed(2) +
+                "%"
+              }
+              transfer_rate={
+                (
+                  schoolData.latest.completion.transfer_rate["4yr"].full_time *
+                  100
+                ).toFixed(2) + "%"
+              }
+              location={location}
             />
           ) : (
             <div>Loading...</div>
@@ -177,14 +301,65 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
         </div>
         <div className="flex flex-col items-center justify-center space-y-4">
           <div className="flex space-x-4">
-            <Button 
-            color="rose" label="Save Grade" 
-            icon={<FaHeart />} 
-            onClick={() => saveGradeHelper((user?.id as any), (gradeId as any))}
-            />
             <div className="relative z-10">
               <Button
-                onClick={shareLink}
+                color="sky"
+                label="Save Grade"
+                icon={isSaved ? <FaBookmark /> : <FaRegBookmark />}
+                onClick={() =>
+                  user
+                    ? onSaveGradeClick(user?.id, gradeId)
+                    : showSaveLoginWarning()
+                }
+              />
+              <div
+                // Role alert and aria-live announce to screen readers
+                role="alert"
+                aria-live="polite"
+                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-56 max-w-3xl origin-center rounded-md bg-sky-300 px-4 py-2 text-center text-sm font-bold ${
+                  saveWarning && "animate-popup"
+                }`}
+              >
+                <p
+                  className={`${
+                    !saveWarning && "hidden"
+                  } flex items-center justify-center`}
+                >
+                  Login first to save a grade!
+                </p>
+              </div>
+            </div>
+            <div className="relative z-10">
+              <Button
+                color="rose"
+                label="Favorite School"
+                icon={isFavorited ? <FaHeart /> : <FaRegHeart />}
+                onClick={() =>
+                  user
+                    ? onFavoriteSchoolClick(user?.id, schoolData.id)
+                    : showFavoriteLoginWarning()
+                }
+              />
+              <div
+                // Role alert and aria-live announce to screen readers
+                role="alert"
+                aria-live="polite"
+                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-64 max-w-3xl origin-center rounded-md bg-rose-300 px-4 py-2 text-center text-sm font-bold ${
+                  favoriteWarning && "animate-popup"
+                }`}
+              >
+                <p
+                  className={`${
+                    !favoriteWarning && "hidden"
+                  } flex items-center justify-center`}
+                >
+                  Login first to favorite a school!
+                </p>
+              </div>
+            </div>
+            <div className="relative z-10">
+              <Button
+                onClick={onShareClick}
                 color="violet"
                 label="Share Grade"
                 icon={<FiShare />}
@@ -218,9 +393,48 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
 export default GradeResultPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const supabase = createServerSupabaseClient<Database>(context);
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   const { gradeId } = context.query;
-  const grade = await getGrade(Number.parseInt(gradeId as string));
-  const schoolResponse = await fetchSchoolById(grade.school_id);
-  const school = schoolResponse.data;
-  return { props: { grade, school } };
+
+  const { data: grade } = await supabase
+    .from("grade")
+    .select()
+    .eq("grade_id", Number.parseInt(gradeId as string))
+    .single();
+
+  if (grade) {
+    const schoolResponse = await fetchSchoolById(grade?.school_id);
+    const school = schoolResponse.data;
+
+    const { data: saveGrade } = await supabase
+      .from("saved_grades")
+      .select(
+        `
+      grade_id,
+      grade (
+        school_id,
+        grade_num,
+        financial_aid,
+        in_out_loc
+      )`
+      )
+      .eq("account_id", session?.user.id)
+      .eq("grade_id", grade.grade_id)
+      .single();
+
+    const { data: favoriteSchool } = await supabase
+      .from("favorited_schools")
+      .select()
+      .eq("school_id", grade?.school_id)
+      .eq("account_id", session?.user.id)
+      .single();
+
+    return { props: { grade, school, saveGrade, favoriteSchool } };
+  }
+  return { props: {} };
 };

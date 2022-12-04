@@ -30,25 +30,25 @@ export interface Database {
         Row: {
           grade_id: number
           school_id: number
-          grade_num: number | null
-          financial_aid: number | null
-          in_out_loc: string | null
+          grade_num: number
+          financial_aid: number
+          in_out_loc: string
           account_id: string | null
         }
         Insert: {
           grade_id?: number
           school_id: number
-          grade_num?: number | null
-          financial_aid?: number | null
-          in_out_loc?: string | null
+          grade_num: number
+          financial_aid: number
+          in_out_loc: string
           account_id?: string | null
         }
         Update: {
           grade_id?: number
           school_id?: number
-          grade_num?: number | null
-          financial_aid?: number | null
-          in_out_loc?: string | null
+          grade_num?: number
+          financial_aid?: number
+          in_out_loc?: string
           account_id?: string | null
         }
       }
@@ -56,26 +56,23 @@ export interface Database {
         Row: {
           id: string
           updated_at: string | null
-          username: string | null
+          email: string | null
           full_name: string | null
           avatar_url: string | null
-          website: string | null
         }
         Insert: {
           id: string
           updated_at?: string | null
-          username?: string | null
+          email?: string | null
           full_name?: string | null
           avatar_url?: string | null
-          website?: string | null
         }
         Update: {
           id?: string
           updated_at?: string | null
-          username?: string | null
+          email?: string | null
           full_name?: string | null
           avatar_url?: string | null
-          website?: string | null
         }
       }
       saved_grades: {

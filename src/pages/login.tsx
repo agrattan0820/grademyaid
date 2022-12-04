@@ -1,9 +1,22 @@
+import { useUser } from "@supabase/auth-helpers-react";
 import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import Header from "../components/header";
 import supabase from "../utils/supabase";
 
 const LoginPage = () => {
+  const user = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   return (
     <div>
       <Head>
@@ -16,6 +29,11 @@ const LoginPage = () => {
         <div className="w-full max-w-xl rounded-2xl bg-white p-16 shadow-lg shadow-emerald-200">
           <Auth
             supabaseClient={supabase}
+            redirectTo={
+              process.env.NODE_ENV === "development"
+                ? "http://localhost:3000/"
+                : "https://cs1530-finance-group.vercel.app/"
+            }
             appearance={{ theme: ThemeSupa }}
             theme="default"
             providers={["google", "facebook"]}

@@ -79,6 +79,19 @@ function calculateDifference(institutionNum: number, overallNum: number) {
   return (overallNum - institutionNum) / overallNum;
 }
 
+export function calculateStudentPrice(
+  school: any,
+  aidAmount: number,
+  location: "in_state" | "out_of_state"
+) {
+  const tuition = school.latest.cost.tuition[location];
+  const roomboard = school.latest.cost.roomboard.oncampus;
+  const booksupply = school.latest.cost.booksupply;
+  const otherExpenses = school.latest.cost.otherexpense.oncampus;
+
+  return tuition + roomboard + booksupply + otherExpenses - aidAmount;
+}
+
 /**
  *
  * @param schoolId number
@@ -98,6 +111,7 @@ export async function calculateScore(
 
   const schoolResponse = await fetchSchoolById(schoolId);
   const selectedSchool = schoolResponse.data.results[0];
+  console.log(selectedSchool);
 
   // OVERALL STATISTICS ACROSS ALL SCHOOLS
   const overallAverageNetPrice =
@@ -107,12 +121,6 @@ export async function calculateScore(
     selectedSchool.latest.earnings["10_yrs_after_entry"].consumer
       .median_by_pred_degree;
   const overallTransferRate = 0.17; // https://www.univstats.com/academic/transfer-out-rate/
-
-  // INSTITUTION COSTS
-  const tuition = selectedSchool.latest.cost.tuition[location];
-  const roomboard = selectedSchool.latest.cost.roomboard.oncampus;
-  const booksupply = selectedSchool.latest.cost.booksupply;
-  const otherExpenses = selectedSchool.latest.cost.otherexpense.oncampus;
 
   // INSTITUTION STATS
   const averageNetPrice = selectedSchool.latest.cost.avg_net_price.overall;
@@ -141,8 +149,11 @@ export async function calculateScore(
   );
 
   // STUDENT PRICE DIFFERENCE
-  const studentPrice =
-    tuition + roomboard + booksupply + otherExpenses - aidAmount;
+  const studentPrice = calculateStudentPrice(
+    selectedSchool,
+    aidAmount,
+    location
+  );
   const studentPriceDifference = calculateDifference(
     studentPrice,
     averageNetPrice
@@ -162,5 +173,5 @@ export async function calculateScore(
   score += scoreDifferential(medianEarningsDifference, "lesser");
   score += scoreDifferential(transferDifference, "lesser");
 
-  return range(-10, 10, 0, 10, score);
+  return Number.parseFloat(range(-10, 10, 0, 10, score).toFixed(1));
 }
