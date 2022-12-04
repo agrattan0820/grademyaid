@@ -79,6 +79,19 @@ function calculateDifference(institutionNum: number, overallNum: number) {
   return (overallNum - institutionNum) / overallNum;
 }
 
+export function calculateStudentPrice(
+  school: any,
+  aidAmount: number,
+  location: "in_state" | "out_of_state"
+) {
+  const tuition = school.latest.cost.tuition[location];
+  const roomboard = school.latest.cost.roomboard.oncampus;
+  const booksupply = school.latest.cost.booksupply;
+  const otherExpenses = school.latest.cost.otherexpense.oncampus;
+
+  return tuition + roomboard + booksupply + otherExpenses - aidAmount;
+}
+
 /**
  *
  * @param schoolId number
@@ -109,12 +122,6 @@ export async function calculateScore(
       .median_by_pred_degree;
   const overallTransferRate = 0.17; // https://www.univstats.com/academic/transfer-out-rate/
 
-  // INSTITUTION COSTS
-  const tuition = selectedSchool.latest.cost.tuition[location];
-  const roomboard = selectedSchool.latest.cost.roomboard.oncampus;
-  const booksupply = selectedSchool.latest.cost.booksupply;
-  const otherExpenses = selectedSchool.latest.cost.otherexpense.oncampus;
-
   // INSTITUTION STATS
   const averageNetPrice = selectedSchool.latest.cost.avg_net_price.overall;
   const graduationRate = selectedSchool.latest.completion.consumer_rate;
@@ -142,8 +149,11 @@ export async function calculateScore(
   );
 
   // STUDENT PRICE DIFFERENCE
-  const studentPrice =
-    tuition + roomboard + booksupply + otherExpenses - aidAmount;
+  const studentPrice = calculateStudentPrice(
+    selectedSchool,
+    aidAmount,
+    location
+  );
   const studentPriceDifference = calculateDifference(
     studentPrice,
     averageNetPrice

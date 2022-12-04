@@ -30,6 +30,7 @@ import {
   favoriteSchool,
   getFavoriteSchoolById,
 } from "../../utils/hooks/use-favorited-schools";
+import { calculateStudentPrice } from "../../utils/calculate-score";
 
 type SchoolInfoProps = {
   name: string;
@@ -37,9 +38,11 @@ type SchoolInfoProps = {
   state: string;
   tuition: number;
   net_price: number;
+  grade_net_price: number;
   median_10_salary: number;
   graduation_rate: string;
   transfer_rate: string;
+  location: "in_state" | "out_of_state";
 };
 
 const SchoolInfo = ({
@@ -48,9 +51,11 @@ const SchoolInfo = ({
   state,
   tuition,
   net_price,
+  grade_net_price,
   median_10_salary,
   graduation_rate,
   transfer_rate,
+  location,
 }: SchoolInfoProps) => {
   return (
     <section className="mb-8 max-w-xl md:mb-0">
@@ -79,9 +84,17 @@ const SchoolInfo = ({
           <p className="font-bold">Graduation Rate</p>
           <p>{graduation_rate}</p>
         </li>
-        <li className="flex justify-between md:text-lg">
+        <li className="mb-8 flex justify-between md:text-lg">
           <p className="font-bold">Transfer Rate</p>
           <p>{transfer_rate}</p>
+        </li>
+        <li className="flex justify-between md:text-lg">
+          <p className="font-bold">Your location</p>
+          <p>{location === "in_state" ? "In-state" : "Out-of-state"}</p>
+        </li>
+        <li className="flex justify-between md:text-lg">
+          <p className="font-bold">Your net price</p>
+          <p>${numberWithCommas(grade_net_price)}</p>
         </li>
       </ul>
     </section>
@@ -150,7 +163,6 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
 
   /**  Function for share button that either copies the link to clipboard or activates the mobile share if available */
   const onShareClick = () => {
-    console.log("clicked!");
     if (navigator.share) {
       navigator
         .share({
@@ -260,6 +272,11 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                 schoolData.latest.earnings["10_yrs_after_entry"].median
               }
               net_price={schoolData.latest.cost.avg_net_price.overall}
+              grade_net_price={calculateStudentPrice(
+                schoolData,
+                props.grade?.financial_aid as number,
+                location
+              )}
               graduation_rate={
                 (schoolData.latest.completion.consumer_rate * 100).toFixed(2) +
                 "%"
@@ -270,6 +287,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                   100
                 ).toFixed(2) + "%"
               }
+              location={location}
             />
           ) : (
             <div>Loading...</div>
