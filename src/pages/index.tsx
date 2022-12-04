@@ -63,6 +63,7 @@ const Homepage: NextPage = () => {
       aidAmount: data.aidAmount,
       location: data.location,
       gradeNum: scoreResult,
+      userId: user?.id,
     });
     console.log("Score Result:", scoreResult);
     console.log("Grade Result:", gradeResult);
