@@ -46,14 +46,11 @@ export const getFavoriteSchoolById = async (
     .eq("account_id", accountId)
     .single();
 
-  if (error) {
-    console.log("Error", error);
+  // If the error isn't that there are no rows returned, throw an error
+  if (error && error.code !== "PGRST116") {
     throw new Error(error.message);
   }
 
-  if (!data) {
-    throw new Error("School not favorited");
-  }
   return data;
 };
 

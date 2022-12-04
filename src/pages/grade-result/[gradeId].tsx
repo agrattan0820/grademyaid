@@ -105,7 +105,7 @@ type PageProps = {
   grade: Database["public"]["Tables"]["grade"]["Row"];
   // TODO: Type school response
   school: any;
-  savedGrade: {
+  saveGrade: {
     grade_id: number;
   } & {
     grade:
@@ -129,6 +129,11 @@ type PageProps = {
         })[]
       | null;
   };
+  favoriteSchool: {
+    fav_school_id: number;
+    school_id: number;
+    account_id: string | null;
+  } | null;
 };
 
 const GradeResultPage: NextPage<PageProps> = (props) => {
@@ -140,12 +145,13 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
    * - Show share button
    * - Show save button
    */
+
   const router = useRouter();
   const [copying, setCopying] = useState(false);
   const [saveWarning, setSaveWarning] = useState(false);
   const [favoriteWarning, setFavoriteWarning] = useState(false);
-  const [isSaved, setIsSaved] = useState(!!props.savedGrade);
-  const [isFavorited, setIsFavorited] = useState(!!props.savedGrade);
+  const [isSaved, setIsSaved] = useState(!!props.saveGrade);
+  const [isFavorited, setIsFavorited] = useState(!!props.favoriteSchool);
 
   const user = useUser();
 
@@ -154,10 +160,10 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
   const gradeId = Number.parseInt(routerGradeId as string);
   const grade = useGrade(gradeId, props.grade);
   const location =
-    props.grade.in_out_loc === "inState" ? "in_state" : "out_of_state";
+    props?.grade?.in_out_loc === "inState" ? "in_state" : "out_of_state";
 
   // School fetching
-  const schoolId = props.grade.school_id;
+  const schoolId = props.grade?.school_id;
   const school = useSchool(schoolId, props.school);
   const schoolData = props.school && props.school?.results[0];
 
@@ -310,7 +316,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                 // Role alert and aria-live announce to screen readers
                 role="alert"
                 aria-live="polite"
-                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-56 max-w-3xl origin-center rounded-md bg-rose-300 px-4 py-2 text-center text-sm font-bold ${
+                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-56 max-w-3xl origin-center rounded-md bg-sky-300 px-4 py-2 text-center text-sm font-bold ${
                   saveWarning && "animate-popup"
                 }`}
               >
@@ -338,16 +344,16 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                 // Role alert and aria-live announce to screen readers
                 role="alert"
                 aria-live="polite"
-                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-56 max-w-3xl origin-center rounded-md bg-rose-300 px-4 py-2 text-center text-sm font-bold ${
-                  saveWarning && "animate-popup"
+                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-64 max-w-3xl origin-center rounded-md bg-rose-300 px-4 py-2 text-center text-sm font-bold ${
+                  favoriteWarning && "animate-popup"
                 }`}
               >
                 <p
                   className={`${
-                    !saveWarning && "hidden"
+                    !favoriteWarning && "hidden"
                   } flex items-center justify-center`}
                 >
-                  Login first to save a grade!
+                  Login first to favorite a school!
                 </p>
               </div>
             </div>
@@ -387,24 +393,48 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
 export default GradeResultPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const supabase = createServerSupabaseClient(context);
+  const supabase = createServerSupabaseClient<Database>(context);
 
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
   const { gradeId } = context.query;
-  const grade = await getGrade(Number.parseInt(gradeId as string));
 
-  const schoolResponse = await fetchSchoolById(grade.school_id);
-  const school = schoolResponse.data;
+  const { data: grade } = await supabase
+    .from("grade")
+    .select()
+    .eq("grade_id", Number.parseInt(gradeId as string))
+    .single();
 
-  const saveGrade = session?.user.id
-    ? await getSavedGradeById(grade.grade_id, session?.user.id)
-    : null;
-  const favoriteSchool = session?.user.id
-    ? await getFavoriteSchoolById(school.id, session?.user.id)
-    : null;
+  if (grade) {
+    const schoolResponse = await fetchSchoolById(grade?.school_id);
+    const school = schoolResponse.data;
 
-  return { props: { grade, school, saveGrade, favoriteSchool } };
+    const { data: saveGrade } = await supabase
+      .from("saved_grades")
+      .select(
+        `
+      grade_id,
+      grade (
+        school_id,
+        grade_num,
+        financial_aid,
+        in_out_loc
+      )`
+      )
+      .eq("account_id", session?.user.id)
+      .eq("grade_id", grade.grade_id)
+      .single();
+
+    const { data: favoriteSchool } = await supabase
+      .from("favorited_schools")
+      .select()
+      .eq("school_id", grade?.school_id)
+      .eq("account_id", session?.user.id)
+      .single();
+
+    return { props: { grade, school, saveGrade, favoriteSchool } };
+  }
+  return { props: {} };
 };
