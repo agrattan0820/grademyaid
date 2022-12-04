@@ -12,6 +12,7 @@ import {
 } from "@supabase/auth-helpers-nextjs";
 import { GetServerSideProps, NextPage } from "next";
 import { Database } from "../utils/database.types";
+import Button from "../components/button";
 
 type DashboardPageProps = {
   initialSession: Session;
@@ -19,14 +20,36 @@ type DashboardPageProps = {
 };
 
 const DashboardPage: NextPage<DashboardPageProps> = (props) => {
-  const supabase = useSupabaseClient();
+  const supabase = useSupabaseClient<Database>();
 
   type pageTypes = "account" | "grades" | "colleges";
 
   const [pageName, setPageName] = useState<pageTypes>("account");
+  const [isResetting, setIsResetting] = useState(false);
+  const [resetWarning, setResetWarning] = useState(false);
 
   async function signOut() {
     const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error(error.message, error);
+    }
+
+    router.push("/");
+  }
+  async function resetPassword() {
+    if (props.user?.email && props.user.app_metadata.provider === "email") {
+      const { data, error } = await supabase.auth.resetPasswordForEmail(
+        props.user?.email
+      );
+      if (error) {
+        console.error(error.message, error);
+      }
+
+      if (data) {
+        showResettingToast();
+      }
+    }
   }
 
   async function selectAccount() {
@@ -44,6 +67,21 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
   async function selectGetGrade() {
     router.push(`/`);
   }
+
+  console.log(props.user);
+
+  const showResetPasswordWarning = () => {
+    setResetWarning(true);
+    setTimeout(() => {
+      setResetWarning(false);
+    }, 2000);
+  };
+  const showResettingToast = () => {
+    setIsResetting(true);
+    setTimeout(() => {
+      setIsResetting(false);
+    }, 2000);
+  };
 
   return (
     <div>
@@ -120,17 +158,68 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
               {/* End Grade side bar element */}
             </div>
           </div>
-          <div>
+          <div className="mt-16">
             {
               // === compares types as well as the value
               pageName === "account" && (
-                <div className="flex items-center justify-center">
-                  <button
-                    className="boarder rounded-full bg-emerald-400 px-4 py-2 hover:text-white"
-                    onClick={signOut}
-                  >
-                    <b>Logout</b>
-                  </button>
+                <div className="mx-auto flex h-96 w-96 flex-col items-center justify-center rounded-2xl bg-white p-8 shadow shadow-emerald-200">
+                  <div className="flex w-full justify-between">
+                    <p>Email:</p>
+                    <p>{props.user.email}</p>
+                  </div>
+                  <div>
+                    <button
+                      className="boarder rounded-full bg-emerald-400 px-4 py-2 hover:text-white"
+                      onClick={signOut}
+                    >
+                      <b>Logout</b>
+                    </button>
+                    {props.user.app_metadata.provider === "email" && (
+                      <div className="relative z-10">
+                        <Button
+                          color="sky"
+                          label="Reset Password"
+                          onClick={() =>
+                            props.user.email
+                              ? resetPassword()
+                              : showResetPasswordWarning()
+                          }
+                        />
+                        <div
+                          // Role alert and aria-live announce to screen readers
+                          role="alert"
+                          aria-live="polite"
+                          className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-56 max-w-3xl origin-center rounded-md bg-rose-300 px-4 py-2 text-center text-sm font-bold ${
+                            resetWarning && "animate-popup"
+                          }`}
+                        >
+                          <p
+                            className={`${
+                              !resetWarning && "hidden"
+                            } flex items-center justify-center`}
+                          >
+                            Error resetting your password
+                          </p>
+                        </div>
+                        <div
+                          // Role alert and aria-live announce to screen readers
+                          role="alert"
+                          aria-live="polite"
+                          className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-56 max-w-3xl origin-center rounded-md bg-sky-300 px-4 py-2 text-center text-sm font-bold ${
+                            isResetting && "animate-popup"
+                          }`}
+                        >
+                          <p
+                            className={`${
+                              !isResetting && "hidden"
+                            } flex items-center justify-center`}
+                          >
+                            Check your email for the password reset email!
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )
             }
