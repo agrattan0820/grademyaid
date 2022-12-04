@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import supabase from "../supabase";
 
+/** GET saved grades */
 export const getSavedGrades = async (accountId: string) => {
   const { data, error } = await supabase
     .from("saved_grades")
@@ -26,6 +27,7 @@ export const getSavedGrades = async (accountId: string) => {
   return data;
 };
 
+/** HOOK get saved grades */
 export function useSavedGrades(accountId: string, initialData?: any) {
   return useQuery(
     ["saved-grades", accountId],
@@ -35,3 +37,30 @@ export function useSavedGrades(accountId: string, initialData?: any) {
     }
   );
 }
+
+type SaveGradeProps = {
+  gradeId: number;
+  accountId: string;
+};
+
+/** POST save grade */
+export const saveGrade = async ({ gradeId, accountId }: SaveGradeProps) => {
+  const { data, error } = await supabase
+    .from("saved_grades")
+    .insert({
+      grade_id: gradeId,
+      account_id: accountId,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.log("Error", error);
+    throw new Error(error.message);
+  }
+
+  if (!data) {
+    throw new Error("Grade not saved");
+  }
+  return data;
+};

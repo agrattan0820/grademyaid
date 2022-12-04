@@ -12,7 +12,7 @@ import { useGrade, getGrade } from "../../utils/hooks/use-grade";
 import { Database } from "../../utils/database.types";
 import { useSchool } from "../../utils/hooks/use-school";
 import { fetchSchoolById } from "../../utils/queries";
-import { saveGrade } from "../../utils/hooks/use-save-grade-mutation";
+import { saveGrade } from "../../utils/hooks/use-saved-grades";
 import { useUser } from "@supabase/auth-helpers-react";
 import {
   deleteSavedGradeById,

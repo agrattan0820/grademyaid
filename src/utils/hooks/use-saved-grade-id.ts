@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import supabase from "../supabase";
 
+/** DELETE saved grade by id */
 export const deleteSavedGradeById = async (
   gradeId: number,
   accountId: string
@@ -18,6 +19,7 @@ export const deleteSavedGradeById = async (
   return data;
 };
 
+/** GET saved grade by id */
 export const getSavedGradeById = async (gradeId: number, accountId: string) => {
   const { data, error } = await supabase
     .from("saved_grades")
@@ -43,7 +45,8 @@ export const getSavedGradeById = async (gradeId: number, accountId: string) => {
   return data;
 };
 
-export function useSavedGrades(gradeId: number, accountId: string) {
+/** HOOK get saved grade by id */
+export function useSavedGradeById(gradeId: number, accountId: string) {
   return useQuery(["saved-grade", gradeId, accountId], () =>
     getSavedGradeById(gradeId, accountId)
   );

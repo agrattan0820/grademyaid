@@ -9,7 +9,7 @@ import Header from "../components/header";
 import SchoolSearch from "../components/school-search";
 import { useRouter } from "next/router";
 import { calculateScore, LocationType } from "../utils/calculate-score";
-import { useGradeMutation } from "../utils/hooks/use-grade-mutate";
+import { useGradeMutation } from "../utils/hooks/use-grade";
 import { useUser } from "@supabase/auth-helpers-react";
 import { upsertProfile } from "../utils/hooks/use-profile";
 
