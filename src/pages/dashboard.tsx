@@ -4,21 +4,22 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import Header from "../components/header";
 import { FaUser } from "react-icons/fa";
+import Image from "next/image";
 
 const DashboardPage = () => {
   const supabase = useSupabaseClient();
   const user = useUser();
 
-  type pageTypes = "dashboard" | "grades" | "colleges";
+  type pageTypes = "account" | "grades" | "colleges";
 
-  const [pageName, setPageName] = useState<pageTypes>("dashboard");
+  const [pageName, setPageName] = useState<pageTypes>("account");
 
   async function signOut() {
     const { error } = await supabase.auth.signOut();
   }
 
-  async function selectDashboard() {
-    setPageName("dashboard");
+  async function selectAccount() {
+    setPageName("account");
   }
 
   async function selectGrades() {
@@ -48,33 +49,36 @@ const DashboardPage = () => {
       </Head>
       <Header />
       <main className="min-h-screen bg-green-100">
-        <div className="container mx-auto flex min-h-screen flex-col items-center justify-center px-4 text-center">
-          <div className="mx-auto mb-4 space-y-2">
+        <div className="container mx-auto py-28 px-4 text-center">
+          <div className="mx-auto mb-4 space-y-1">
             {user?.user_metadata.avatar_url ? (
-              <img
+              <Image
+                width={96}
+                height={96}
                 src={user?.user_metadata.avatar_url}
                 alt={`Avatar image for the user ${user?.email}`}
+                className="rounded-full"
               />
             ) : (
               <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-emerald-700">
                 <FaUser color="white" size={40} />
               </div>
             )}
-            <h2 className="font-bold">
+            <h2 className="text-xl font-bold">
               {user?.user_metadata.full_name ?? user?.email}
             </h2>
           </div>
-          <div className="w-45 flex justify-between rounded-full bg-emerald-300">
+          <div className="flex justify-center">
             {/* Start Side Bar element */}
-            <div className="flex flex-wrap gap-4 px-4 py-2">
-              {/* Start dashboard sidebar element*/}
+            <div className="flex flex-wrap gap-4 rounded-full bg-emerald-300 px-4 py-2">
+              {/* Start Account sidebar element*/}
               <button
                 className={`rounded-full p-2 font-bold transition-colors hover:text-emerald-900 ${
-                  pageName === "dashboard" && "bg-emerald-200"
+                  pageName === "account" && "bg-emerald-200"
                 }`}
-                onClick={selectDashboard}
+                onClick={selectAccount}
               >
-                Dashboard
+                User Account
               </button>
               {/* End dashboard sidebar element*/}
 
@@ -115,10 +119,10 @@ const DashboardPage = () => {
           <div>
             {
               // === compares types as well as the value
-              pageName === "dashboard" && (
+              pageName === "account" && (
                 <div className="flex items-center justify-center">
                   <button
-                    className="boarder rounded-full bg-green-400 py-2 hover:text-white"
+                    className="boarder rounded-full bg-emerald-400 px-4 py-2 hover:text-white"
                     onClick={signOut}
                   >
                     <b>Logout</b>
