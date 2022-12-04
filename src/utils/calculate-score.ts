@@ -98,6 +98,7 @@ export async function calculateScore(
 
   const schoolResponse = await fetchSchoolById(schoolId);
   const selectedSchool = schoolResponse.data.results[0];
+  console.log(selectedSchool);
 
   // OVERALL STATISTICS ACROSS ALL SCHOOLS
   const overallAverageNetPrice =

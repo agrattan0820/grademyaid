@@ -34,6 +34,29 @@ type FavoriteSchoolProps = {
   accountId: string;
 };
 
+/** GET favorite school */
+export const getFavoriteSchoolById = async (
+  schoolId: number,
+  accountId: string
+) => {
+  const { data, error } = await supabase
+    .from("favorited_schools")
+    .select()
+    .eq("school_id", schoolId)
+    .eq("account_id", accountId)
+    .single();
+
+  if (error) {
+    console.log("Error", error);
+    throw new Error(error.message);
+  }
+
+  if (!data) {
+    throw new Error("School not favorited");
+  }
+  return data;
+};
+
 /** POST favorite school */
 export const favoriteSchool = async ({
   schoolId,

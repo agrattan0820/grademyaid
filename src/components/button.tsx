@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-type ColorType = "violet" | "rose" | "emerald" | "black";
+type ColorType = "violet" | "rose" | "emerald" | "sky" | "black";
 
 type Props = {
   /** Background color of the button */
@@ -23,6 +23,7 @@ const Button = ({ color, label, icon, onClick, outline }: Props) => {
       ${color === "violet" && "bg-violet-300"}
       ${color === "rose" && "bg-rose-300"}
       ${color === "emerald" && "bg-emerald-300"}
+      ${color === "sky" && "bg-sky-300"}
       ${color === "black" && !outline && "bg-black text-white"}
       ${outline && "bg-none"}
       ${outline && color === "black" && "border-4 border-black"}
