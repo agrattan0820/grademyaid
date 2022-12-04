@@ -32,6 +32,14 @@ const customStyles: StylesConfig<
     paddingLeft: ".25rem",
     paddingRight: ".25rem",
   }),
+  menu: (provided) => ({
+    ...provided,
+    maxHeight: 250,
+  }),
+  menuList: (provided) => ({
+    ...provided,
+    maxHeight: 250,
+  }),
 };
 
 const SchoolSearch = ({ handleChange }: Props) => {
