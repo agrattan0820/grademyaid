@@ -2,18 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
-import {
-  useSession,
-  useSupabaseClient,
-  Session,
-} from "@supabase/auth-helpers-react";
+import { useSession, Session } from "@supabase/auth-helpers-react";
 import { fetchSchools } from "../utils/queries";
 import Account from "../components/Account";
 import Link from "next/link";
+import supabase from "../utils/supabase";
 
 const Home: NextPage = () => {
   const session = useSession();
-  const supabase = useSupabaseClient();
 
   const schoolQuery = useQuery({
     queryKey: ["schools"],

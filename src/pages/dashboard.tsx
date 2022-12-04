@@ -95,7 +95,7 @@ const DashboardPage = () => {
           {
             // === compares types as well as the value
             pageName === "dashboard" && (
-              <div>Hello this is the Dashboard Page</div>
+              <div className="flex items-center justify-center"></div>
             )
           }
 
