@@ -58,3 +58,21 @@ export const favoriteSchool = async ({
   }
   return data;
 };
+
+/** DELETE saved grade by id */
+export const deleteFavoritedSchool = async (
+  schoolId: number,
+  accountId: string
+) => {
+  const { data, error } = await supabase
+    .from("favorited_schools")
+    .delete()
+    .eq("account_id", accountId)
+    .eq("school_id", schoolId);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};

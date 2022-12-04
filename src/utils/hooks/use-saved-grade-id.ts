@@ -1,24 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import supabase from "../supabase";
 
-/** DELETE saved grade by id */
-export const deleteSavedGradeById = async (
-  gradeId: number,
-  accountId: string
-) => {
-  const { data, error } = await supabase
-    .from("saved_grades")
-    .delete()
-    .eq("account_id", accountId)
-    .eq("grade_id", gradeId);
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data;
-};
-
 /** GET saved grade by id */
 export const getSavedGradeById = async (gradeId: number, accountId: string) => {
   const { data, error } = await supabase

@@ -12,12 +12,12 @@ import { useGrade, getGrade } from "../../utils/hooks/use-grade";
 import { Database } from "../../utils/database.types";
 import { useSchool } from "../../utils/hooks/use-school";
 import { fetchSchoolById } from "../../utils/queries";
-import { saveGrade } from "../../utils/hooks/use-saved-grades";
-import { useUser } from "@supabase/auth-helpers-react";
 import {
-  deleteSavedGradeById,
-  getSavedGradeById,
-} from "../../utils/hooks/use-saved-grade-id";
+  saveGrade,
+  deleteSavedGrade,
+} from "../../utils/hooks/use-saved-grades";
+import { useUser } from "@supabase/auth-helpers-react";
+import { getSavedGradeById } from "../../utils/hooks/use-saved-grade-id";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 
 type SchoolInfoProps = {
@@ -153,7 +153,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
 
     if (gradeExistsAlready) {
       console.log("Unsaving Grade");
-      await deleteSavedGradeById(gradeId, userId);
+      await deleteSavedGrade(gradeId, userId);
       setIsSaved(false);
     } else {
       console.log("Saving Grade");
