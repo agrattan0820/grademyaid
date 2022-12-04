@@ -5,10 +5,21 @@ import Head from "next/head";
 import Header from "../components/header";
 import { FaUser } from "react-icons/fa";
 import Image from "next/image";
+import {
+  createServerSupabaseClient,
+  Session,
+  User,
+} from "@supabase/auth-helpers-nextjs";
+import { GetServerSideProps, NextPage } from "next";
+import { Database } from "../utils/database.types";
 
-const DashboardPage = () => {
+type DashboardPageProps = {
+  initialSession: Session;
+  user: User;
+};
+
+const DashboardPage: NextPage<DashboardPageProps> = (props) => {
   const supabase = useSupabaseClient();
-  const user = useUser();
 
   type pageTypes = "account" | "grades" | "colleges";
 
@@ -34,12 +45,6 @@ const DashboardPage = () => {
     router.push(`/`);
   }
 
-  useEffect(() => {
-    if (!user) {
-      router.push("/");
-    }
-  }, [user]);
-
   return (
     <div>
       <Head>
@@ -51,12 +56,12 @@ const DashboardPage = () => {
       <main className="min-h-screen bg-green-100">
         <div className="container mx-auto py-28 px-4 text-center">
           <div className="mx-auto mb-4 space-y-1">
-            {user?.user_metadata.avatar_url ? (
+            {props.user?.user_metadata.avatar_url ? (
               <Image
                 width={96}
                 height={96}
-                src={user?.user_metadata.avatar_url}
-                alt={`Avatar image for the user ${user?.email}`}
+                src={props.user?.user_metadata.avatar_url}
+                alt={`Avatar image for the user ${props.user?.email}`}
                 className="rounded-full"
               />
             ) : (
@@ -65,7 +70,7 @@ const DashboardPage = () => {
               </div>
             )}
             <h2 className="text-xl font-bold">
-              {user?.user_metadata.full_name ?? user?.email}
+              {props.user?.user_metadata.full_name ?? props.user?.email}
             </h2>
           </div>
           <div className="flex justify-center">
@@ -73,7 +78,7 @@ const DashboardPage = () => {
             <div className="flex flex-wrap gap-4 rounded-full bg-emerald-300 px-4 py-2">
               {/* Start Account sidebar element*/}
               <button
-                className={`rounded-full p-2 font-bold transition-colors hover:text-emerald-900 ${
+                className={`rounded-full p-2 font-bold transition hover:ring-2 hover:ring-emerald-200 ${
                   pageName === "account" && "bg-emerald-200"
                 }`}
                 onClick={selectAccount}
@@ -84,7 +89,7 @@ const DashboardPage = () => {
 
               {/* Start Saved Grades side bar element */}
               <button
-                className={`rounded-full p-2 font-bold transition-colors hover:text-emerald-900 ${
+                className={`rounded-full p-2 font-bold transition hover:ring-2 hover:ring-emerald-200 ${
                   pageName === "grades" && "bg-emerald-200"
                 }`}
                 onClick={selectGrades}
@@ -95,7 +100,7 @@ const DashboardPage = () => {
 
               {/* Start Saved Colleges side bar element */}
               <button
-                className={`rounded-full p-2 font-bold transition-colors hover:text-emerald-900 ${
+                className={`rounded-full p-2 font-bold transition hover:ring-2 hover:ring-emerald-200 ${
                   pageName === "colleges" && "bg-emerald-200"
                 }`}
                 onClick={selectColleges}
@@ -107,14 +112,13 @@ const DashboardPage = () => {
               {/* Start Grade side bar element */}
 
               <button
-                className={`rounded-full p-2 transition-colors hover:text-emerald-900`}
+                className={`rounded-full p-2 transition hover:ring-2 hover:ring-emerald-200`}
                 onClick={selectGetGrade}
               >
                 <b>Get Grade </b>
               </button>
               {/* End Grade side bar element */}
             </div>
-            {/* End Dashboard Side Bar element */}
           </div>
           <div>
             {
@@ -152,3 +156,27 @@ const DashboardPage = () => {
 };
 
 export default DashboardPage;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // Create authenticated Supabase Client
+  const supabase = createServerSupabaseClient<Database>(context);
+  // Check if we have a session
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session)
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+
+  return {
+    props: {
+      initialSession: session,
+      user: session.user,
+    },
+  };
+};
