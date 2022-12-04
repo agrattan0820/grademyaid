@@ -9,35 +9,6 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      account: {
-        Row: {
-          username: string | null
-          password: string | null
-          account_type: string | null
-          fname: string | null
-          lname: string | null
-          email: string | null
-          account_id: string
-        }
-        Insert: {
-          username?: string | null
-          password?: string | null
-          account_type?: string | null
-          fname?: string | null
-          lname?: string | null
-          email?: string | null
-          account_id: string
-        }
-        Update: {
-          username?: string | null
-          password?: string | null
-          account_type?: string | null
-          fname?: string | null
-          lname?: string | null
-          email?: string | null
-          account_id?: string
-        }
-      }
       favorited_schools: {
         Row: {
           fav_school_id: number
