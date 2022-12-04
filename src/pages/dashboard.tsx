@@ -25,8 +25,6 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
   type pageTypes = "account" | "grades" | "colleges";
 
   const [pageName, setPageName] = useState<pageTypes>("account");
-  const [isResetting, setIsResetting] = useState(false);
-  const [resetWarning, setResetWarning] = useState(false);
 
   async function signOut() {
     const { error } = await supabase.auth.signOut();
@@ -36,20 +34,6 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
     }
 
     router.push("/");
-  }
-  async function resetPassword() {
-    if (props.user?.email && props.user.app_metadata.provider === "email") {
-      const { data, error } = await supabase.auth.resetPasswordForEmail(
-        props.user?.email
-      );
-      if (error) {
-        console.error(error.message, error);
-      }
-
-      if (data) {
-        showResettingToast();
-      }
-    }
   }
 
   async function selectAccount() {
@@ -67,21 +51,6 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
   async function selectGetGrade() {
     router.push(`/`);
   }
-
-  console.log(props.user);
-
-  const showResetPasswordWarning = () => {
-    setResetWarning(true);
-    setTimeout(() => {
-      setResetWarning(false);
-    }, 2000);
-  };
-  const showResettingToast = () => {
-    setIsResetting(true);
-    setTimeout(() => {
-      setIsResetting(false);
-    }, 2000);
-  };
 
   return (
     <div>
@@ -174,51 +143,6 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
                     >
                       <b>Logout</b>
                     </button>
-                    {props.user.app_metadata.provider === "email" && (
-                      <div className="relative z-10">
-                        <Button
-                          color="sky"
-                          label="Reset Password"
-                          onClick={() =>
-                            props.user.email
-                              ? resetPassword()
-                              : showResetPasswordWarning()
-                          }
-                        />
-                        <div
-                          // Role alert and aria-live announce to screen readers
-                          role="alert"
-                          aria-live="polite"
-                          className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-56 max-w-3xl origin-center rounded-md bg-rose-300 px-4 py-2 text-center text-sm font-bold ${
-                            resetWarning && "animate-popup"
-                          }`}
-                        >
-                          <p
-                            className={`${
-                              !resetWarning && "hidden"
-                            } flex items-center justify-center`}
-                          >
-                            Error resetting your password
-                          </p>
-                        </div>
-                        <div
-                          // Role alert and aria-live announce to screen readers
-                          role="alert"
-                          aria-live="polite"
-                          className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-56 max-w-3xl origin-center rounded-md bg-sky-300 px-4 py-2 text-center text-sm font-bold ${
-                            isResetting && "animate-popup"
-                          }`}
-                        >
-                          <p
-                            className={`${
-                              !isResetting && "hidden"
-                            } flex items-center justify-center`}
-                          >
-                            Check your email for the password reset email!
-                          </p>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               )
