@@ -58,7 +58,7 @@ function scoreDifferential(difference: number, desiredInequality: Inequality) {
     }
   } else {
     if (difference <= -3) {
-      scoreValue += 4;
+      scoreValue += 5;
     } else if (difference <= -2) {
       scoreValue += 3.5;
     } else if (difference <= -1) {
