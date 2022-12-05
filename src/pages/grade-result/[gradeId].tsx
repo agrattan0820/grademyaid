@@ -41,6 +41,10 @@ type SchoolInfoProps = {
   tuition: number;
   net_price: number;
   grade_net_price: number;
+  median_6_salary: number;
+  median_7_salary: number;
+  median_8_salary: number;
+  median_9_salary: number;
   median_10_salary: number;
   graduation_rate: string;
   transfer_rate: string;
@@ -55,6 +59,10 @@ const SchoolInfo = ({
   tuition,
   net_price,
   grade_net_price,
+  median_6_salary,
+  median_7_salary,
+  median_8_salary,
+  median_9_salary,
   median_10_salary,
   graduation_rate,
   transfer_rate,
@@ -99,7 +107,13 @@ const SchoolInfo = ({
              More Info
             </summary>
             <p className="text-sm text-black-500">
-             {name} has a median 10 year salary of ${numberWithCommas(median_10_salary)}.
+             Median 9 year salary: ${numberWithCommas(median_9_salary)}
+             <br />
+             Median 8 year salary: ${numberWithCommas(median_8_salary)}
+             <br />
+             Median 7 year salary: ${numberWithCommas(median_7_salary)} 
+             <br/>
+             Median 6 year salary: ${numberWithCommas(median_6_salary)}
             </p>
           </details>
         <li className="flex justify-between md:text-lg">
@@ -274,7 +288,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
     }
   };
 
-  /** If User is not defined show a warning when pressing the favorite shchool button */
+  /** If User is not defined show a warning when pressing the favorite school button */
   const showFavoriteLoginWarning = () => {
     setFavoriteWarning(true);
     setTimeout(() => {
@@ -282,7 +296,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
     }, 2000);
   };
 
-  console.log(schoolData);
+  console.log(schoolData.latest);
   return (
     <div>
       <Head>
@@ -308,14 +322,15 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
           </section>
           {schoolData ? (
             <SchoolInfo
-
               name={schoolData.school.name }
               city={schoolData.school.city}
               state={schoolData.school.state}
               tuition={schoolData.latest.cost.tuition[location]}
-              median_10_salary={
-                schoolData.latest.earnings["10_yrs_after_entry"].median
-              }
+              median_6_salary={schoolData.latest.earnings["6_yrs_after_entry"].median}
+              median_7_salary={schoolData.latest.earnings["7_yrs_after_entry"].mean_earnings}
+              median_8_salary={schoolData.latest.earnings["8_yrs_after_entry"].median_earnings}
+              median_9_salary={schoolData.latest.earnings["9_yrs_after_entry"].mean_earnings}
+              median_10_salary={schoolData.latest.earnings["10_yrs_after_entry"].median}
               net_price={schoolData.latest.cost.avg_net_price.overall}
               grade_net_price={calculateStudentPrice(
                 schoolData,
