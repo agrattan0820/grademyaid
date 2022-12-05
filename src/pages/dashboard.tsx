@@ -1,4 +1,4 @@
-import router from "next/router";
+import router, { useRouter } from "next/router";
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { useEffect, useState } from "react";
 import Head from "next/head";
@@ -74,7 +74,12 @@ const FavoritedSchoolListing = ({
         <h3 className="mb-2 text-xl font-bold leading-none">{name}</h3>
         <div className="flex space-x-2">
           <a href={websiteLink} target="_blank" rel="noreferrer">
-            <Button color="emerald" label="Website" size="small" />
+            <Button
+              color="emerald"
+              label="Website"
+              size="small"
+              height="full"
+            />
           </a>
           <a href={priceCalculatorLink} target="_blank" rel="noreferrer">
             <Button
@@ -97,10 +102,13 @@ type DashboardPageProps = {
 
 const DashboardPage: NextPage<DashboardPageProps> = (props) => {
   const supabase = useSupabaseClient<Database>();
+  const router = useRouter();
 
   type pageTypes = "account" | "grades" | "colleges";
 
-  const [pageName, setPageName] = useState<pageTypes>("account");
+  const [pageName, setPageName] = useState<pageTypes>(
+    (router.query.page as pageTypes) ?? "account"
+  );
   const savedGrades = useSavedGrades(props.user.id);
   const favoritedSchools = useFavoritedSchools(props.user.id);
 

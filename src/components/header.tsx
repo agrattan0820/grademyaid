@@ -36,7 +36,7 @@ const Header = () => {
                 <Button color="black" label="Dashboard" />
               </Link>
               <div className="hidden md:block">
-                <Link href="/dashboard">
+                <Link href="/dashboard?page=grades">
                   <Button color="black" icon={<FaHeart />} outline />
                 </Link>
               </div>
