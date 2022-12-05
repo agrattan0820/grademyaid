@@ -19,14 +19,14 @@ const Button = ({ color, label, icon, onClick, outline }: Props) => {
   return (
     <button
       onClick={onClick}
-      className={`flex min-w-[100px] items-center justify-center rounded-full px-4 py-2 font-bold transition hover:scale-105 hover:ring-2 focus-visible:ring-2 
-      ${color === "violet" && "bg-violet-300 ring-violet-400"}
-      ${color === "rose" && "bg-rose-300 ring-rose-400"}
-      ${color === "emerald" && "bg-emerald-300 ring-emerald-400"}
-      ${color === "sky" && "bg-sky-300 ring-sky-400"}
-      ${color === "black" && !outline && "bg-black text-white"}
+      className={`flex min-w-[100px] items-center justify-center rounded-full px-4 py-2 text-sm font-bold transition hover:scale-105 focus-visible:ring-2 md:text-base 
+      ${color === "violet" && "bg-violet-300 ring-violet-400 hover:ring-2"}
+      ${color === "rose" && "bg-rose-300 ring-rose-400 hover:ring-2"}
+      ${color === "emerald" && "bg-emerald-300 ring-emerald-400 hover:ring-2"}
+      ${color === "sky" && "bg-sky-300 ring-sky-400 hover:ring-2"}
+      ${color === "black" && !outline && "bg-black text-white ring-white"}
       ${outline && "bg-none"}
-      ${outline && color === "black" && "border-4 border-black"}
+      ${outline && color === "black" && "border-4 border-black ring-white"}
       ${!label && icon && "h-12 w-12 min-w-0"}
       `}
     >

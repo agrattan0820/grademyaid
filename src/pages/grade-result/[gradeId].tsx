@@ -14,21 +14,21 @@ import { FiRefreshCw, FiShare } from "react-icons/fi";
 import { numberWithCommas } from "../../utils/formatters";
 import Header from "../../components/header";
 import Button from "../../components/button";
-import { useGrade, getGrade } from "../../utils/hooks/use-grade";
+import { useGrade } from "../../utils/hooks/use-grade";
 import { Database } from "../../utils/database.types";
 import { useSchool } from "../../utils/hooks/use-school";
 import { fetchSchoolById } from "../../utils/queries";
 import {
-  saveGrade,
-  deleteSavedGrade,
+  useSaveGradeMutation,
+  useDeleteSaveGradeMutation,
 } from "../../utils/hooks/use-saved-grades";
 import { useUser } from "@supabase/auth-helpers-react";
 import { getSavedGradeById } from "../../utils/hooks/use-saved-grade-id";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import {
-  deleteFavoritedSchool,
-  favoriteSchool,
   getFavoriteSchoolById,
+  useDeleteFavoriteSchoolMutation,
+  useFavoriteSchoolMutation,
 } from "../../utils/hooks/use-favorited-schools";
 import { calculateStudentPrice } from "../../utils/calculate-score";
 
@@ -159,6 +159,10 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
   const { gradeId: routerGradeId } = router.query;
   const gradeId = Number.parseInt(routerGradeId as string);
   const grade = useGrade(gradeId, props.grade);
+  const saveGradeMutation = useSaveGradeMutation();
+  const favoriteMutation = useFavoriteSchoolMutation();
+  const deleteSaveGradeMutation = useDeleteSaveGradeMutation();
+  const deleteFavoriteMutation = useDeleteFavoriteSchoolMutation();
   const location =
     props?.grade?.in_out_loc === "inState" ? "in_state" : "out_of_state";
 
@@ -197,11 +201,11 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
 
     if (gradeExistsAlready) {
       console.log("Unsaving Grade");
-      await deleteSavedGrade(gradeId, userId);
+      await deleteSaveGradeMutation.mutateAsync({ gradeId, accountId: userId });
       setIsSaved(false);
     } else {
       console.log("Saving Grade");
-      await saveGrade({
+      await saveGradeMutation.mutateAsync({
         gradeId: gradeId,
         accountId: userId,
       });
@@ -225,13 +229,15 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
 
     if (favoritedSchoolAlready) {
       console.log("Unfavoriting School");
-      await deleteFavoritedSchool(schoolId, userId);
+      await deleteFavoriteMutation.mutateAsync({ schoolId, accountId: userId });
       setIsFavorited(false);
     } else {
       console.log("Favoriting School");
-      await favoriteSchool({
+      await favoriteMutation.mutateAsync({
         schoolId: schoolId,
         accountId: userId,
+        schoolName: schoolData.school.name,
+        schoolUrl: schoolData.school.school_url,
       });
       setIsFavorited(true);
     }
