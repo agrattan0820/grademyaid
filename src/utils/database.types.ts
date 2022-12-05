@@ -16,6 +16,7 @@ export interface Database {
           account_id: string | null
           school_name: string | null
           school_url: string | null
+          school_price_calculator: string | null
         }
         Insert: {
           fav_school_id?: number
@@ -23,6 +24,7 @@ export interface Database {
           account_id?: string | null
           school_name?: string | null
           school_url?: string | null
+          school_price_calculator?: string | null
         }
         Update: {
           fav_school_id?: number
@@ -30,6 +32,7 @@ export interface Database {
           account_id?: string | null
           school_name?: string | null
           school_url?: string | null
+          school_price_calculator?: string | null
         }
       }
       grade: {

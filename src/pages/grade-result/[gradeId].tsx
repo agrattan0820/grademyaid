@@ -17,7 +17,6 @@ import Button from "../../components/button";
 import { useGrade } from "../../utils/hooks/use-grade";
 import { Database } from "../../utils/database.types";
 import { useSchool } from "../../utils/hooks/use-school";
-import { fetchSchoolById } from "../../utils/queries";
 import {
   useSaveGradeMutation,
   useDeleteSaveGradeMutation,
@@ -31,6 +30,7 @@ import {
   useFavoriteSchoolMutation,
 } from "../../utils/hooks/use-favorited-schools";
 import { calculateStudentPrice } from "../../utils/calculate-score";
+import LoadingSpinner from "../../components/loading-spinner";
 
 type SchoolInfoProps = {
   name: string;
@@ -58,15 +58,7 @@ const SchoolInfo = ({
   location,
 }: SchoolInfoProps) => {
   return (
-    <section className="mb-8 max-w-xl md:mb-0">
-      <div className="mb-2 md:mb-8">
-        <h2 className="mb-1 text-4xl font-bold leading-tight md:text-5xl md:leading-tight">
-          {name}
-        </h2>
-        <p>
-          {city}, {state}
-        </p>
-      </div>
+    <>
       <ul>
         <li className="flex justify-between md:text-lg">
           <p className="font-bold">Tuition per year</p>
@@ -97,14 +89,13 @@ const SchoolInfo = ({
           <p>${numberWithCommas(grade_net_price)}</p>
         </li>
       </ul>
-    </section>
+    </>
   );
 };
 
 type PageProps = {
   grade: Database["public"]["Tables"]["grade"]["Row"];
   // TODO: Type school response
-  school: any;
   saveGrade: {
     grade_id: number;
   } & {
@@ -168,8 +159,9 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
 
   // School fetching
   const schoolId = props.grade?.school_id;
-  const school = useSchool(schoolId, props.school);
-  const schoolData = props.school && props.school?.results[0];
+  const school = useSchool(schoolId);
+  const schoolData =
+    !school.isLoading && school.data?.data && school?.data.data?.results[0];
 
   /**  Function for share button that either copies the link to clipboard or activates the mobile share if available */
   const onShareClick = () => {
@@ -238,6 +230,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
         accountId: userId,
         schoolName: schoolData.school.name,
         schoolUrl: schoolData.school.school_url,
+        schoolPriceCalculator: schoolData.school.price_calculator_url,
       });
       setIsFavorited(true);
     }
@@ -274,39 +267,54 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
             )}
             <p className="-mt-8 font-bold">out of 10</p>
           </section>
-          {schoolData ? (
-            <SchoolInfo
-              name={schoolData.school.name}
-              city={schoolData.school.city}
-              state={schoolData.school.state}
-              tuition={schoolData.latest.cost.tuition[location]}
-              median_10_salary={
-                schoolData.latest.earnings["10_yrs_after_entry"].median
-              }
-              net_price={schoolData.latest.cost.avg_net_price.overall}
-              grade_net_price={calculateStudentPrice(
-                schoolData,
-                props.grade?.financial_aid as number,
-                location
+          <section className="mb-8 w-full max-w-xl md:mb-0">
+            <div className="mb-2 md:mb-8">
+              <h2 className="mb-1 text-4xl font-bold leading-tight md:text-5xl md:leading-tight">
+                {props.grade.school_name}
+              </h2>
+              {schoolData && (
+                <p>
+                  {schoolData.school.city}, {schoolData.school.state}
+                </p>
               )}
-              graduation_rate={
-                (schoolData.latest.completion.consumer_rate * 100).toFixed(2) +
-                "%"
-              }
-              transfer_rate={
-                (
-                  schoolData.latest.completion.transfer_rate["4yr"].full_time *
-                  100
-                ).toFixed(2) + "%"
-              }
-              location={location}
-            />
-          ) : (
-            <div>Loading...</div>
-          )}
+            </div>
+            {schoolData ? (
+              <SchoolInfo
+                name={schoolData.school.name}
+                city={schoolData.school.city}
+                state={schoolData.school.state}
+                tuition={schoolData.latest.cost.tuition[location]}
+                median_10_salary={
+                  schoolData.latest.earnings["10_yrs_after_entry"].median
+                }
+                net_price={schoolData.latest.cost.avg_net_price.overall}
+                grade_net_price={calculateStudentPrice(
+                  schoolData,
+                  props.grade?.financial_aid as number,
+                  location
+                )}
+                graduation_rate={
+                  (schoolData.latest.completion.consumer_rate * 100).toFixed(
+                    2
+                  ) + "%"
+                }
+                transfer_rate={
+                  (
+                    schoolData.latest.completion.transfer_rate["4yr"]
+                      .full_time * 100
+                  ).toFixed(2) + "%"
+                }
+                location={location}
+              />
+            ) : (
+              <div className="flex h-64 w-full items-center justify-center lg:w-[36rem]">
+                <LoadingSpinner />
+              </div>
+            )}
+          </section>
         </div>
-        <div className="flex flex-col items-center justify-center space-y-4">
-          <div className="flex space-x-4">
+        <div className="flex w-full flex-col items-center justify-center space-y-2">
+          <div className="flex w-full flex-wrap items-center justify-center gap-4 overflow-x-hidden py-2">
             <div className="relative z-10">
               <Button
                 color="sky"
@@ -414,9 +422,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     .single();
 
   if (grade) {
-    const schoolResponse = await fetchSchoolById(grade?.school_id);
-    const school = schoolResponse.data;
-
     const { data: saveGrade } = await supabase
       .from("saved_grades")
       .select(
@@ -440,7 +445,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       .eq("account_id", session?.user.id)
       .single();
 
-    return { props: { grade, school, saveGrade, favoriteSchool } };
+    return { props: { grade, saveGrade, favoriteSchool } };
   }
   return { props: {} };
 };

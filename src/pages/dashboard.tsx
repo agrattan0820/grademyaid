@@ -57,6 +57,39 @@ const SavedGradeListing = ({
   );
 };
 
+type FavoritedSchoolListingProps = {
+  name: string;
+  websiteLink: string;
+  priceCalculatorLink: string;
+};
+
+const FavoritedSchoolListing = ({
+  name,
+  websiteLink,
+  priceCalculatorLink,
+}: FavoritedSchoolListingProps) => {
+  return (
+    <div className="relative mx-auto flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-2xl bg-white px-6 shadow shadow-emerald-200 ring-emerald-200 transition hover:ring-4 md:w-96 md:px-12">
+      <div className="w-full text-left">
+        <h3 className="mb-2 text-xl font-bold leading-none">{name}</h3>
+        <div className="flex space-x-2">
+          <a href={websiteLink} target="_blank" rel="noreferrer">
+            <Button color="emerald" label="Website" size="small" />
+          </a>
+          <a href={priceCalculatorLink} target="_blank" rel="noreferrer">
+            <Button
+              color="emerald"
+              label="Price Calculator"
+              size="small"
+              outline
+            />
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 type DashboardPageProps = {
   initialSession: Session;
   user: User;
@@ -251,7 +284,24 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
             {
               // === compares types as well as the value
               pageName === "colleges" && (
-                <div>Hello this is the Saved College Page</div>
+                <div className="mx-auto grid max-w-5xl gap-16 lg:grid-cols-2">
+                  {!favoritedSchools.isLoading && (
+                    <>
+                      {favoritedSchools.data?.map((school, i) => (
+                        <FavoritedSchoolListing
+                          key={i}
+                          name={school.school_name ?? ""}
+                          websiteLink={"https://" + school.school_url ?? ""}
+                          priceCalculatorLink={
+                            school.school_price_calculator
+                              ? "https://" + school.school_price_calculator
+                              : ""
+                          }
+                        />
+                      ))}
+                    </>
+                  )}
+                </div>
               )
             }
           </div>

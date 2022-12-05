@@ -19,10 +19,8 @@ export const getFavoritedSchools = async (accountId: string) => {
 };
 
 /** HOOK get favorite schools */
-export function useFavoritedSchools(accountId: string, initialData?: any) {
-  return useQuery(["favorited-schools"], () => getFavoritedSchools(accountId), {
-    initialData: initialData,
-  });
+export function useFavoritedSchools(accountId: string) {
+  return useQuery(["favorited-schools"], () => getFavoritedSchools(accountId));
 }
 
 type FavoriteSchoolProps = {
@@ -30,6 +28,7 @@ type FavoriteSchoolProps = {
   accountId: string;
   schoolName: string;
   schoolUrl: string;
+  schoolPriceCalculator: string;
 };
 
 /** GET favorite school */
@@ -58,6 +57,7 @@ export const favoriteSchool = async ({
   accountId,
   schoolName,
   schoolUrl,
+  schoolPriceCalculator,
 }: FavoriteSchoolProps) => {
   const { data, error } = await supabase
     .from("favorited_schools")
@@ -66,6 +66,7 @@ export const favoriteSchool = async ({
       account_id: accountId,
       school_name: schoolName,
       school_url: schoolUrl,
+      school_price_calculator: schoolPriceCalculator,
     })
     .select()
     .single();

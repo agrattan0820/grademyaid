@@ -1,4 +1,4 @@
-import { fetchSchoolById } from "./queries";
+import { fetchSchoolById } from "./school-queries";
 
 /**
  * Linear Interpolation
