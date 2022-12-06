@@ -31,8 +31,6 @@ import {
   getFavoriteSchoolById,
 } from "../../utils/hooks/use-favorited-schools";
 import { calculateStudentPrice } from "../../utils/calculate-score";
-import { difference } from "@tanstack/query-core/build/lib/utils";
-
 
 type SchoolInfoProps = {
   name: string;
