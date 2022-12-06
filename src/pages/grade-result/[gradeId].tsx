@@ -33,9 +33,6 @@ import { calculateStudentPrice } from "../../utils/calculate-score";
 import LoadingSpinner from "../../components/loading-spinner";
 
 type SchoolInfoProps = {
-  name: string;
-  city: string;
-  state: string;
   tuition: number;
   net_price: number;
   grade_net_price: number;
@@ -49,16 +46,12 @@ type SchoolInfoProps = {
   acceptance_rate: string;
   location: "in_state" | "out_of_state";
   median_debt: number;
-  student_population: number, 
-  roomboard_off: number,
-  roomboard_on: number,
-
+  student_population: number;
+  roomboard_off: number;
+  roomboard_on: number;
 };
 
 const SchoolInfo = ({
-  name,
-  city,
-  state,
   tuition,
   net_price,
   grade_net_price,
@@ -71,12 +64,10 @@ const SchoolInfo = ({
   transfer_rate,
   acceptance_rate,
   location,
-  median_debt, 
-  student_population, 
+  median_debt,
+  student_population,
   roomboard_off,
   roomboard_on,
-
-  
 }: SchoolInfoProps) => {
   return (
     <>
@@ -102,19 +93,19 @@ const SchoolInfo = ({
           <p>${numberWithCommas(median_10_salary)}</p>
         </li>
         <details className="mb-2">
-            <summary className="hover:underline cursor-pointer font-bold text-xs text-black-500 text-sky-500">
-              More Info
-            </summary>
-            <p className="text-sm text-black-500">
-             Average 9 year salary: ${numberWithCommas(median_9_salary)}
-             <br />
-             Average 8 year salary: ${numberWithCommas(median_8_salary)}
-             <br />
-             Average 7 year salary: ${numberWithCommas(median_7_salary)} 
-             <br/>
-             Average 6 year salary: ${numberWithCommas(median_6_salary)}
-            </p>
-          </details>
+          <summary className="text-black-500 cursor-pointer text-xs font-bold text-sky-500 hover:underline">
+            More Info
+          </summary>
+          <p className="text-black-500 text-sm">
+            Average 9 year salary: ${numberWithCommas(median_9_salary)}
+            <br />
+            Average 8 year salary: ${numberWithCommas(median_8_salary)}
+            <br />
+            Average 7 year salary: ${numberWithCommas(median_7_salary)}
+            <br />
+            Average 6 year salary: ${numberWithCommas(median_6_salary)}
+          </p>
+        </details>
         <li className="flex justify-between">
           <p className="font-bold ">Median Debt</p>
           <p className="">${numberWithCommas(median_debt)}</p>
@@ -141,20 +132,28 @@ const SchoolInfo = ({
         </li>
         <li className="flex justify-between">
           <p className="font-bold">Price Difference</p>
-         {grade_net_price - net_price > 0 ? <p className="font-bold text-red-600">${numberWithCommas(grade_net_price - net_price)}</p> : <p className="font-bold text-green-700">${numberWithCommas(Math.abs(grade_net_price - net_price))}</p>}
+          {grade_net_price - net_price > 0 ? (
+            <p className="font-bold text-red-600">
+              ${numberWithCommas(grade_net_price - net_price)}
+            </p>
+          ) : (
+            <p className="font-bold text-green-700">
+              ${numberWithCommas(Math.abs(grade_net_price - net_price))}
+            </p>
+          )}
         </li>
         <details>
-            <summary className="hover:underline cursor-pointer font-bold text-xs text-black-500 text-sky-500 ">
+          <summary className="text-black-500 cursor-pointer text-xs font-bold text-sky-500 hover:underline ">
             What is price difference?
-            </summary>
-            <p className="text-sm text-black-500 ">
-              Price difference is the aveage net tuition - your net tuition.
-              <br />
-              Green means you would save more than an average student
-              <br />
-              Red means you would spend more than an average student
-            </p>
-          </details>
+          </summary>
+          <p className="text-black-500 text-sm ">
+            Price difference is the aveage net tuition - your net tuition.
+            <br />
+            Green means you would save more than an average student
+            <br />
+            Red means you would spend more than an average student
+          </p>
+        </details>
       </ul>
     </>
   );
@@ -210,7 +209,6 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
   const [favoriteWarning, setFavoriteWarning] = useState(false);
   const [isSaved, setIsSaved] = useState(!!props.saveGrade);
   const [isFavorited, setIsFavorited] = useState(!!props.favoriteSchool);
-
 
   const user = useUser();
 
@@ -311,8 +309,6 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
     }, 2000);
   };
 
- 
-  
   return (
     <div>
       <Head>
@@ -326,7 +322,19 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
           <section className="flex h-96 min-w-full flex-col items-center justify-center rounded-2xl bg-emerald-50 p-8 shadow-lg shadow-emerald-300 md:min-w-[20rem]">
             <p className="font-bold">Your grade:</p>
             {!grade.isLoading ? (
-              <p className="text-9xl font-bold leading-tight xl:text-[12rem]">
+              <p
+                className={`text-9xl font-bold leading-tight xl:text-[12rem] ${
+                  grade.data?.grade_num && grade.data?.grade_num <= 3
+                    ? "text-rose-500"
+                    : ""
+                }
+                ${
+                  grade.data?.grade_num && grade.data?.grade_num >= 7
+                    ? "text-emerald-500"
+                    : ""
+                }
+                `}
+              >
                 {grade.data?.grade_num}
               </p>
             ) : (
@@ -336,45 +344,73 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
             )}
             <p className="-mt-8 font-bold">out of 10</p>
           </section>
-          {schoolData ? (
-            <SchoolInfo
-              name={schoolData.school.name }
-              city={schoolData.school.city}
-              state={schoolData.school.state}
-              tuition={schoolData.latest.cost.tuition[location]}
-              median_6_salary={schoolData.latest.earnings["6_yrs_after_entry"].median}
-              median_7_salary={schoolData.latest.earnings["7_yrs_after_entry"].mean_earnings}
-              median_8_salary={schoolData.latest.earnings["8_yrs_after_entry"].median_earnings}
-              median_9_salary={schoolData.latest.earnings["9_yrs_after_entry"].mean_earnings}
-              median_10_salary={schoolData.latest.earnings["10_yrs_after_entry"].median}
-              student_population={schoolData.latest.student.size}
-              net_price={schoolData.latest.cost.avg_net_price.overall}
-              roomboard_off = {schoolData.latest.cost.roomboard.offcampus}
-              roomboard_on = {schoolData.latest.cost.roomboard.oncampus}
-              median_debt={schoolData.latest.aid.median_debt.completers.overall}
-              grade_net_price={calculateStudentPrice(
-                schoolData,
-                props.grade?.financial_aid as number,
-                location
+
+          <section className="mb-8 w-full max-w-xl md:mb-0">
+            <div className="mb-2 md:mb-8">
+              <h2 className="mb-1 text-4xl font-bold leading-tight md:text-5xl md:leading-tight">
+                {props.grade.school_name}
+              </h2>
+              {schoolData && (
+                <p>
+                  {schoolData.school.city}, {schoolData.school.state}
+                </p>
               )}
-              graduation_rate={
-                (schoolData.latest.completion.consumer_rate * 100).toFixed(2) +
-                "%"
-              }
-              transfer_rate={
-                (
-                  schoolData.latest.completion.transfer_rate["4yr"].full_time *
-                  100
-                ).toFixed(2) + "%"
-              }
-              acceptance_rate={(schoolData.latest.admissions.admission_rate.overall*
-                100
-              ).toFixed(2) + "%"}
-              location={location}
-            />
-          ) : (
-            <div>Loading...</div>
-          )}
+            </div>
+            {schoolData ? (
+              <SchoolInfo
+                tuition={schoolData.latest.cost.tuition[location]}
+                median_6_salary={
+                  schoolData.latest.earnings["6_yrs_after_entry"].median
+                }
+                median_7_salary={
+                  schoolData.latest.earnings["7_yrs_after_entry"].mean_earnings
+                }
+                median_8_salary={
+                  schoolData.latest.earnings["8_yrs_after_entry"]
+                    .median_earnings
+                }
+                median_9_salary={
+                  schoolData.latest.earnings["9_yrs_after_entry"].mean_earnings
+                }
+                median_10_salary={
+                  schoolData.latest.earnings["10_yrs_after_entry"].median
+                }
+                student_population={schoolData.latest.student.size}
+                net_price={schoolData.latest.cost.avg_net_price.overall}
+                roomboard_off={schoolData.latest.cost.roomboard.offcampus}
+                roomboard_on={schoolData.latest.cost.roomboard.oncampus}
+                median_debt={
+                  schoolData.latest.aid.median_debt.completers.overall
+                }
+                grade_net_price={calculateStudentPrice(
+                  schoolData,
+                  props.grade?.financial_aid as number,
+                  location
+                )}
+                graduation_rate={
+                  (schoolData.latest.completion.consumer_rate * 100).toFixed(
+                    2
+                  ) + "%"
+                }
+                transfer_rate={
+                  (
+                    schoolData.latest.completion.transfer_rate["4yr"]
+                      .full_time * 100
+                  ).toFixed(2) + "%"
+                }
+                acceptance_rate={
+                  (
+                    schoolData.latest.admissions.admission_rate.overall * 100
+                  ).toFixed(2) + "%"
+                }
+                location={location}
+              />
+            ) : (
+              <div className="flex h-64 w-full items-center justify-center lg:w-[36rem]">
+                <LoadingSpinner />
+              </div>
+            )}
+          </section>
         </div>
         <div className="flex w-full flex-col items-center justify-center space-y-2">
           <div className="flex w-full flex-wrap items-center justify-center gap-4 overflow-x-hidden py-2">
