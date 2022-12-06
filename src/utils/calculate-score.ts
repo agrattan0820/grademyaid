@@ -192,8 +192,6 @@ export async function calculateScore(
   score += scoreDifferential(medianEarningsDifference, "lesser");
   score += scoreDifferential(transferDifference, "lesser");
 
-  console.log("SCORE BEFORE STUDENT PRICE", score);
-
   let studentScore = 0;
 
   studentScore += scoreDifferential(studentPriceDifference, "greater");
@@ -202,8 +200,5 @@ export async function calculateScore(
 
   score += studentScore;
 
-  console.log("STUDENT SCORE", studentScore);
-  console.log("SCORE BEFORE RANGE", score);
-
-  return Number.parseFloat(range(-10, 10, 0.1, 10, score).toFixed(1));
+  return Number.parseFloat(range(-10, 10, 0, 10, score).toFixed(1));
 }
