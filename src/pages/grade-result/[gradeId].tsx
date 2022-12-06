@@ -130,14 +130,14 @@ const SchoolInfo = ({
           <p className="font-bold">Your Net Price</p>
           <p>{numberWithCommas(grade_net_price, true)}</p>
         </li>
-        <li className="mt-4 flex justify-between">
+        <li className="flex justify-between">
           <p className="font-bold">Price Difference</p>
           {grade_net_price - net_price > 0 ? (
-            <p className="font-bold text-red-600">
+            <p className="font-bold text-rose-600">
               {numberWithCommas(grade_net_price - net_price, true)}
             </p>
           ) : (
-            <p className="rounded-lg bg-white px-1 py-0.5 font-bold text-emerald-700">
+            <p className="font-bold text-emerald-600">
               {numberWithCommas(Math.abs(grade_net_price - net_price), true)}
             </p>
           )}
@@ -229,6 +229,8 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
   const schoolData =
     !school.isLoading && school.data?.data && school?.data.data?.results[0];
 
+  console.log(schoolData);
+
   /**  Function for share button that either copies the link to clipboard or activates the mobile share if available */
   const onShareClick = () => {
     if (navigator.share) {
@@ -309,8 +311,6 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
     }, 2000);
   };
 
-  console.log(schoolData.latest.aid.median_debt.completers.overall);
-
   return (
     <div>
       <Head>
@@ -348,8 +348,8 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
           </section>
 
           <section className="mb-8 w-full max-w-xl md:mb-0">
-            <div className="mb-2 md:mb-8">
-              <h2 className="mb-1 text-4xl font-bold leading-tight md:text-5xl md:leading-tight">
+            <div className="mb-2 md:mb-4">
+              <h2 className="mb-0.5 text-4xl font-bold leading-tight md:text-5xl md:leading-tight">
                 {props.grade.school_name}
               </h2>
               {schoolData && (
