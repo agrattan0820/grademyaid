@@ -12,7 +12,7 @@ const Header = () => {
       <div className="container mx-auto flex items-center justify-between px-4">
         <h1>
           <Link href="/">
-            <span className="flex cursor-pointer items-center text-2xl">
+            <span className="flex cursor-pointer items-center text-xl md:text-2xl">
               <span className="mr-2 flex h-10 w-10 items-center justify-center rounded-full bg-black text-violet-300">
                 <FaPiggyBank />
               </span>
@@ -35,9 +35,11 @@ const Header = () => {
               <Link href="/dashboard">
                 <Button color="black" label="Dashboard" />
               </Link>
-              <Link href="/dashboard">
-                <Button color="black" icon={<FaHeart />} outline />
-              </Link>
+              <div className="hidden md:block">
+                <Link href="/dashboard?page=grades">
+                  <Button color="black" icon={<FaHeart />} outline />
+                </Link>
+              </div>
             </>
           )}
         </div>
