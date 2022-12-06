@@ -30,7 +30,6 @@ import {
   useFavoriteSchoolMutation,
 } from "../../utils/hooks/use-favorited-schools";
 import { calculateStudentPrice } from "../../utils/calculate-score";
-import { difference } from "@tanstack/query-core/build/lib/utils";
 import LoadingSpinner from "../../components/loading-spinner";
 
 type SchoolInfoProps = {
@@ -82,71 +81,71 @@ const SchoolInfo = ({
   return (
     <>
       <ul>
-        <li className="flex justify-between md:text-lg">
+        <li className="flex justify-between">
           <p className="font-bold">Tuition Per Year</p>
           <p>${numberWithCommas(tuition)}</p>
         </li>
-        <li className="flex justify-between md:text-lg">
+        <li className="flex justify-between">
           <p className="font-bold">Net Price Per Year</p>
           <p>${numberWithCommas(net_price)}</p>
         </li>
-        <li className="flex justify-between md:text-lg">
+        <li className="flex justify-between">
           <p className="font-bold">Undergrad Student Population</p>
           <p>{numberWithCommas(student_population)}</p>
         </li>
-        <li className="flex justify-between md:text-lg">
+        <li className="flex justify-between">
           <p className="font-bold">Room/Board Per Year</p>
           <p>${numberWithCommas(roomboard_on)}</p>
         </li>
-        <li className="flex justify-between md:text-lg">
-          <p className="font-bold">Median 10y Salary</p>
+        <li className="flex justify-between">
+          <p className="font-bold">Average 10y Salary</p>
           <p>${numberWithCommas(median_10_salary)}</p>
         </li>
-        <details className="mb-6">
-            <summary className="text-sm text-black-500 underline text-sky-500">
-             More Info
+        <details className="mb-2">
+            <summary className="hover:underline cursor-pointer font-bold text-xs text-black-500 text-sky-500">
+              More Info
             </summary>
             <p className="text-sm text-black-500">
-             Median 9 year salary: ${numberWithCommas(median_9_salary)}
+             Average 9 year salary: ${numberWithCommas(median_9_salary)}
              <br />
-             Median 8 year salary: ${numberWithCommas(median_8_salary)}
+             Average 8 year salary: ${numberWithCommas(median_8_salary)}
              <br />
-             Median 7 year salary: ${numberWithCommas(median_7_salary)} 
+             Average 7 year salary: ${numberWithCommas(median_7_salary)} 
              <br/>
-             Median 6 year salary: ${numberWithCommas(median_6_salary)}
+             Average 6 year salary: ${numberWithCommas(median_6_salary)}
             </p>
           </details>
-        <li className="flex justify-between md:text-lg">
+        <li className="flex justify-between">
           <p className="font-bold ">Median Debt</p>
-          <p className="text-red-300">${numberWithCommas(median_debt)}</p>
+          <p className="">${numberWithCommas(median_debt)}</p>
         </li>
-        <li className="flex justify-between md:text-lg">
+        <li className="flex justify-between">
           <p className="font-bold">Acceptance Rate</p>
           <p>{acceptance_rate}</p>
         </li>
-        <li className="flex justify-between md:text-lg">
+        <li className="flex justify-between">
           <p className="font-bold">Transfer Rate</p>
           <p>{transfer_rate}</p>
         </li>
-        <li className="flex justify-between md:text-lg">
+        <li className="flex justify-between">
           <p className="font-bold">Graduation Rate</p>
           <p>{graduation_rate}</p>
         </li>
-        <li className="flex justify-between md:text-lg">
+        <li className="flex justify-between">
           <p className="font-bold">Your Location</p>
           <p>{location === "in_state" ? "In-state" : "Out-of-state"}</p>
         </li>
-        <li className="flex justify-between md:text-lg">
+        <li className="flex justify-between">
           <p className="font-bold">Your Net Price</p>
           <p>${numberWithCommas(grade_net_price)}</p>
         </li>
-        <li className="flex justify-between md:text-lg">
+        <li className="flex justify-between">
           <p className="font-bold">Price Difference</p>
-         {grade_net_price - net_price > 0 ? <p className="text-red-700">+${numberWithCommas(grade_net_price - net_price)}</p> : <p className="text-green-700">-${numberWithCommas(Math.abs(grade_net_price - net_price))}</p>}
+         {grade_net_price - net_price > 0 ? <p className="font-bold text-red-600">${numberWithCommas(grade_net_price - net_price)}</p> : <p className="font-bold text-green-700">${numberWithCommas(Math.abs(grade_net_price - net_price))}</p>}
         </li>
         <details>
-            <summary className="text-sm text-black-500 underline text-sky-500 ">
-            What is Price difference?
+            <summary className="hover:underline cursor-pointer font-bold text-xs text-black-500 text-sky-500 ">
+            What is price difference?
             </summary>
             <p className="text-sm text-black-500 ">
               Price difference is the aveage net tuition - your net tuition.
@@ -313,7 +312,6 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
   };
 
  
-  console.log(schoolData.latest.aid.median_debt.completers.overall); 
   
   return (
     <div>
