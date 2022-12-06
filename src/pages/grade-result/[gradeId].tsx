@@ -30,12 +30,8 @@ import {
   useFavoriteSchoolMutation,
 } from "../../utils/hooks/use-favorited-schools";
 import { calculateStudentPrice } from "../../utils/calculate-score";
-<<<<<<< HEAD
 import { difference } from "@tanstack/query-core/build/lib/utils";
-
-=======
 import LoadingSpinner from "../../components/loading-spinner";
->>>>>>> 0cda72aec303d2e1d69ac31072ce31a43255a822
 
 type SchoolInfoProps = {
   name: string;
@@ -342,7 +338,6 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
             )}
             <p className="-mt-8 font-bold">out of 10</p>
           </section>
-<<<<<<< HEAD
           {schoolData ? (
             <SchoolInfo
               name={schoolData.school.name }
@@ -382,53 +377,6 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
           ) : (
             <div>Loading...</div>
           )}
-=======
-          <section className="mb-8 w-full max-w-xl md:mb-0">
-            <div className="mb-2 md:mb-8">
-              <h2 className="mb-1 text-4xl font-bold leading-tight md:text-5xl md:leading-tight">
-                {props.grade.school_name}
-              </h2>
-              {schoolData && (
-                <p>
-                  {schoolData.school.city}, {schoolData.school.state}
-                </p>
-              )}
-            </div>
-            {schoolData ? (
-              <SchoolInfo
-                name={schoolData.school.name}
-                city={schoolData.school.city}
-                state={schoolData.school.state}
-                tuition={schoolData.latest.cost.tuition[location]}
-                median_10_salary={
-                  schoolData.latest.earnings["10_yrs_after_entry"].median
-                }
-                net_price={schoolData.latest.cost.avg_net_price.overall}
-                grade_net_price={calculateStudentPrice(
-                  schoolData,
-                  props.grade?.financial_aid as number,
-                  location
-                )}
-                graduation_rate={
-                  (schoolData.latest.completion.consumer_rate * 100).toFixed(
-                    2
-                  ) + "%"
-                }
-                transfer_rate={
-                  (
-                    schoolData.latest.completion.transfer_rate["4yr"]
-                      .full_time * 100
-                  ).toFixed(2) + "%"
-                }
-                location={location}
-              />
-            ) : (
-              <div className="flex h-64 w-full items-center justify-center lg:w-[36rem]">
-                <LoadingSpinner />
-              </div>
-            )}
-          </section>
->>>>>>> 0cda72aec303d2e1d69ac31072ce31a43255a822
         </div>
         <div className="flex w-full flex-col items-center justify-center space-y-2">
           <div className="flex w-full flex-wrap items-center justify-center gap-4 overflow-x-hidden py-2">
