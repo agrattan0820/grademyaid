@@ -336,45 +336,59 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
             )}
             <p className="-mt-8 font-bold">out of 10</p>
           </section>
-          {schoolData ? (
-            <SchoolInfo
-              name={schoolData.school.name }
-              city={schoolData.school.city}
-              state={schoolData.school.state}
-              tuition={schoolData.latest.cost.tuition[location]}
-              median_6_salary={schoolData.latest.earnings["6_yrs_after_entry"].median}
-              median_7_salary={schoolData.latest.earnings["7_yrs_after_entry"].mean_earnings}
-              median_8_salary={schoolData.latest.earnings["8_yrs_after_entry"].median_earnings}
-              median_9_salary={schoolData.latest.earnings["9_yrs_after_entry"].mean_earnings}
-              median_10_salary={schoolData.latest.earnings["10_yrs_after_entry"].median}
-              student_population={schoolData.latest.student.size}
-              net_price={schoolData.latest.cost.avg_net_price.overall}
-              roomboard_off = {schoolData.latest.cost.roomboard.offcampus}
-              roomboard_on = {schoolData.latest.cost.roomboard.oncampus}
-              median_debt={schoolData.latest.aid.median_debt.completers.overall}
-              grade_net_price={calculateStudentPrice(
-                schoolData,
-                props.grade?.financial_aid as number,
-                location
+          <section className="mb-8 w-full max-w-xl md:mb-0">
+            <div className="mb-2 md:mb-8">
+              <h2 className="mb-1 text-4xl font-bold leading-tight md:text-5xl md:leading-tight">
+                {props.grade.school_name}
+              </h2>
+              {schoolData && (
+                <p>
+                  {schoolData.school.city}, {schoolData.school.state}
+                </p>
               )}
-              graduation_rate={
-                (schoolData.latest.completion.consumer_rate * 100).toFixed(2) +
-                "%"
-              }
-              transfer_rate={
-                (
-                  schoolData.latest.completion.transfer_rate["4yr"].full_time *
+            </div>
+            {schoolData ? (
+              <SchoolInfo
+                name={schoolData.school.name }
+                city={schoolData.school.city}
+                state={schoolData.school.state}
+                tuition={schoolData.latest.cost.tuition[location]}
+                median_6_salary={schoolData.latest.earnings["6_yrs_after_entry"].median}
+                median_7_salary={schoolData.latest.earnings["7_yrs_after_entry"].mean_earnings}
+                median_8_salary={schoolData.latest.earnings["8_yrs_after_entry"].median_earnings}
+                median_9_salary={schoolData.latest.earnings["9_yrs_after_entry"].mean_earnings}
+                median_10_salary={schoolData.latest.earnings["10_yrs_after_entry"].median}
+                student_population={schoolData.latest.student.size}
+                net_price={schoolData.latest.cost.avg_net_price.overall}
+                roomboard_off = {schoolData.latest.cost.roomboard.offcampus}
+                roomboard_on = {schoolData.latest.cost.roomboard.oncampus}
+                median_debt={schoolData.latest.aid.median_debt.completers.overall}
+                grade_net_price={calculateStudentPrice(
+                  schoolData,
+                  props.grade?.financial_aid as number,
+                  location
+                )}
+                graduation_rate={
+                  (schoolData.latest.completion.consumer_rate * 100).toFixed(2) +
+                  "%"
+                }
+                transfer_rate={
+                  (
+                    schoolData.latest.completion.transfer_rate["4yr"].full_time *
+                    100
+                  ).toFixed(2) + "%"
+                }
+                acceptance_rate={(schoolData.latest.admissions.admission_rate.overall*
                   100
-                ).toFixed(2) + "%"
-              }
-              acceptance_rate={(schoolData.latest.admissions.admission_rate.overall*
-                100
-              ).toFixed(2) + "%"}
-              location={location}
-            />
-          ) : (
-            <div>Loading...</div>
-          )}
+                ).toFixed(2) + "%"}
+                location={location}
+              />
+            ) : (
+              <div className="flex h-64 w-full items-center justify-center lg:w-[36rem]">
+                <LoadingSpinner />
+              </div>
+            )}
+          </section>
         </div>
         <div className="flex w-full flex-col items-center justify-center space-y-2">
           <div className="flex w-full flex-wrap items-center justify-center gap-4 overflow-x-hidden py-2">
