@@ -39,10 +39,20 @@ type SchoolInfoProps = {
   tuition: number;
   net_price: number;
   grade_net_price: number;
+  median_6_salary: number;
+  median_7_salary: number;
+  median_8_salary: number;
+  median_9_salary: number;
   median_10_salary: number;
   graduation_rate: string;
   transfer_rate: string;
+  acceptance_rate: string;
   location: "in_state" | "out_of_state";
+  median_debt: number;
+  student_population: number, 
+  roomboard_off: number,
+  roomboard_on: number,
+
 };
 
 const SchoolInfo = ({
@@ -52,42 +62,99 @@ const SchoolInfo = ({
   tuition,
   net_price,
   grade_net_price,
+  median_6_salary,
+  median_7_salary,
+  median_8_salary,
+  median_9_salary,
   median_10_salary,
   graduation_rate,
   transfer_rate,
+  acceptance_rate,
   location,
+  median_debt, 
+  student_population, 
+  roomboard_off,
+  roomboard_on,
+
+  
 }: SchoolInfoProps) => {
   return (
     <>
       <ul>
         <li className="flex justify-between md:text-lg">
-          <p className="font-bold">Tuition per year</p>
+          <p className="font-bold">Tuition Per Year</p>
           <p>${numberWithCommas(tuition)}</p>
         </li>
         <li className="flex justify-between md:text-lg">
-          <p className="font-bold">Average net price per year</p>
+          <p className="font-bold">Net Price Per Year</p>
           <p>${numberWithCommas(net_price)}</p>
         </li>
         <li className="flex justify-between md:text-lg">
-          <p className="font-bold">Median 10 year salary</p>
+          <p className="font-bold">Undergrad Student Population</p>
+          <p>{numberWithCommas(student_population)}</p>
+        </li>
+        <li className="flex justify-between md:text-lg">
+          <p className="font-bold">Room/Board Per Year</p>
+          <p>${numberWithCommas(roomboard_on)}</p>
+        </li>
+        <li className="flex justify-between md:text-lg">
+          <p className="font-bold">Median 10y Salary</p>
           <p>${numberWithCommas(median_10_salary)}</p>
+        </li>
+        <details className="mb-6">
+            <summary className="text-sm text-black-500 underline text-sky-500">
+             More Info
+            </summary>
+            <p className="text-sm text-black-500">
+             Median 9 year salary: ${numberWithCommas(median_9_salary)}
+             <br />
+             Median 8 year salary: ${numberWithCommas(median_8_salary)}
+             <br />
+             Median 7 year salary: ${numberWithCommas(median_7_salary)} 
+             <br/>
+             Median 6 year salary: ${numberWithCommas(median_6_salary)}
+            </p>
+          </details>
+        <li className="flex justify-between md:text-lg">
+          <p className="font-bold ">Median Debt</p>
+          <p className="text-red-300">${numberWithCommas(median_debt)}</p>
+        </li>
+        <li className="flex justify-between md:text-lg">
+          <p className="font-bold">Acceptance Rate</p>
+          <p>{acceptance_rate}</p>
+        </li>
+        <li className="flex justify-between md:text-lg">
+          <p className="font-bold">Transfer Rate</p>
+          <p>{transfer_rate}</p>
         </li>
         <li className="flex justify-between md:text-lg">
           <p className="font-bold">Graduation Rate</p>
           <p>{graduation_rate}</p>
         </li>
-        <li className="mb-8 flex justify-between md:text-lg">
-          <p className="font-bold">Transfer Rate</p>
-          <p>{transfer_rate}</p>
-        </li>
         <li className="flex justify-between md:text-lg">
-          <p className="font-bold">Your location</p>
+          <p className="font-bold">Your Location</p>
           <p>{location === "in_state" ? "In-state" : "Out-of-state"}</p>
         </li>
         <li className="flex justify-between md:text-lg">
-          <p className="font-bold">Your net price</p>
+          <p className="font-bold">Your Net Price</p>
           <p>${numberWithCommas(grade_net_price)}</p>
         </li>
+        <li className="flex justify-between md:text-lg">
+          <p className="font-bold">Price Difference</p>
+         {grade_net_price - net_price > 0 ? <p className="text-red-700">+${numberWithCommas(grade_net_price - net_price)}</p> : <p className="text-green-700">-${numberWithCommas(Math.abs(grade_net_price - net_price))}</p>}
+        </li>
+        <details>
+            <summary className="text-sm text-black-500 underline text-sky-500 ">
+            What is Price difference?
+            </summary>
+            <p className="text-sm text-black-500 ">
+              Price difference is the aveage net tuition - your net tuition.
+              <br />
+              Green means you would save more than an average student
+              <br />
+              Red means you would spend more than an average student
+            </p>
+          </details>
       </ul>
     </>
   );
@@ -144,6 +211,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
   const [isSaved, setIsSaved] = useState(!!props.saveGrade);
   const [isFavorited, setIsFavorited] = useState(!!props.favoriteSchool);
 
+
   const user = useUser();
 
   // Grade fetching
@@ -190,7 +258,6 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
 
   const onSaveGradeClick = async (userId: string, gradeId: number) => {
     const gradeExistsAlready = await getSavedGradeById(gradeId, userId);
-
     if (gradeExistsAlready) {
       console.log("Unsaving Grade");
       await deleteSaveGradeMutation.mutateAsync({ gradeId, accountId: userId });
@@ -236,7 +303,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
     }
   };
 
-  /** If User is not defined show a warning when pressing the favorite shchool button */
+  /** If User is not defined show a warning when pressing the favorite school button */
   const showFavoriteLoginWarning = () => {
     setFavoriteWarning(true);
     setTimeout(() => {
@@ -244,6 +311,9 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
     }, 2000);
   };
 
+ 
+  console.log(schoolData.latest.aid.median_debt.completers.overall); 
+  
   return (
     <div>
       <Head>
@@ -280,30 +350,38 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
             </div>
             {schoolData ? (
               <SchoolInfo
-                name={schoolData.school.name}
+                name={schoolData.school.name }
                 city={schoolData.school.city}
                 state={schoolData.school.state}
                 tuition={schoolData.latest.cost.tuition[location]}
-                median_10_salary={
-                  schoolData.latest.earnings["10_yrs_after_entry"].median
-                }
+                median_6_salary={schoolData.latest.earnings["6_yrs_after_entry"].median}
+                median_7_salary={schoolData.latest.earnings["7_yrs_after_entry"].mean_earnings}
+                median_8_salary={schoolData.latest.earnings["8_yrs_after_entry"].median_earnings}
+                median_9_salary={schoolData.latest.earnings["9_yrs_after_entry"].mean_earnings}
+                median_10_salary={schoolData.latest.earnings["10_yrs_after_entry"].median}
+                student_population={schoolData.latest.student.size}
                 net_price={schoolData.latest.cost.avg_net_price.overall}
+                roomboard_off = {schoolData.latest.cost.roomboard.offcampus}
+                roomboard_on = {schoolData.latest.cost.roomboard.oncampus}
+                median_debt={schoolData.latest.aid.median_debt.completers.overall}
                 grade_net_price={calculateStudentPrice(
                   schoolData,
                   props.grade?.financial_aid as number,
                   location
                 )}
                 graduation_rate={
-                  (schoolData.latest.completion.consumer_rate * 100).toFixed(
-                    2
-                  ) + "%"
+                  (schoolData.latest.completion.consumer_rate * 100).toFixed(2) +
+                  "%"
                 }
                 transfer_rate={
                   (
-                    schoolData.latest.completion.transfer_rate["4yr"]
-                      .full_time * 100
+                    schoolData.latest.completion.transfer_rate["4yr"].full_time *
+                    100
                   ).toFixed(2) + "%"
                 }
+                acceptance_rate={(schoolData.latest.admissions.admission_rate.overall*
+                  100
+                ).toFixed(2) + "%"}
                 location={location}
               />
             ) : (
