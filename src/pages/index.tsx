@@ -143,11 +143,11 @@ const Homepage: NextPage = () => {
           ref={locationRef}
         >
           <div className="container mx-auto px-4">
-            <h2 className="relative z-10 mx-auto mb-8 max-w-xl text-center text-5xl font-black tracking-wide lg:max-w-3xl lg:text-7xl">
+            <h2 className="relative z-10 mx-auto mb-6 max-w-xl text-center text-5xl font-black tracking-wide lg:max-w-3xl lg:text-7xl">
               What type of location is the aid?
             </h2>
             <div className="mx-auto text-center">
-              <div className="mx-auto flex w-40 flex-col text-left">
+              <div className="mx-auto flex w-56 flex-col rounded-2xl border-2 border-gray-300 bg-white p-4 text-left focus-within:border-emerald-700">
                 <div className="flex items-center justify-between">
                   <label htmlFor="inState" className="mr-1 text-xl">
                     In-state
