@@ -74,41 +74,41 @@ const SchoolInfo = ({
       <ul>
         <li className="flex justify-between">
           <p className="font-bold">Tuition Per Year</p>
-          <p>${numberWithCommas(tuition)}</p>
+          <p>{numberWithCommas(tuition, true)}</p>
         </li>
         <li className="flex justify-between">
           <p className="font-bold">Net Price Per Year</p>
-          <p>${numberWithCommas(net_price)}</p>
+          <p>{numberWithCommas(net_price, true)}</p>
         </li>
         <li className="flex justify-between">
           <p className="font-bold">Undergrad Student Population</p>
-          <p>{numberWithCommas(student_population)}</p>
+          <p>{numberWithCommas(student_population, false)}</p>
         </li>
         <li className="flex justify-between">
           <p className="font-bold">Room/Board Per Year</p>
-          <p>${numberWithCommas(roomboard_on)}</p>
+          <p>{numberWithCommas(roomboard_on, true)}</p>
         </li>
         <li className="flex justify-between">
-          <p className="font-bold">Average 10y Salary</p>
-          <p>${numberWithCommas(median_10_salary)}</p>
+          <p className="font-bold">Average 10 year Salary</p>
+          <p>{numberWithCommas(median_10_salary, true)}</p>
         </li>
-        <details className="mb-2">
+        <details className="mb-4">
           <summary className="text-black-500 cursor-pointer text-xs font-bold text-sky-500 hover:underline">
             More Info
           </summary>
           <p className="text-black-500 text-sm">
-            Average 9 year salary: ${numberWithCommas(median_9_salary)}
+            Average 9 year salary: {numberWithCommas(median_9_salary, true)}
             <br />
-            Average 8 year salary: ${numberWithCommas(median_8_salary)}
+            Average 8 year salary: {numberWithCommas(median_8_salary, true)}
             <br />
-            Average 7 year salary: ${numberWithCommas(median_7_salary)}
+            Average 7 year salary: {numberWithCommas(median_7_salary, true)}
             <br />
-            Average 6 year salary: ${numberWithCommas(median_6_salary)}
+            Average 6 year salary: {numberWithCommas(median_6_salary, true)}
           </p>
         </details>
         <li className="flex justify-between">
           <p className="font-bold ">Median Debt</p>
-          <p className="">${numberWithCommas(median_debt)}</p>
+          <p className="">{numberWithCommas(median_debt, true)}</p>
         </li>
         <li className="flex justify-between">
           <p className="font-bold">Acceptance Rate</p>
@@ -128,17 +128,17 @@ const SchoolInfo = ({
         </li>
         <li className="flex justify-between">
           <p className="font-bold">Your Net Price</p>
-          <p>${numberWithCommas(grade_net_price)}</p>
+          <p>{numberWithCommas(grade_net_price, true)}</p>
         </li>
-        <li className="flex justify-between">
+        <li className="mt-4 flex justify-between">
           <p className="font-bold">Price Difference</p>
           {grade_net_price - net_price > 0 ? (
             <p className="font-bold text-red-600">
-              ${numberWithCommas(grade_net_price - net_price)}
+              {numberWithCommas(grade_net_price - net_price, true)}
             </p>
           ) : (
-            <p className="font-bold text-green-700">
-              ${numberWithCommas(Math.abs(grade_net_price - net_price))}
+            <p className="rounded-lg bg-white px-1 py-0.5 font-bold text-emerald-700">
+              {numberWithCommas(Math.abs(grade_net_price - net_price, true))}
             </p>
           )}
         </li>
