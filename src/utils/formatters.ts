@@ -1,6 +1,11 @@
-export function numberWithCommas(x?: number) {
-  if(x === undefined){
-    return "Data not found"
+export function numberWithCommas(x?: number, dollar?: boolean) {
+  if (x === undefined || x === null) {
+    return "Data not found";
   }
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  const string = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  const addDollar = dollar ? "$" + string : string;
+
+  return addDollar;
 }
