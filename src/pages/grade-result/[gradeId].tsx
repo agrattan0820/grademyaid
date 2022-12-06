@@ -64,8 +64,8 @@ const SchoolInfo = ({
   transfer_rate,
   acceptance_rate,
   location,
-  median_debt,
-  student_population,
+  median_debt, 
+  student_population, 
   roomboard_off,
   roomboard_on,
 }: SchoolInfoProps) => {
@@ -210,6 +210,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
   const [isSaved, setIsSaved] = useState(!!props.saveGrade);
   const [isFavorited, setIsFavorited] = useState(!!props.favoriteSchool);
 
+
   const user = useUser();
 
   // Grade fetching
@@ -309,6 +310,9 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
     }, 2000);
   };
 
+ 
+  console.log(schoolData.latest.aid.median_debt.completers.overall); 
+  
   return (
     <div>
       <Head>
@@ -388,14 +392,13 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                   location
                 )}
                 graduation_rate={
-                  (schoolData.latest.completion.consumer_rate * 100).toFixed(
-                    2
-                  ) + "%"
+                  (schoolData.latest.completion.consumer_rate * 100).toFixed(2) +
+                  "%"
                 }
                 transfer_rate={
                   (
-                    schoolData.latest.completion.transfer_rate["4yr"]
-                      .full_time * 100
+                    schoolData.latest.completion.transfer_rate["4yr"].full_time *
+                    100
                   ).toFixed(2) + "%"
                 }
                 acceptance_rate={
