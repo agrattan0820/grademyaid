@@ -64,8 +64,8 @@ const SchoolInfo = ({
   transfer_rate,
   acceptance_rate,
   location,
-  median_debt, 
-  student_population, 
+  median_debt,
+  student_population,
   roomboard_off,
   roomboard_on,
 }: SchoolInfoProps) => {
@@ -138,7 +138,7 @@ const SchoolInfo = ({
             </p>
           ) : (
             <p className="rounded-lg bg-white px-1 py-0.5 font-bold text-emerald-700">
-              {numberWithCommas(Math.abs(grade_net_price - net_price, true))}
+              {numberWithCommas(Math.abs(grade_net_price - net_price), true)}
             </p>
           )}
         </li>
@@ -209,7 +209,6 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
   const [favoriteWarning, setFavoriteWarning] = useState(false);
   const [isSaved, setIsSaved] = useState(!!props.saveGrade);
   const [isFavorited, setIsFavorited] = useState(!!props.favoriteSchool);
-
 
   const user = useUser();
 
@@ -310,9 +309,8 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
     }, 2000);
   };
 
- 
-  console.log(schoolData.latest.aid.median_debt.completers.overall); 
-  
+  console.log(schoolData.latest.aid.median_debt.completers.overall);
+
   return (
     <div>
       <Head>
@@ -392,13 +390,14 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                   location
                 )}
                 graduation_rate={
-                  (schoolData.latest.completion.consumer_rate * 100).toFixed(2) +
-                  "%"
+                  (schoolData.latest.completion.consumer_rate * 100).toFixed(
+                    2
+                  ) + "%"
                 }
                 transfer_rate={
                   (
-                    schoolData.latest.completion.transfer_rate["4yr"].full_time *
-                    100
+                    schoolData.latest.completion.transfer_rate["4yr"]
+                      .full_time * 100
                   ).toFixed(2) + "%"
                 }
                 acceptance_rate={
