@@ -33,6 +33,8 @@ function scoreDifferential(difference: number, desiredInequality: Inequality) {
       scoreValue += 3.5;
     } else if (difference >= 1) {
       scoreValue += 2.5;
+    } else if (difference >= 0.75) {
+      scoreValue += 1.5;
     } else if (difference >= 0.5) {
       scoreValue += 1;
     } else if (difference >= 0.25) {
@@ -63,6 +65,8 @@ function scoreDifferential(difference: number, desiredInequality: Inequality) {
       scoreValue += 3.5;
     } else if (difference <= -1) {
       scoreValue += 2.5;
+    } else if (difference <= -0.75) {
+      scoreValue += 1.5;
     } else if (difference <= -0.5) {
       scoreValue += 1;
     } else if (difference <= -0.25) {
