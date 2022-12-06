@@ -1,10 +1,6 @@
 // import router from "next/router";
 // import { useQuery } from "@tanstack/react-query";
-import {
-  fetchSchoolNames,
-  fetchSchoolById,
-  fetchSchools,
-} from "../utils/queries";
+import { fetchSchoolNames, fetchSchools } from "../utils/school-queries";
 import AsyncSelect from "react-select/async";
 import { GroupBase, StylesConfig } from "react-select";
 
@@ -31,6 +27,14 @@ const customStyles: StylesConfig<
     borderRadius: 9999,
     paddingLeft: ".25rem",
     paddingRight: ".25rem",
+  }),
+  menu: (provided) => ({
+    ...provided,
+    maxHeight: 250,
+  }),
+  menuList: (provided) => ({
+    ...provided,
+    maxHeight: 250,
   }),
 };
 

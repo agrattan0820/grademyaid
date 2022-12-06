@@ -1,9 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "./database.types";
 
-const supabase = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+const supabase = createBrowserSupabaseClient<Database>();
 
 export default supabase;

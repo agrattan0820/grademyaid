@@ -9,102 +9,82 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      account: {
-        Row: {
-          username: string | null
-          password: string | null
-          account_type: string | null
-          fname: string | null
-          lname: string | null
-          email: string | null
-          account_id: string
-        }
-        Insert: {
-          username?: string | null
-          password?: string | null
-          account_type?: string | null
-          fname?: string | null
-          lname?: string | null
-          email?: string | null
-          account_id: string
-        }
-        Update: {
-          username?: string | null
-          password?: string | null
-          account_type?: string | null
-          fname?: string | null
-          lname?: string | null
-          email?: string | null
-          account_id?: string
-        }
-      }
       favorited_schools: {
         Row: {
           fav_school_id: number
           school_id: number
           account_id: string | null
+          school_name: string | null
+          school_url: string | null
+          school_price_calculator: string | null
         }
         Insert: {
           fav_school_id?: number
           school_id: number
           account_id?: string | null
+          school_name?: string | null
+          school_url?: string | null
+          school_price_calculator?: string | null
         }
         Update: {
           fav_school_id?: number
           school_id?: number
           account_id?: string | null
+          school_name?: string | null
+          school_url?: string | null
+          school_price_calculator?: string | null
         }
       }
       grade: {
         Row: {
           grade_id: number
           school_id: number
-          grade_num: number | null
-          financial_aid: number | null
-          in_out_loc: string | null
+          grade_num: number
+          financial_aid: number
+          in_out_loc: string
           account_id: string | null
+          school_name: string | null
         }
         Insert: {
           grade_id?: number
           school_id: number
-          grade_num?: number | null
-          financial_aid?: number | null
-          in_out_loc?: string | null
+          grade_num: number
+          financial_aid: number
+          in_out_loc: string
           account_id?: string | null
+          school_name?: string | null
         }
         Update: {
           grade_id?: number
           school_id?: number
-          grade_num?: number | null
-          financial_aid?: number | null
-          in_out_loc?: string | null
+          grade_num?: number
+          financial_aid?: number
+          in_out_loc?: string
           account_id?: string | null
+          school_name?: string | null
         }
       }
       profiles: {
         Row: {
           id: string
           updated_at: string | null
-          username: string | null
+          email: string | null
           full_name: string | null
           avatar_url: string | null
-          website: string | null
         }
         Insert: {
           id: string
           updated_at?: string | null
-          username?: string | null
+          email?: string | null
           full_name?: string | null
           avatar_url?: string | null
-          website?: string | null
         }
         Update: {
           id?: string
           updated_at?: string | null
-          username?: string | null
+          email?: string | null
           full_name?: string | null
           avatar_url?: string | null
-          website?: string | null
         }
       }
       saved_grades: {
