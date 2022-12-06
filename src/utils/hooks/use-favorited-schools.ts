@@ -1,11 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import supabase from "../supabase";
 
 /** GET favorite schools */
 export const getFavoritedSchools = async (accountId: string) => {
   const { data, error } = await supabase
     .from("favorited_schools")
-    .select("*")
+    .select()
     .eq("account_id", accountId);
 
   if (error) {
@@ -19,19 +19,16 @@ export const getFavoritedSchools = async (accountId: string) => {
 };
 
 /** HOOK get favorite schools */
-export function useFavoritedSchools(accountId: string, initialData?: any) {
-  return useQuery(
-    ["favorited-schools", accountId],
-    () => getFavoritedSchools(accountId),
-    {
-      initialData: initialData,
-    }
-  );
+export function useFavoritedSchools(accountId: string) {
+  return useQuery(["favorited-schools"], () => getFavoritedSchools(accountId));
 }
 
 type FavoriteSchoolProps = {
   schoolId: number;
   accountId: string;
+  schoolName: string;
+  schoolUrl: string;
+  schoolPriceCalculator: string;
 };
 
 /** GET favorite school */
@@ -58,12 +55,18 @@ export const getFavoriteSchoolById = async (
 export const favoriteSchool = async ({
   schoolId,
   accountId,
+  schoolName,
+  schoolUrl,
+  schoolPriceCalculator,
 }: FavoriteSchoolProps) => {
   const { data, error } = await supabase
     .from("favorited_schools")
     .insert({
       school_id: schoolId,
       account_id: accountId,
+      school_name: schoolName,
+      school_url: schoolUrl,
+      school_price_calculator: schoolPriceCalculator,
     })
     .select()
     .single();
@@ -79,11 +82,28 @@ export const favoriteSchool = async ({
   return data;
 };
 
+/** HOOK post calculated grade */
+export function useFavoriteSchoolMutation() {
+  const queryClient = useQueryClient();
+  return useMutation((data: FavoriteSchoolProps) => favoriteSchool(data), {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["favorited_schools"],
+      });
+    },
+  });
+}
+
+type DeleteFavoriteSchoolProps = {
+  schoolId: number;
+  accountId: string;
+};
+
 /** DELETE saved grade by id */
-export const deleteFavoritedSchool = async (
-  schoolId: number,
-  accountId: string
-) => {
+export const deleteFavoritedSchool = async ({
+  schoolId,
+  accountId,
+}: DeleteFavoriteSchoolProps) => {
   const { data, error } = await supabase
     .from("favorited_schools")
     .delete()
@@ -96,3 +116,18 @@ export const deleteFavoritedSchool = async (
 
   return data;
 };
+
+/** HOOK post calculated grade */
+export function useDeleteFavoriteSchoolMutation() {
+  const queryClient = useQueryClient();
+  return useMutation(
+    (data: DeleteFavoriteSchoolProps) => deleteFavoritedSchool(data),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["favorited_schools"],
+        });
+      },
+    }
+  );
+}

@@ -64,10 +64,11 @@ const Homepage: NextPage = () => {
       location: data.location,
       gradeNum: scoreResult,
       userId: user?.id,
+      schoolName: data.school.label,
     });
     console.log("Score Result:", scoreResult);
     console.log("Grade Result:", gradeResult);
-    if (!scoreResult || !gradeResult) {
+    if (scoreResult === undefined || !gradeResult) {
       setLoading(false);
     } else {
       router.push(`/grade-result/${gradeResult.grade_id}`);
