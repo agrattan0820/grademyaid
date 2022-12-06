@@ -38,6 +38,7 @@ type PostGradeProps = {
   location: LocationType;
   aidAmount: number;
   schoolId: number;
+  schoolName: string;
 };
 
 /** POST calculated grade */
@@ -47,6 +48,7 @@ const postGrade = async ({
   location,
   aidAmount,
   schoolId,
+  schoolName,
 }: PostGradeProps) => {
   const { data, error } = await supabase
     .from("grade")
@@ -56,6 +58,7 @@ const postGrade = async ({
       in_out_loc: location,
       financial_aid: aidAmount,
       school_id: schoolId,
+      school_name: schoolName,
     })
     .select()
     .single();
@@ -75,8 +78,8 @@ const postGrade = async ({
 export function useGradeMutation() {
   const queryClient = useQueryClient();
   return useMutation((data: PostGradeProps) => postGrade(data), {
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["grades"] });
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["grade", data.grade_id] });
     },
   });
 }

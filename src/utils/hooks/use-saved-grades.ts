@@ -1,20 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import supabase from "../supabase";
 
 /** GET saved grades */
 export const getSavedGrades = async (accountId: string) => {
   const { data, error } = await supabase
     .from("saved_grades")
-    .select(
-      `
-      grade_id,
-      grade (
-        school_id,
-        grade_num,
-        financial_aid,
-        in_out_loc
-      )`
-    )
+    .select(`grade_id, grade(*)`)
     .eq("account_id", accountId);
 
   if (error) {
@@ -28,14 +19,8 @@ export const getSavedGrades = async (accountId: string) => {
 };
 
 /** HOOK get saved grades */
-export function useSavedGrades(accountId: string, initialData?: any) {
-  return useQuery(
-    ["saved-grades", accountId],
-    () => getSavedGrades(accountId),
-    {
-      initialData: initialData,
-    }
-  );
+export function useSavedGrades(accountId: string) {
+  return useQuery(["saved-grades"], () => getSavedGrades(accountId));
 }
 
 type SaveGradeProps = {
@@ -65,8 +50,28 @@ export const saveGrade = async ({ gradeId, accountId }: SaveGradeProps) => {
   return data;
 };
 
+/** HOOK post save grade */
+export function useSaveGradeMutation() {
+  const queryClient = useQueryClient();
+  return useMutation((data: SaveGradeProps) => saveGrade(data), {
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["saved-grades"],
+      });
+    },
+  });
+}
+
+type DeleteSaveGradeProps = {
+  gradeId: number;
+  accountId: string;
+};
+
 /** DELETE saved grade by id */
-export const deleteSavedGrade = async (gradeId: number, accountId: string) => {
+export const deleteSavedGrade = async ({
+  gradeId,
+  accountId,
+}: DeleteSaveGradeProps) => {
   const { data, error } = await supabase
     .from("saved_grades")
     .delete()
@@ -79,3 +84,15 @@ export const deleteSavedGrade = async (gradeId: number, accountId: string) => {
 
   return data;
 };
+
+/** HOOK delete save grade */
+export function useDeleteSaveGradeMutation() {
+  const queryClient = useQueryClient();
+  return useMutation((data: DeleteSaveGradeProps) => deleteSavedGrade(data), {
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: ["saved-grades"],
+      });
+    },
+  });
+}

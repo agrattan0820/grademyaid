@@ -14,16 +14,25 @@ export interface Database {
           fav_school_id: number
           school_id: number
           account_id: string | null
+          school_name: string | null
+          school_url: string | null
+          school_price_calculator: string | null
         }
         Insert: {
           fav_school_id?: number
           school_id: number
           account_id?: string | null
+          school_name?: string | null
+          school_url?: string | null
+          school_price_calculator?: string | null
         }
         Update: {
           fav_school_id?: number
           school_id?: number
           account_id?: string | null
+          school_name?: string | null
+          school_url?: string | null
+          school_price_calculator?: string | null
         }
       }
       grade: {
@@ -34,6 +43,7 @@ export interface Database {
           financial_aid: number
           in_out_loc: string
           account_id: string | null
+          school_name: string | null
         }
         Insert: {
           grade_id?: number
@@ -42,6 +52,7 @@ export interface Database {
           financial_aid: number
           in_out_loc: string
           account_id?: string | null
+          school_name?: string | null
         }
         Update: {
           grade_id?: number
@@ -50,6 +61,7 @@ export interface Database {
           financial_aid?: number
           in_out_loc?: string
           account_id?: string | null
+          school_name?: string | null
         }
       }
       profiles: {

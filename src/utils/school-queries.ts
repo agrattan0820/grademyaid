@@ -22,6 +22,7 @@ export const fetchSchoolById = (schoolId: number) =>
       api_key: process.env.NEXT_PUBLIC_COLLEGE_SCORECARD_API_KEY,
     },
   });
+
 /** GET: Schools according to search input */
 export const fetchSchoolNames = (input: string) =>
   axios.get(collegeScorecardURL + `?&school.name=${input}`, {
