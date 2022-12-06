@@ -386,7 +386,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                 }
                 grade_net_price={calculateStudentPrice(
                   schoolData,
-                  props.grade?.financial_aid as number,
+                  props.grade?.financial_aid,
                   location
                 )}
                 graduation_rate={
