@@ -27,8 +27,14 @@ function scoreDifferential(difference: number, desiredInequality: Inequality) {
   let scoreValue = 0;
 
   if (desiredInequality === "greater") {
-    if (difference >= 1) {
-      scoreValue += 2;
+    if (difference >= 3) {
+      scoreValue += 5;
+    } else if (difference >= 2) {
+      scoreValue += 3.5;
+    } else if (difference >= 1) {
+      scoreValue += 2.5;
+    } else if (difference >= 0.75) {
+      scoreValue += 1.5;
     } else if (difference >= 0.5) {
       scoreValue += 1;
     } else if (difference >= 0.25) {
@@ -45,12 +51,22 @@ function scoreDifferential(difference: number, desiredInequality: Inequality) {
       scoreValue -= 0.75;
     } else if (difference >= -1) {
       scoreValue -= 1;
+    } else if (difference >= -2) {
+      scoreValue -= 2.5;
+    } else if (difference >= -3) {
+      scoreValue -= 3.5;
     } else {
-      scoreValue -= 2;
+      scoreValue -= 5;
     }
   } else {
-    if (difference <= -1) {
-      scoreValue += 2;
+    if (difference <= -3) {
+      scoreValue += 5;
+    } else if (difference <= -2) {
+      scoreValue += 3.5;
+    } else if (difference <= -1) {
+      scoreValue += 2.5;
+    } else if (difference <= -0.75) {
+      scoreValue += 1.5;
     } else if (difference <= -0.5) {
       scoreValue += 1;
     } else if (difference <= -0.25) {
@@ -67,8 +83,12 @@ function scoreDifferential(difference: number, desiredInequality: Inequality) {
       scoreValue -= 0.75;
     } else if (difference <= 1) {
       scoreValue -= 1;
+    } else if (difference <= 2) {
+      scoreValue -= 2.5;
+    } else if (difference <= 3) {
+      scoreValue -= 3.5;
     } else {
-      scoreValue -= 2;
+      scoreValue -= 5;
     }
   }
 
@@ -167,11 +187,18 @@ export async function calculateScore(
   console.log("transferDifference:", transferDifference);
 
   // ADD TO SCORE BASED ON DIFFERENCE
-  score += scoreDifferential(studentPriceDifference, "greater");
   score += scoreDifferential(priceDifference, "greater");
   score += scoreDifferential(graduationDifference, "lesser");
   score += scoreDifferential(medianEarningsDifference, "lesser");
   score += scoreDifferential(transferDifference, "lesser");
+
+  let studentScore = 0;
+
+  studentScore += scoreDifferential(studentPriceDifference, "greater");
+  studentScore += scoreDifferential(studentPriceDifference, "greater");
+  studentScore += scoreDifferential(studentPriceDifference, "greater");
+
+  score += studentScore;
 
   return Number.parseFloat(range(-10, 10, 0, 10, score).toFixed(1));
 }
