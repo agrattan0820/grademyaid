@@ -332,12 +332,14 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
             {!grade.isLoading ? (
               <p
                 className={`text-9xl font-bold leading-tight xl:text-[12rem] ${
-                  grade.data?.grade_num && grade.data?.grade_num <= 3
+                  grade.data?.grade_num !== undefined &&
+                  grade.data?.grade_num <= 3
                     ? "text-rose-500"
                     : ""
                 }
                 ${
-                  grade.data?.grade_num && grade.data?.grade_num >= 7
+                  grade.data?.grade_num !== undefined &&
+                  grade.data?.grade_num >= 7
                     ? "text-emerald-500"
                     : ""
                 }
