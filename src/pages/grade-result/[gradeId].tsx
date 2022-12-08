@@ -467,7 +467,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                 // Role alert and aria-live announce to screen readers
                 role="alert"
                 aria-live="polite"
-                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 h-0 w-56 max-w-3xl origin-center rounded-md bg-rose-300  text-center text-sm font-bold ${
+                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 h-0 w-64 max-w-3xl origin-center rounded-md bg-rose-300  text-center text-sm font-bold ${
                   favoriteWarning && "animate-popup h-auto px-4 py-2"
                 }`}
               >
