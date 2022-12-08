@@ -20,12 +20,14 @@ const Header = () => {
             </span>
           </Link>
         </h1>
-        <div className="flex space-x-2">
+        <div className="flex md:space-x-2">
           {!session ? (
             <>
-              <Link href="/login">
-                <Button color="black" label="Login" outline />
-              </Link>
+              <div className="hidden md:block">
+                <Link href="/login">
+                  <Button color="black" label="Login" outline />
+                </Link>
+              </div>
               <Link href="/sign-up">
                 <Button color="black" label="Sign up" />
               </Link>
