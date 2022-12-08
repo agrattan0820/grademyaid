@@ -148,31 +148,37 @@ const Homepage: NextPage = () => {
             </h2>
             <div className="mx-auto text-center">
               <div className="mx-auto flex w-56 flex-col space-y-2 text-left">
-                <div className="flex items-center justify-between rounded-2xl border-2 border-gray-300 bg-white px-4 py-2 focus-within:border-emerald-700">
-                  <label htmlFor="inState" className="mr-1 text-xl">
-                    In-state
+                <div className="rounded-2xl border-2 border-gray-300 bg-white px-4 py-2 focus-within:border-emerald-700">
+                  <label
+                    htmlFor="inState"
+                    className="flex items-center justify-between"
+                  >
+                    <span className="mr-1 text-xl">In-state</span>
+                    <input
+                      type="radio"
+                      id="inState"
+                      value="inState"
+                      className="form-radio text-emerald-700 focus:ring-emerald-700"
+                      {...register("location", { required: true })}
+                    />
                   </label>
-                  <input
-                    type="radio"
-                    id="inState"
-                    value="inState"
-                    className="form-radio text-emerald-700 focus:ring-emerald-700"
-                    {...register("location", { required: true })}
-                  />
                 </div>
-                <div className="flex items-center justify-between rounded-2xl border-2 border-gray-300 bg-white px-4 py-2 focus-within:border-emerald-700">
-                  <label htmlFor="outState" className="mr-1 text-xl">
-                    Out-of-state
+                <div className=" rounded-2xl border-2 border-gray-300 bg-white px-4 py-2 focus-within:border-emerald-700">
+                  <label
+                    htmlFor="outState"
+                    className="flex items-center justify-between"
+                  >
+                    <span className="mr-1 text-xl">Out-of-state</span>
+                    <input
+                      type="radio"
+                      id="outState"
+                      value="outState"
+                      className="form-radio text-emerald-700 focus:ring-emerald-700"
+                      {...register("location", {
+                        required: "The location field is required",
+                      })}
+                    />
                   </label>
-                  <input
-                    type="radio"
-                    id="outState"
-                    value="outState"
-                    className="form-radio text-emerald-700 focus:ring-emerald-700"
-                    {...register("location", {
-                      required: "The location field is required",
-                    })}
-                  />
                 </div>
               </div>
             </div>
