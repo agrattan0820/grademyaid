@@ -415,7 +415,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
           </section>
         </div>
         <div className="flex w-full flex-col items-center justify-center space-y-2">
-          <div className="flex w-full flex-wrap items-center justify-center gap-4 overflow-x-hidden py-2">
+          <div className="flex w-full flex-wrap items-center justify-center gap-4 py-2">
             <div className="relative z-10">
               <Button
                 color="sky"
@@ -431,8 +431,8 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                 // Role alert and aria-live announce to screen readers
                 role="alert"
                 aria-live="polite"
-                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-56 max-w-3xl origin-center rounded-md bg-sky-300 px-4 py-2 text-center text-sm font-bold ${
-                  saveWarning && "animate-popup"
+                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 h-0 max-w-3xl origin-center rounded-md bg-sky-300 px-4 py-2 text-center text-sm font-bold ${
+                  saveWarning && "animate-popup h-auto"
                 }`}
               >
                 <p
@@ -459,8 +459,8 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                 // Role alert and aria-live announce to screen readers
                 role="alert"
                 aria-live="polite"
-                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-64 max-w-3xl origin-center rounded-md bg-rose-300 px-4 py-2 text-center text-sm font-bold ${
-                  favoriteWarning && "animate-popup"
+                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 h-0 max-w-3xl origin-center rounded-md bg-rose-300 px-4 py-2 text-center text-sm font-bold ${
+                  favoriteWarning && "animate-popup h-auto"
                 }`}
               >
                 <p
@@ -483,8 +483,8 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                 // Role alert and aria-live announce to screen readers
                 role="alert"
                 aria-live="polite"
-                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-56 max-w-3xl origin-center rounded-md bg-violet-300 px-4 py-2 text-center text-sm font-bold ${
-                  copying && "animate-popup"
+                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 h-0 w-56 max-w-3xl origin-center rounded-md bg-violet-300 px-4 py-2 text-center text-sm font-bold ${
+                  copying && "animate-popup h-auto"
                 }`}
               >
                 <p className={`${!copying && "hidden"} flex items-center`}>
