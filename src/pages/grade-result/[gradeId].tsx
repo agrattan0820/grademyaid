@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { motion } from "framer-motion";
 
 import {
   FaBookmark,
@@ -321,7 +322,12 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
       <Header />
       <main className="flex min-h-screen flex-col items-center justify-center space-y-12 bg-emerald-200 px-8 pt-32 pb-28">
         <div className="flex flex-col-reverse items-start justify-center md:flex-row md:space-x-8">
-          <section className="flex h-96 min-w-full flex-col items-center justify-center rounded-2xl bg-emerald-50 p-8 shadow-lg shadow-emerald-300 md:min-w-[20rem]">
+          <motion.section
+            transition={{ delay: 0.4 }}
+            initial={{ y: 8, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="flex h-96 min-w-full flex-col items-center justify-center rounded-2xl bg-emerald-50 p-8 shadow-lg shadow-emerald-300 md:min-w-[20rem]"
+          >
             <p className="font-bold">Your grade:</p>
             {!grade.isLoading ? (
               <p
@@ -345,7 +351,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
               </p>
             )}
             <p className="-mt-8 font-bold">out of 10</p>
-          </section>
+          </motion.section>
 
           <section className="mb-8 w-full max-w-xl md:mb-0">
             <div className="mb-2 md:mb-4">
