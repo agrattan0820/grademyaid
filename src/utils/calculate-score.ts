@@ -201,6 +201,7 @@ export async function calculateScore(
     studentScore += scoreDifferential(studentPriceDifference, "greater");
     studentScore += scoreDifferential(studentPriceDifference, "greater");
     studentScore += scoreDifferential(studentPriceDifference, "greater");
+    studentScore += scoreDifferential(studentPriceDifference, "greater");
   } else {
     studentScore += 10;
   }
