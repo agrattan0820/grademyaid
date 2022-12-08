@@ -130,14 +130,14 @@ const SchoolInfo = ({
           <p className="font-bold">Your Net Price</p>
           <p>{numberWithCommas(grade_net_price, true)}</p>
         </li>
-        <li className="mt-4 flex justify-between">
+        <li className="flex justify-between">
           <p className="font-bold">Price Difference</p>
           {grade_net_price - net_price > 0 ? (
-            <p className="font-bold text-red-600">
+            <p className="font-bold text-rose-600">
               {numberWithCommas(grade_net_price - net_price, true)}
             </p>
           ) : (
-            <p className="rounded-lg bg-white px-1 py-0.5 font-bold text-emerald-700">
+            <p className="font-bold text-emerald-600">
               {numberWithCommas(Math.abs(grade_net_price - net_price), true)}
             </p>
           )}
@@ -229,6 +229,8 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
   const schoolData =
     !school.isLoading && school.data?.data && school?.data.data?.results[0];
 
+  console.log(schoolData);
+
   /**  Function for share button that either copies the link to clipboard or activates the mobile share if available */
   const onShareClick = () => {
     if (navigator.share) {
@@ -309,8 +311,6 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
     }, 2000);
   };
 
-  console.log(schoolData.latest.aid.median_debt.completers.overall);
-
   return (
     <div>
       <Head>
@@ -319,8 +319,8 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className="flex min-h-screen flex-col items-center justify-center space-y-16 bg-emerald-200 px-8 py-28">
-        <div className="flex flex-col-reverse items-center justify-center md:flex-row md:space-x-8">
+      <main className="flex min-h-screen flex-col items-center justify-center space-y-12 bg-emerald-200 px-8 pt-32 pb-28">
+        <div className="flex flex-col-reverse items-start justify-center md:flex-row md:space-x-8">
           <section className="flex h-96 min-w-full flex-col items-center justify-center rounded-2xl bg-emerald-50 p-8 shadow-lg shadow-emerald-300 md:min-w-[20rem]">
             <p className="font-bold">Your grade:</p>
             {!grade.isLoading ? (
@@ -351,8 +351,8 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
 
 >>>>>>> dd885571a86d38be9e554ecb10c54dad194ebd0a
           <section className="mb-8 w-full max-w-xl md:mb-0">
-            <div className="mb-2 md:mb-8">
-              <h2 className="mb-1 text-4xl font-bold leading-tight md:text-5xl md:leading-tight">
+            <div className="mb-2 md:mb-4">
+              <h2 className="mb-0.5 text-4xl font-bold leading-tight md:text-5xl md:leading-tight">
                 {props.grade.school_name}
               </h2>
               {schoolData && (
@@ -389,7 +389,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                 }
                 grade_net_price={calculateStudentPrice(
                   schoolData,
-                  props.grade?.financial_aid as number,
+                  props.grade?.financial_aid,
                   location
                 )}
                 graduation_rate={
@@ -418,7 +418,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
           </section>
         </div>
         <div className="flex w-full flex-col items-center justify-center space-y-2">
-          <div className="flex w-full flex-wrap items-center justify-center gap-4 overflow-x-hidden py-2">
+          <div className="flex w-full flex-wrap items-center justify-center gap-4 py-2">
             <div className="relative z-10">
               <Button
                 color="sky"
@@ -434,8 +434,8 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                 // Role alert and aria-live announce to screen readers
                 role="alert"
                 aria-live="polite"
-                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-56 max-w-3xl origin-center rounded-md bg-sky-300 px-4 py-2 text-center text-sm font-bold ${
-                  saveWarning && "animate-popup"
+                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 h-0 max-w-3xl origin-center rounded-md bg-sky-300 px-4 py-2 text-center text-sm font-bold ${
+                  saveWarning && "animate-popup h-auto"
                 }`}
               >
                 <p
@@ -462,8 +462,8 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                 // Role alert and aria-live announce to screen readers
                 role="alert"
                 aria-live="polite"
-                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-64 max-w-3xl origin-center rounded-md bg-rose-300 px-4 py-2 text-center text-sm font-bold ${
-                  favoriteWarning && "animate-popup"
+                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 h-0 max-w-3xl origin-center rounded-md bg-rose-300 px-4 py-2 text-center text-sm font-bold ${
+                  favoriteWarning && "animate-popup h-auto"
                 }`}
               >
                 <p
@@ -486,8 +486,8 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
                 // Role alert and aria-live announce to screen readers
                 role="alert"
                 aria-live="polite"
-                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 w-56 max-w-3xl origin-center rounded-md bg-violet-300 px-4 py-2 text-center text-sm font-bold ${
-                  copying && "animate-popup"
+                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 h-0 w-56 max-w-3xl origin-center rounded-md bg-violet-300 px-4 py-2 text-center text-sm font-bold ${
+                  copying && "animate-popup h-auto"
                 }`}
               >
                 <p className={`${!copying && "hidden"} flex items-center`}>

@@ -109,7 +109,9 @@ export function calculateStudentPrice(
   const booksupply = school.latest.cost.booksupply;
   const otherExpenses = school.latest.cost.otherexpense.oncampus;
 
-  return tuition + roomboard + booksupply + otherExpenses - aidAmount;
+  const total = tuition + roomboard + booksupply + otherExpenses - aidAmount;
+
+  return total > 0 ? total : 0;
 }
 
 /**
@@ -174,6 +176,7 @@ export async function calculateScore(
     aidAmount,
     location
   );
+
   const studentPriceDifference = calculateDifference(
     studentPrice,
     averageNetPrice
@@ -194,9 +197,13 @@ export async function calculateScore(
 
   let studentScore = 0;
 
-  studentScore += scoreDifferential(studentPriceDifference, "greater");
-  studentScore += scoreDifferential(studentPriceDifference, "greater");
-  studentScore += scoreDifferential(studentPriceDifference, "greater");
+  if (studentPrice !== 0) {
+    studentScore += scoreDifferential(studentPriceDifference, "greater");
+    studentScore += scoreDifferential(studentPriceDifference, "greater");
+    studentScore += scoreDifferential(studentPriceDifference, "greater");
+  } else {
+    studentScore += 10;
+  }
 
   score += studentScore;
 
