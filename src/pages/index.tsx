@@ -147,8 +147,8 @@ const Homepage: NextPage = () => {
               What type of location is the aid?
             </h2>
             <div className="mx-auto text-center">
-              <div className="mx-auto flex w-56 flex-col rounded-2xl border-2 border-gray-300 bg-white p-4 text-left focus-within:border-emerald-700">
-                <div className="flex items-center justify-between">
+              <div className="mx-auto flex w-56 flex-col space-y-2 text-left">
+                <div className="flex items-center justify-between rounded-2xl border-2 border-gray-300 bg-white px-4 py-2 focus-within:border-emerald-700">
                   <label htmlFor="inState" className="mr-1 text-xl">
                     In-state
                   </label>
@@ -160,7 +160,7 @@ const Homepage: NextPage = () => {
                     {...register("location", { required: true })}
                   />
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between rounded-2xl border-2 border-gray-300 bg-white px-4 py-2 focus-within:border-emerald-700">
                   <label htmlFor="outState" className="mr-1 text-xl">
                     Out-of-state
                   </label>
