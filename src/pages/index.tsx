@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import type { NextPage } from "next";
+import { useLayoutEffect, useRef, useState } from "react";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { FaArrowDown } from "react-icons/fa";
@@ -12,7 +12,8 @@ import Header from "../components/header";
 import SchoolSearch from "../components/school-search";
 import { calculateScore, LocationType } from "../utils/calculate-score";
 import { useGradeMutation } from "../utils/hooks/use-grade";
-import { upsertProfile } from "../utils/hooks/use-profile";
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "../utils/database.types";
 
 /** TYPES */
 type FormValues = {
@@ -44,12 +45,6 @@ const Homepage: NextPage = () => {
   const schoolValue = watch("school")?.value;
   const locationValue = watch("location");
   const gradeMutation = useGradeMutation();
-
-  useEffect(() => {
-    if (user) {
-      upsertProfile(user);
-    }
-  }, [user]);
 
   const onSubmit = async (data: FormValues) => {
     // set loading state
@@ -265,3 +260,29 @@ const Homepage: NextPage = () => {
 };
 
 export default Homepage;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const supabase = createServerSupabaseClient<Database>(context);
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // If the user is authenticated, ensure the profiles entry exists and is updated
+  if (user) {
+    try {
+      await supabase.from("profiles").upsert({
+        id: user.id,
+        email: user?.email,
+        full_name: user.user_metadata?.full_name ?? undefined,
+        avatar_url: user.user_metadata?.avatar_url ?? undefined,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  return {
+    props: {},
+  };
+};
