@@ -1,22 +1,13 @@
-import { useUser } from "@supabase/auth-helpers-react";
-import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
+
 import Header from "../components/header";
+import { Database } from "../utils/database.types";
 import supabase from "../utils/supabase";
 
 const SignUpPage = () => {
-  const user = useUser();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (user) {
-      router.push("/");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
   return (
     <div>
       <Head>
@@ -47,3 +38,21 @@ const SignUpPage = () => {
 };
 
 export default SignUpPage;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const supabase = createServerSupabaseClient<Database>(context);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};
