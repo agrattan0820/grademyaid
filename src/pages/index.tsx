@@ -1,16 +1,17 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { FaArrowDown } from "react-icons/fa";
 import { useForm, Controller } from "react-hook-form";
 import { useSpring } from "framer-motion";
+import { useUser } from "@supabase/auth-helpers-react";
+import { NumericFormat } from "react-number-format";
 
 import Header from "../components/header";
 import SchoolSearch from "../components/school-search";
-import { useRouter } from "next/router";
 import { calculateScore, LocationType } from "../utils/calculate-score";
 import { useGradeMutation } from "../utils/hooks/use-grade";
-import { useUser } from "@supabase/auth-helpers-react";
 import { upsertProfile } from "../utils/hooks/use-profile";
 
 /** TYPES */
@@ -23,7 +24,7 @@ type FormValues = {
   /** Whether the aid is for in-state or out-of-state */
   location: LocationType;
   /** Amount of aid the institution provides the student */
-  aidAmount: number;
+  aidAmount: string;
 };
 
 const Homepage: NextPage = () => {
@@ -51,16 +52,20 @@ const Homepage: NextPage = () => {
   }, [user]);
 
   const onSubmit = async (data: FormValues) => {
+    // set loading state
     setLoading(true);
-    console.log(data);
+
+    // remove thousand separator and dollar sign from input
+    const aidAmount = Number(data.aidAmount.replace(/[^0-9.-]+/g, ""));
+
     const scoreResult = await calculateScore(
       data.school.value,
-      data.aidAmount,
+      aidAmount,
       data.location
     );
     const gradeResult = await gradeMutation.mutateAsync({
       schoolId: data.school.value,
-      aidAmount: data.aidAmount,
+      aidAmount: aidAmount,
       location: data.location,
       gradeNum: scoreResult,
       userId: user?.id,
@@ -208,14 +213,23 @@ const Homepage: NextPage = () => {
               What was your yearly aid amount?
             </h2>
             <div className="mx-auto text-center">
-              <input
-                type="number"
-                className="form-input w-80 rounded-full border-2 border-gray-300 px-4 py-2 ring-gray-300 focus:border-emerald-700 focus:outline-none focus:ring-emerald-700"
-                placeholder="Enter your yearly aid amount..."
-                min="0"
-                {...register("aidAmount", {
-                  required: "The aid amount field is required",
-                })}
+              <Controller
+                control={control}
+                name="aidAmount"
+                rules={{ required: "The aid amount field is required" }}
+                render={({ field: { onChange, value } }) => (
+                  <NumericFormat
+                    allowNegative={false}
+                    decimalScale={2}
+                    onValueChange={(v) => {
+                      onChange(v.formattedValue);
+                    }}
+                    thousandSeparator=","
+                    prefix="$"
+                    value={value}
+                    className="form-input w-80 rounded-full border-2 border-gray-300 px-4 py-2 ring-gray-300 focus:border-emerald-700 focus:outline-none focus:ring-emerald-700"
+                  />
+                )}
               />
             </div>
             {errors?.aidAmount && (
