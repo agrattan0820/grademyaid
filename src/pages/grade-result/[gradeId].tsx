@@ -162,31 +162,6 @@ const SchoolInfo = ({
 
 type PageProps = {
   grade: Database["public"]["Tables"]["grade"]["Row"];
-  // TODO: Type school response
-  saveGrade: {
-    grade_id: number;
-  } & {
-    grade:
-      | ({
-          school_id: number;
-        } & {
-          grade_num: number | null;
-        } & {
-          financial_aid: number | null;
-        } & {
-          in_out_loc: string | null;
-        })
-      | ({
-          school_id: number;
-        } & {
-          grade_num: number | null;
-        } & {
-          financial_aid: number | null;
-        } & {
-          in_out_loc: string | null;
-        })[]
-      | null;
-  };
   favoriteSchool: {
     fav_school_id: number;
     school_id: number;
@@ -197,9 +172,7 @@ type PageProps = {
 const GradeResultPage: NextPage<PageProps> = (props) => {
   const router = useRouter();
   const [copying, setCopying] = useState(false);
-  const [saveWarning, setSaveWarning] = useState(false);
   const [favoriteWarning, setFavoriteWarning] = useState(false);
-  const [isSaved, setIsSaved] = useState(!!props.saveGrade);
   const [isFavorited, setIsFavorited] = useState(!!props.favoriteSchool);
 
   const user = useUser();
@@ -208,9 +181,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
   const { gradeId: routerGradeId } = router.query;
   const gradeId = Number.parseInt(routerGradeId as string);
   const grade = useGrade(gradeId, props.grade);
-  const saveGradeMutation = useSaveGradeMutation();
   const favoriteMutation = useFavoriteSchoolMutation();
-  const deleteSaveGradeMutation = useDeleteSaveGradeMutation();
   const deleteFavoriteMutation = useDeleteFavoriteSchoolMutation();
   const location =
     props?.grade?.in_out_loc === "inState" ? "in_state" : "out_of_state";
@@ -246,30 +217,6 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
         })
         .catch(console.error);
     }
-  };
-
-  const onSaveGradeClick = async (userId: string, gradeId: number) => {
-    const gradeExistsAlready = await getSavedGradeById(gradeId, userId);
-    if (gradeExistsAlready) {
-      console.log("Unsaving Grade");
-      await deleteSaveGradeMutation.mutateAsync({ gradeId, accountId: userId });
-      setIsSaved(false);
-    } else {
-      console.log("Saving Grade");
-      await saveGradeMutation.mutateAsync({
-        gradeId: gradeId,
-        accountId: userId,
-      });
-      setIsSaved(true);
-    }
-  };
-
-  /** If User is not defined show a warning when pressing the save grade button */
-  const showSaveLoginWarning = () => {
-    setSaveWarning(true);
-    setTimeout(() => {
-      setSaveWarning(false);
-    }, 2000);
   };
 
   const onFavoriteSchoolClick = async (userId: string, schoolId: number) => {
@@ -494,22 +441,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     .single();
 
   if (grade) {
-    const { data: saveGrade } = await supabase
-      .from("saved_grades")
-      .select(
-        `
-      grade_id,
-      grade (
-        school_id,
-        grade_num,
-        financial_aid,
-        in_out_loc
-      )`
-      )
-      .eq("account_id", session?.user.id)
-      .eq("grade_id", grade.grade_id)
-      .single();
-
     const { data: favoriteSchool } = await supabase
       .from("favorited_schools")
       .select()
@@ -517,7 +448,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       .eq("account_id", session?.user.id)
       .single();
 
-    return { props: { grade, saveGrade, favoriteSchool } };
+    return { props: { grade, favoriteSchool } };
   }
   return { props: {} };
 };
