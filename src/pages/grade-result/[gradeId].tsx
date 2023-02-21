@@ -426,34 +426,6 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
           <div className="flex w-full flex-wrap items-center justify-center gap-4 py-2">
             <div className="relative z-10">
               <Button
-                color="sky"
-                label="Save Grade"
-                icon={isSaved ? <FaBookmark /> : <FaRegBookmark />}
-                onClick={() =>
-                  user
-                    ? onSaveGradeClick(user?.id, gradeId)
-                    : showSaveLoginWarning()
-                }
-              />
-              <div
-                // Role alert and aria-live announce to screen readers
-                role="alert"
-                aria-live="polite"
-                className={`share-popup pointer-events-none absolute top-0 left-1/2 z-10 h-0 w-56 max-w-3xl origin-center rounded-md bg-sky-300 text-center text-sm font-bold ${
-                  saveWarning && "animate-popup h-auto px-4 py-2"
-                }`}
-              >
-                <p
-                  className={`${
-                    !saveWarning && "hidden"
-                  } flex items-center justify-center`}
-                >
-                  Login first to save a grade!
-                </p>
-              </div>
-            </div>
-            <div className="relative z-10">
-              <Button
                 color="rose"
                 label="Favorite School"
                 icon={isFavorited ? <FaHeart /> : <FaRegHeart />}

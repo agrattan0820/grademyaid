@@ -1,6 +1,6 @@
-import router, { useRouter } from "next/router";
-import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useState } from "react";
 import Head from "next/head";
 import Header from "../components/header";
 import { FaUser } from "react-icons/fa";
@@ -15,8 +15,8 @@ import { Database } from "../utils/database.types";
 import Button from "../components/button";
 import Link from "next/link";
 import { numberWithCommas } from "../utils/formatters";
-import { useSavedGrades } from "../utils/hooks/use-saved-grades";
 import { useFavoritedSchools } from "../utils/hooks/use-favorited-schools";
+import { useUserGrades } from "../utils/hooks/use-grades";
 
 type SavedGradeListingProps = {
   grade: number;
@@ -26,7 +26,7 @@ type SavedGradeListingProps = {
   location: "inState" | "outState";
 };
 
-const SavedGradeListing = ({
+const GradeListing = ({
   grade,
   link,
   school,
@@ -109,10 +109,9 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
   const [pageName, setPageName] = useState<pageTypes>(
     (router.query.page as pageTypes) ?? "account"
   );
-  const savedGrades = useSavedGrades(props.user.id);
-  const favoritedSchools = useFavoritedSchools(props.user.id);
 
-  console.log(savedGrades.data);
+  const userGrades = useUserGrades(props.user.id);
+  const favoritedSchools = useFavoritedSchools(props.user.id);
 
   async function signOut() {
     const { error } = await supabase.auth.signOut();
@@ -139,8 +138,6 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
   async function selectGetGrade() {
     router.push(`/`);
   }
-
-  console.log(props.user);
 
   return (
     <div>
@@ -243,44 +240,16 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
               // === compares types as well as the value
               pageName === "grades" && (
                 <div className="mx-auto grid max-w-5xl gap-16 lg:grid-cols-2">
-                  {!savedGrades.isLoading && (
+                  {!userGrades.isLoading && (
                     <>
-                      {savedGrades.data?.map((grade, i) => (
-                        <SavedGradeListing
+                      {userGrades.data?.map((grade, i) => (
+                        <GradeListing
                           key={i}
-                          grade={
-                            grade.grade && Array.isArray(grade?.grade)
-                              ? grade?.grade[0].grade_num
-                              : grade.grade
-                              ? grade?.grade?.grade_num
-                              : 0
-                          }
-                          aidAmount={
-                            grade.grade && Array.isArray(grade?.grade)
-                              ? grade?.grade[0].financial_aid
-                              : grade.grade
-                              ? grade?.grade?.financial_aid
-                              : 0
-                          }
-                          school={
-                            grade.grade && Array.isArray(grade?.grade)
-                              ? grade?.grade[0].school_name ?? ""
-                              : grade.grade
-                              ? grade?.grade?.school_name ?? ""
-                              : ""
-                          }
+                          grade={grade.grade_num}
+                          aidAmount={grade?.financial_aid}
+                          school={grade?.school_name ?? ""}
                           link={`/grade-result/${grade.grade_id}`}
-                          location={
-                            grade.grade && Array.isArray(grade?.grade)
-                              ? (grade?.grade[0].in_out_loc as
-                                  | "inState"
-                                  | "outState")
-                              : grade.grade
-                              ? (grade?.grade?.in_out_loc as
-                                  | "inState"
-                                  | "outState")
-                              : "inState"
-                          }
+                          location={grade?.in_out_loc as "inState" | "outState"}
                         />
                       ))}
                     </>
