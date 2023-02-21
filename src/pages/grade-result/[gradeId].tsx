@@ -195,15 +195,6 @@ type PageProps = {
 };
 
 const GradeResultPage: NextPage<PageProps> = (props) => {
-  /**
-   * Tasks
-   * - Save grade to Supabase database
-   * - Pull in grade from data, Zustand?
-   * - Show info on the school
-   * - Show share button
-   * - Show save button
-   */
-
   const router = useRouter();
   const [copying, setCopying] = useState(false);
   const [saveWarning, setSaveWarning] = useState(false);
