@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import supabase from "../supabase";
 
 /** GET saved grade by id */
@@ -28,8 +28,17 @@ export const getSavedGradeById = async (gradeId: number, accountId: string) => {
 };
 
 /** HOOK get saved grade by id */
-export function useSavedGradeById(gradeId: number, accountId: string) {
-  return useQuery(["saved-grade", gradeId, accountId], () =>
-    getSavedGradeById(gradeId, accountId)
+export function useSavedGradeById(
+  gradeId: number,
+  accountId: string,
+  options?: Omit<
+    UseQueryOptions<unknown, unknown, unknown, (string | number)[]>,
+    "initialData" | "queryFn" | "queryKey"
+  >
+) {
+  return useQuery(
+    ["saved-grade", gradeId, accountId],
+    () => getSavedGradeById(gradeId, accountId),
+    options
   );
 }

@@ -1,10 +1,18 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { SupabaseClient } from "@supabase/supabase-js";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { LocationType } from "../calculate-score";
 import { Database } from "../database.types";
-import supabase from "../supabase";
 
 /** GET calculated grade */
-export const getGrade = async (gradeId: number) => {
+export const getGrade = async (
+  supabase: SupabaseClient<Database>,
+  gradeId: number
+) => {
   const { data, error } = await supabase
     .from("grade")
     .select()
@@ -23,16 +31,23 @@ export const getGrade = async (gradeId: number) => {
 };
 
 /** HOOK get calculated grade */
-export function useGrade(
-  gradeId: number,
-  initialData?: Database["public"]["Tables"]["grade"]["Row"]
+export function useGrade(supabase: SupabaseClient<Database>, gradeId: number) {
+  return useQuery(["grade", gradeId], () => getGrade(supabase, gradeId));
+}
+
+/** HOOK get calculated grade */
+export function prefetchGrade(
+  queryClient: QueryClient,
+  supabase: SupabaseClient<Database>,
+  gradeId: number
 ) {
-  return useQuery(["grade", gradeId], () => getGrade(gradeId), {
-    initialData: initialData,
-  });
+  return queryClient.prefetchQuery(["grade", gradeId], () =>
+    getGrade(supabase, gradeId)
+  );
 }
 
 type PostGradeProps = {
+  supabase: SupabaseClient<Database>;
   gradeNum: number;
   userId?: string;
   location: LocationType;
@@ -43,6 +58,7 @@ type PostGradeProps = {
 
 /** POST calculated grade */
 const postGrade = async ({
+  supabase,
   gradeNum,
   userId,
   location,

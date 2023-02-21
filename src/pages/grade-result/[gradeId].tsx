@@ -15,7 +15,7 @@ import { FiRefreshCw, FiShare } from "react-icons/fi";
 import { numberWithCommas } from "../../utils/formatters";
 import Header from "../../components/header";
 import Button from "../../components/button";
-import { useGrade } from "../../utils/hooks/use-grade";
+import { prefetchGrade, useGrade } from "../../utils/hooks/use-grade";
 import { Database } from "../../utils/database.types";
 import { useSchool } from "../../utils/hooks/use-school";
 import {
@@ -32,6 +32,8 @@ import {
 } from "../../utils/hooks/use-favorited-schools";
 import { calculateStudentPrice } from "../../utils/calculate-score";
 import LoadingSpinner from "../../components/loading-spinner";
+import { QueryClient } from "@tanstack/react-query";
+import supabase from "../../utils/supabase";
 
 type SchoolInfoProps = {
   tuition: number;
@@ -216,7 +218,7 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
   // Grade fetching
   const { gradeId: routerGradeId } = router.query;
   const gradeId = Number.parseInt(routerGradeId as string);
-  const grade = useGrade(gradeId, props.grade);
+  const grade = useGrade(supabase, gradeId);
   const saveGradeMutation = useSaveGradeMutation();
   const favoriteMutation = useFavoriteSchoolMutation();
   const deleteSaveGradeMutation = useDeleteSaveGradeMutation();
@@ -517,6 +519,7 @@ export default GradeResultPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const supabase = createServerSupabaseClient<Database>(context);
+  const queryClient = new QueryClient();
 
   const {
     data: { session },
@@ -524,11 +527,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const { gradeId } = context.query;
 
-  const { data: grade } = await supabase
-    .from("grade")
-    .select()
-    .eq("grade_id", Number.parseInt(gradeId as string))
-    .single();
+  const grade = await prefetchGrade(
+    queryClient,
+    supabase,
+    Number.parseInt(gradeId as string)
+  );
 
   if (grade) {
     const { data: saveGrade } = await supabase
