@@ -216,6 +216,7 @@ const Homepage: NextPage = () => {
                     thousandSeparator=","
                     prefix="$"
                     value={value}
+                    placeholder="Enter your yearly aid amount..."
                     className="form-input w-80 rounded-full border-2 border-gray-300 px-4 py-2 ring-gray-300 focus:border-emerald-700 focus:outline-none focus:ring-emerald-700"
                   />
                 )}
