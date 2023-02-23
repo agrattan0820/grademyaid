@@ -11,6 +11,7 @@ export const fetchSchools = () =>
       per_page: 20,
       fields: "id,school.name",
       api_key: process.env.NEXT_PUBLIC_COLLEGE_SCORECARD_API_KEY,
+      "school.degrees_awarded.predominant": [2, 3],
     },
   });
 
