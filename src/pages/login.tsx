@@ -5,12 +5,14 @@ import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import Header from "../components/header";
 import { Database } from "../utils/database.types";
 import supabase from "../utils/supabase";
-import SEO from "../components/seo";
+import Head from "next/head";
 
 const LoginPage = () => {
   return (
     <div>
-      <SEO title="Login - GradeMyAid" />
+      <Head>
+        <title>Login - GradeMyAid</title>
+      </Head>
       <Header />
       <main className="relative flex min-h-screen items-center justify-center bg-emerald-100">
         <div className="w-full max-w-xl rounded-2xl bg-white p-16 shadow-lg shadow-emerald-200">

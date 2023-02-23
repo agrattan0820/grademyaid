@@ -1,6 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { FaArrowDown } from "react-icons/fa";
 import { useForm, Controller } from "react-hook-form";
@@ -14,7 +13,6 @@ import { calculateScore, LocationType } from "../utils/calculate-score";
 import { useGradeMutation } from "../utils/hooks/use-grade";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "../utils/database.types";
-import SEO from "../components/seo";
 
 /** TYPES */
 type FormValues = {
@@ -99,7 +97,6 @@ const Homepage: NextPage = () => {
 
   return (
     <div>
-      <SEO />
       <Header />
       <main>
         <section className="relative flex min-h-screen items-center justify-center bg-emerald-100">

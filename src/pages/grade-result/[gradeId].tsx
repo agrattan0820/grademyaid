@@ -4,13 +4,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 
-import {
-  FaBookmark,
-  FaHeart,
-  FaLink,
-  FaRegBookmark,
-  FaRegHeart,
-} from "react-icons/fa";
+import { FaHeart, FaLink, FaRegHeart } from "react-icons/fa";
 import { FiRefreshCw, FiShare } from "react-icons/fi";
 import { numberWithCommas } from "../../utils/formatters";
 import Header from "../../components/header";
@@ -18,12 +12,7 @@ import Button from "../../components/button";
 import { useGrade } from "../../utils/hooks/use-grade";
 import { Database } from "../../utils/database.types";
 import { useSchool } from "../../utils/hooks/use-school";
-import {
-  useSaveGradeMutation,
-  useDeleteSaveGradeMutation,
-} from "../../utils/hooks/use-saved-grades";
 import { useUser } from "@supabase/auth-helpers-react";
-import { getSavedGradeById } from "../../utils/hooks/use-saved-grade-id";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import {
   getFavoriteSchoolById,
@@ -32,7 +21,6 @@ import {
 } from "../../utils/hooks/use-favorited-schools";
 import { calculateStudentPrice } from "../../utils/calculate-score";
 import LoadingSpinner from "../../components/loading-spinner";
-import SEO from "../../components/seo";
 
 type SchoolInfoProps = {
   tuition: number;
@@ -253,7 +241,9 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
 
   return (
     <div>
-      <SEO title={`Grade Result - GradeMyAid`} />
+      <Head>
+        <title>Grade Result - GradeMyAid</title>
+      </Head>
       <Header />
       <main className="flex min-h-screen flex-col items-center justify-center space-y-12 bg-emerald-200 px-8 pt-32 pb-28">
         <div className="flex flex-col-reverse items-start justify-center md:flex-row md:space-x-8">

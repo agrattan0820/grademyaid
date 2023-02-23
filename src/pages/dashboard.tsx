@@ -17,7 +17,6 @@ import Link from "next/link";
 import { numberWithCommas } from "../utils/formatters";
 import { useFavoritedSchools } from "../utils/hooks/use-favorited-schools";
 import { useUserGrades } from "../utils/hooks/use-grades";
-import SEO from "../components/seo";
 
 type SavedGradeListingProps = {
   grade: number;
@@ -142,7 +141,9 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
 
   return (
     <div>
-      <SEO title="Dashboard - GradeMyAid" />
+      <Head>
+        <title>Dashboard - GradeMyAid</title>
+      </Head>
       <Header />
       <main className="min-h-screen bg-green-100">
         <div className="container mx-auto py-28 px-4 text-center">
