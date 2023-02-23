@@ -35,8 +35,12 @@ const GradeListing = ({
 }: SavedGradeListingProps) => {
   return (
     <Link href={link}>
-      <div className="relative mx-auto flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-2xl bg-white px-12 shadow shadow-emerald-200 ring-emerald-200 transition hover:ring-4 md:w-96 md:px-20">
-        <div className="absolute -top-4 -left-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-400 md:-top-8 md:-left-8 md:h-24 md:w-24">
+      <div className="relative mx-auto flex min-h-[8rem] w-full cursor-pointer flex-col items-center justify-center rounded-2xl bg-white px-12 py-4 shadow shadow-emerald-200 ring-emerald-200 transition hover:ring-4 md:w-96 md:px-20">
+        <div
+          className={`absolute -top-4 -left-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-400 ${
+            grade <= 3 ? "bg-rose-500" : ""
+          } md:-top-8 md:-left-8 md:h-24 md:w-24`}
+        >
           <p className="text-2xl font-bold text-black md:text-4xl">{grade}</p>
         </div>
         <div className="w-full text-left">
@@ -186,7 +190,7 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
                 }`}
                 onClick={selectGrades}
               >
-                Saved Grades
+                Grades
               </button>
               {/* End Saved Grades side bar element*/}
 
