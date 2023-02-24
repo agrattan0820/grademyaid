@@ -25,21 +25,25 @@ const Header = () => {
             <>
               <div className="hidden md:block">
                 <Link href="/login">
-                  <Button color="black" label="Login" outline />
+                  <Button color="black" outline>
+                    Login
+                  </Button>
                 </Link>
               </div>
               <Link href="/sign-up">
-                <Button color="black" label="Sign up" />
+                <Button color="black">Sign up</Button>
               </Link>
             </>
           ) : (
             <>
               <Link href="/dashboard">
-                <Button color="black" label="Dashboard" />
+                <Button color="black">Dashboard</Button>
               </Link>
               <div className="hidden md:block">
                 <Link href="/dashboard?page=grades">
-                  <Button color="black" icon={<FaHeart />} outline />
+                  <Button color="black" size="icon" outline>
+                    <FaHeart />
+                  </Button>
                 </Link>
               </div>
             </>

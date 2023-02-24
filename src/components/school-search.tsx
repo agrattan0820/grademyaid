@@ -7,7 +7,7 @@ import { GroupBase, StylesConfig } from "react-select";
 /** TYPES */
 type Props = {
   /** onChange handler */
-  handleChange: (e?: any) => void;
+  handleChange: (...event: any[]) => void;
 };
 
 type SchoolOption = {
