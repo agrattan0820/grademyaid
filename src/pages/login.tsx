@@ -1,5 +1,7 @@
 import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
+import { useUser } from "@supabase/auth-helpers-react";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 
 import Header from "../components/header";
@@ -8,6 +10,17 @@ import supabase from "../utils/supabase";
 import Head from "next/head";
 
 const LoginPage = () => {
+  const user = useUser();
+  const router = useRouter();
+
+  /**
+   * If the page rerenders and the user is logged in,
+   * redirect them to the homepage
+   * */
+  if (user) {
+    router.push("/");
+  }
+
   return (
     <div>
       <Head>
@@ -25,8 +38,7 @@ const LoginPage = () => {
             }
             appearance={{ theme: ThemeSupa }}
             theme="default"
-            providers={["google", "facebook"]}
-            socialLayout="horizontal"
+            providers={["google"]}
           />
         </div>
       </main>

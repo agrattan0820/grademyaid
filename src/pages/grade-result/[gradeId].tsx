@@ -352,14 +352,17 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
             <div className="relative z-10">
               <Button
                 color="rose"
-                label="Favorite School"
-                icon={isFavorited ? <FaHeart /> : <FaRegHeart />}
                 onClick={() =>
                   user
                     ? onFavoriteSchoolClick(user?.id, schoolData.id)
                     : showFavoriteLoginWarning()
                 }
-              />
+              >
+                <span className="mr-2">
+                  {isFavorited ? <FaHeart /> : <FaRegHeart />}
+                </span>
+                <span>Favorite School</span>
+              </Button>
               <div
                 // Role alert and aria-live announce to screen readers
                 role="alert"
@@ -378,12 +381,12 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
               </div>
             </div>
             <div className="relative z-10">
-              <Button
-                onClick={onShareClick}
-                color="violet"
-                label="Share Grade"
-                icon={<FiShare />}
-              />
+              <Button onClick={onShareClick} color="violet">
+                <span className="mr-2">
+                  <FiShare />
+                </span>
+                <span>Share Grade</span>
+              </Button>
               <div
                 // Role alert and aria-live announce to screen readers
                 role="alert"
@@ -398,12 +401,12 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
               </div>
             </div>
           </div>
-          <Button
-            color="emerald"
-            label="Do Another Grade"
-            icon={<FiRefreshCw />}
-            onClick={() => router.push("/")}
-          />
+          <Button color="emerald" onClick={() => router.push("/")}>
+            <span className="mr-2">
+              <FiRefreshCw />
+            </span>
+            <span>Do Another Grade</span>
+          </Button>
         </div>
       </main>
     </div>

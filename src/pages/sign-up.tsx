@@ -1,6 +1,8 @@
 import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import { Auth, ThemeSupa } from "@supabase/auth-ui-react";
+import { useUser } from "@supabase/auth-helpers-react";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 
 import Header from "../components/header";
@@ -8,10 +10,21 @@ import { Database } from "../utils/database.types";
 import supabase from "../utils/supabase";
 
 const SignUpPage = () => {
+  const user = useUser();
+  const router = useRouter();
+
+  /**
+   * If the page rerenders and the user is logged in,
+   * redirect them to the homepage
+   * */
+  if (user) {
+    router.push("/");
+  }
+
   return (
     <div>
       <Head>
-        <title>Login - GradeMyAid</title>
+        <title>Sign Up - GradeMyAid</title>
       </Head>
       <Header />
       <main className="relative flex min-h-screen items-center justify-center bg-emerald-100">
@@ -25,8 +38,7 @@ const SignUpPage = () => {
             }
             appearance={{ theme: ThemeSupa }}
             theme="default"
-            providers={["google", "facebook"]}
-            socialLayout="horizontal"
+            providers={["google"]}
             view="sign_up"
           />
         </div>

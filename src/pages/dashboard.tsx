@@ -78,20 +78,14 @@ const FavoritedSchoolListing = ({
         <h3 className="mb-2 text-xl font-bold leading-none">{name}</h3>
         <div className="flex space-x-2">
           <a href={websiteLink} target="_blank" rel="noreferrer">
-            <Button
-              color="emerald"
-              label="Website"
-              size="small"
-              height="full"
-            />
+            <Button color="emerald" size="small" height="full">
+              Website
+            </Button>
           </a>
           <a href={priceCalculatorLink} target="_blank" rel="noreferrer">
-            <Button
-              color="emerald"
-              label="Price Calculator"
-              size="small"
-              outline
-            />
+            <Button color="emerald" size="small" outline>
+              Price Calculator
+            </Button>
           </a>
         </div>
       </div>
@@ -232,7 +226,9 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
                     <p>{props.user.email}</p>
                   </div>
                   <div>
-                    <Button color="rose" label="Logout" onClick={signOut} />
+                    <Button color="rose" onClick={signOut}>
+                      Logout
+                    </Button>
                   </div>
                 </div>
               )
