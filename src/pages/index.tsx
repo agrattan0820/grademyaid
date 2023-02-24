@@ -142,7 +142,7 @@ const Homepage: NextPage = () => {
             </h2>
             <div className="mx-auto text-center">
               <div className="mx-auto flex w-56 flex-col space-y-2 text-left">
-                <div className="rounded-2xl border-2 border-gray-300 bg-white px-4 py-2 focus-within:border-emerald-700">
+                <div className="rounded-full border-2 border-gray-300 bg-white px-4 py-2 focus-within:border-emerald-700">
                   <label
                     htmlFor="inState"
                     className="flex items-center justify-between"
@@ -153,11 +153,13 @@ const Homepage: NextPage = () => {
                       id="inState"
                       value="inState"
                       className="form-radio text-emerald-700 focus:ring-emerald-700"
-                      {...register("location", { required: true })}
+                      {...register("location", {
+                        required: "The location field is required",
+                      })}
                     />
                   </label>
                 </div>
-                <div className=" rounded-2xl border-2 border-gray-300 bg-white px-4 py-2 focus-within:border-emerald-700">
+                <div className=" rounded-full border-2 border-gray-300 bg-white px-4 py-2 focus-within:border-emerald-700">
                   <label
                     htmlFor="outState"
                     className="flex items-center justify-between"
