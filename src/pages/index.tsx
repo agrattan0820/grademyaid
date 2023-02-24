@@ -88,7 +88,7 @@ const Homepage: NextPage = () => {
     });
   }, [spring]);
 
-  const moveTo = (to: any) => {
+  const moveTo = (to?: number) => {
     spring.set(window.pageYOffset, false);
     setTimeout(() => {
       spring.set(to);
