@@ -5,7 +5,13 @@ import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 
 import { FaHeart, FaLink, FaRegHeart } from "react-icons/fa";
-import { FiRefreshCw, FiShare, FiArrowDown, FiArrowUp } from "react-icons/fi";
+import {
+  FiRefreshCw,
+  FiShare,
+  FiArrowDown,
+  FiArrowUp,
+  FiInfo,
+} from "react-icons/fi";
 import { decimalAsPercent, numberWithCommas } from "../../utils/formatters";
 import Header from "../../components/header";
 import Button from "../../components/button";
@@ -21,6 +27,7 @@ import {
 } from "../../utils/hooks/use-favorited-schools";
 import { calculateStudentPrice } from "../../utils/calculate-score";
 import LoadingSpinner from "../../components/loading-spinner";
+import { usePopper } from "react-popper";
 
 type StatBlockProps = {
   name: string;
@@ -64,6 +71,12 @@ const SchoolInfo = ({
   financialAid,
   location,
 }: SchoolInfoProps) => {
+  const [referenceElement, setReferenceElement] =
+    useState<HTMLButtonElement | null>(null);
+  const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
+  const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
+  const { styles, attributes } = usePopper(referenceElement, popperElement);
+
   const data = {
     acceptanceRate: schoolData.latest.admissions.admission_rate.overall,
     graduationRate: {
@@ -150,7 +163,26 @@ const SchoolInfo = ({
           {data.yourNetPrice === 0 ? "Free 🎉" : data.yourNetPrice}
         </StatBlock>
         <div className="col-span-2 flex items-center justify-between rounded-xl bg-emerald-50 p-8 text-xl font-bold shadow-emerald-300">
-          <p>Your Price Difference</p>
+          <p className="flex items-center">
+            Your Price Difference{" "}
+            <button
+              className="ml-1.5"
+              onClick={() => setTooltipIsOpen(!tooltipIsOpen)}
+              ref={setReferenceElement}
+            >
+              <FiInfo />
+            </button>
+            {tooltipIsOpen && (
+              <div
+                className="bg-emerald-500 text-white"
+                ref={setPopperElement}
+                style={styles.popper}
+                {...attributes.popper}
+              >
+                Popper element
+              </div>
+            )}
+          </p>
           {data.yourNetPrice - data.netPrice.stat > 0 ? (
             <p className="text-rose-600">
               {numberWithCommas(data.yourNetPrice - data.netPrice.stat, true)}
