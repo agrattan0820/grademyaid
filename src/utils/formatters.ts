@@ -9,3 +9,7 @@ export function numberWithCommas(x?: number, dollar?: boolean) {
 
   return addDollar;
 }
+
+export function decimalAsPercent(x: number) {
+  return (x * 100).toFixed(2) + "%";
+}
