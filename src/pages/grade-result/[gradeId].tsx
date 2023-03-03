@@ -2,8 +2,10 @@ import React, { ReactNode, useState } from "react";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { motion } from "framer-motion";
-
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { useUser } from "@supabase/auth-helpers-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { usePopper } from "react-popper";
 import { FaHeart, FaLink, FaRegHeart } from "react-icons/fa";
 import {
   FiRefreshCw,
@@ -11,15 +13,15 @@ import {
   FiArrowDown,
   FiArrowUp,
   FiInfo,
+  FiPlus,
 } from "react-icons/fi";
+
 import { decimalAsPercent, numberWithCommas } from "../../utils/formatters";
 import Header from "../../components/header";
 import Button from "../../components/button";
 import { useGrade } from "../../utils/hooks/use-grade";
 import { Database } from "../../utils/database.types";
 import { useSchool } from "../../utils/hooks/use-school";
-import { useUser } from "@supabase/auth-helpers-react";
-import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import {
   getFavoriteSchoolById,
   useDeleteFavoriteSchoolMutation,
@@ -27,7 +29,7 @@ import {
 } from "../../utils/hooks/use-favorited-schools";
 import { calculateStudentPrice } from "../../utils/calculate-score";
 import LoadingSpinner from "../../components/loading-spinner";
-import { usePopper } from "react-popper";
+import Modal from "../../components/modal";
 
 type StatBlockProps = {
   name: string;
@@ -75,6 +77,7 @@ const SchoolInfo = ({
     useState<HTMLButtonElement | null>(null);
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
   const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const { styles, attributes } = usePopper(referenceElement, popperElement);
 
   const data = {
@@ -118,7 +121,7 @@ const SchoolInfo = ({
 
   return (
     <>
-      <section className="grid gap-4 lg:grid-cols-2">
+      <section className="relative grid gap-4 lg:grid-cols-2">
         <StatBlock
           name="Net Price Per Year"
           positive={data.netPrice.positive}
@@ -197,6 +200,25 @@ const SchoolInfo = ({
             </p>
           )}
         </div>
+        <AnimatePresence>
+          {modalOpen && (
+            <Modal
+              open={modalOpen}
+              onClose={() => setModalOpen(false)}
+              key="Sponsorship Form"
+            >
+              <div className="flex flex-col items-center justify-center space-y-4">
+                Hello there modal
+              </div>
+            </Modal>
+          )}
+        </AnimatePresence>
+        <button
+          className="absolute -bottom-8 flex items-center text-sm font-bold"
+          onClick={() => setModalOpen(!modalOpen)}
+        >
+          See More <FiPlus className="ml-1" />
+        </button>
       </section>
     </>
   );
