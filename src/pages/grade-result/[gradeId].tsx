@@ -170,21 +170,32 @@ const SchoolInfo = ({
             Your Price Difference{" "}
             <button
               className="ml-1.5"
-              onClick={() => setTooltipIsOpen(!tooltipIsOpen)}
+              onMouseEnter={() => setTooltipIsOpen(true)}
+              onMouseLeave={() => setTooltipIsOpen(false)}
               ref={setReferenceElement}
             >
               <FiInfo />
             </button>
-            {tooltipIsOpen && (
-              <div
-                className="bg-emerald-500 text-white"
-                ref={setPopperElement}
-                style={styles.popper}
-                {...attributes.popper}
-              >
-                Popper element
-              </div>
-            )}
+            <AnimatePresence>
+              {tooltipIsOpen && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="z-10 rounded-xl bg-emerald-500 py-2 px-4 text-sm text-white"
+                  ref={setPopperElement}
+                  style={styles.popper}
+                  {...attributes.popper}
+                >
+                  Price difference is the <i>average</i> net tuition minus{" "}
+                  <i>your</i> net tuition. <br />{" "}
+                  <span className="text-emerald-100">Green</span> means you
+                  would save more than an average student,{" "}
+                  <span className="text-rose-300">red</span> means you would
+                  spend more than an average student.
+                </motion.div>
+              )}
+            </AnimatePresence>
           </p>
           {data.yourNetPrice - data.netPrice.stat > 0 ? (
             <p className="text-rose-600">
@@ -207,7 +218,7 @@ const SchoolInfo = ({
               onClose={() => setModalOpen(false)}
               key="Sponsorship Form"
             >
-              <div className="flex flex-col items-center justify-center space-y-4">
+              <div className="mx-auto flex max-w-xl flex-col items-center justify-center space-y-4 rounded-2xl bg-white p-8 text-black">
                 Hello there modal
               </div>
             </Modal>
