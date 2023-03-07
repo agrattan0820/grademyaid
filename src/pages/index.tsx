@@ -38,7 +38,7 @@ const Homepage: NextPage = () => {
     handleSubmit,
     watch,
     control,
-    formState: { isSubmitting, isSubmitSuccessful, errors },
+    formState: { isSubmitting, errors },
   } = useForm<FormValues>();
   const [loading, setLoading] = useState(false);
   const schoolValue = watch("school")?.value;
