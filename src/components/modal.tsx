@@ -56,7 +56,7 @@ function Modal({
         >
           <motion.div
             variants={modal}
-            className="container relative z-50 overflow-y-auto p-8 text-white"
+            className="relative z-50 w-full max-w-2xl overflow-y-auto p-8 text-white"
             onClick={(e) => {
               e.stopPropagation();
             }}
@@ -70,7 +70,7 @@ function Modal({
             <button
               onClick={onClose}
               onKeyDown={onClose}
-              className="absolute top-0 right-0 m-2 h-4 w-4"
+              className="absolute top-0 right-0 m-2 text-2xl"
               tabIndex={-1}
               type="button"
             >
