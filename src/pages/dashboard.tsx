@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import Head from "next/head";
 import Header from "../components/header";
 import { FaUser } from "react-icons/fa";
@@ -93,6 +93,27 @@ const FavoritedSchoolListing = ({
   );
 };
 
+type SectionType = "account" | "grades" | "colleges";
+
+type SectionLinkProps = {
+  children: ReactNode | ReactNode[];
+  pageName: SectionType;
+  onClick: () => void;
+};
+
+const SectionLink = ({ children, pageName, onClick }: SectionLinkProps) => {
+  return (
+    <button
+      className={`rounded-full p-2 text-sm font-bold transition hover:ring-2 hover:ring-emerald-200 md:text-base ${
+        pageName === "grades" && "bg-emerald-200"
+      }`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
+
 type DashboardPageProps = {
   initialSession: Session;
   user: User;
@@ -102,10 +123,8 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
   const supabase = useSupabaseClient<Database>();
   const router = useRouter();
 
-  type pageTypes = "account" | "grades" | "colleges";
-
-  const [pageName, setPageName] = useState<pageTypes>(
-    (router.query.page as pageTypes) ?? "account"
+  const [section, setSection] = useState<SectionType>(
+    (router.query.page as SectionType) ?? "account"
   );
 
   const userGrades = useUserGrades(props.user.id);
@@ -119,22 +138,6 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
     }
 
     router.push("/");
-  }
-
-  async function selectAccount() {
-    setPageName("account");
-  }
-
-  async function selectGrades() {
-    setPageName("grades");
-  }
-
-  async function selectColleges() {
-    setPageName("colleges");
-  }
-
-  async function selectGetGrade() {
-    router.push(`/`);
   }
 
   return (
@@ -164,121 +167,93 @@ const DashboardPage: NextPage<DashboardPageProps> = (props) => {
             </h2>
           </div>
           <div className="flex items-center justify-center">
-            {/* Start Side Bar element */}
             <div className="flex flex-wrap items-center justify-center gap-4 rounded-full bg-emerald-300 px-4 py-2">
-              {/* Start Account sidebar element*/}
-              <button
-                className={`rounded-full p-2 text-sm font-bold transition hover:ring-2 hover:ring-emerald-200 md:text-base ${
-                  pageName === "account" && "bg-emerald-200"
-                }`}
-                onClick={selectAccount}
+              <SectionLink
+                pageName="account"
+                onClick={() => setSection("account")}
               >
                 User Account
-              </button>
-              {/* End dashboard sidebar element*/}
-
-              {/* Start Saved Grades side bar element */}
-              <button
-                className={`rounded-full p-2 text-sm font-bold transition hover:ring-2 hover:ring-emerald-200 md:text-base ${
-                  pageName === "grades" && "bg-emerald-200"
-                }`}
-                onClick={selectGrades}
+              </SectionLink>
+              <SectionLink
+                pageName="grades"
+                onClick={() => setSection("grades")}
               >
                 Grades
-              </button>
-              {/* End Saved Grades side bar element*/}
-
-              {/* Start Saved Colleges side bar element */}
-              <button
-                className={`rounded-full p-2 text-sm font-bold transition hover:ring-2 hover:ring-emerald-200 md:text-base ${
-                  pageName === "colleges" && "bg-emerald-200"
-                }`}
-                onClick={selectColleges}
+              </SectionLink>
+              <SectionLink
+                pageName="colleges"
+                onClick={() => setSection("colleges")}
               >
                 Saved Colleges
-              </button>
-              {/* End Saved Colleges side bar element */}
-
-              {/* Start Grade side bar element */}
-
+              </SectionLink>
               <button
                 className={`rounded-full p-2 text-sm transition hover:ring-2 hover:ring-emerald-200 md:text-base`}
-                onClick={selectGetGrade}
+                onClick={() => router.push("/")}
               >
                 <b>Get Grade </b>
               </button>
-              {/* End Grade side bar element */}
             </div>
           </div>
           <div className="mt-16">
-            {
-              // === compares types as well as the value
-              pageName === "account" && (
-                <div className="mx-auto flex h-48 w-full flex-col items-center justify-center space-y-4 rounded-2xl bg-white p-8 shadow shadow-emerald-200 md:w-96">
-                  {props.user.user_metadata.full_name && (
-                    <div className="flex w-full justify-between">
-                      <p className="font-bold">Name:</p>
-                      <p>{props.user.user_metadata.full_name}</p>
-                    </div>
-                  )}
+            {section === "account" && (
+              <div className="mx-auto flex h-48 w-full flex-col items-center justify-center space-y-4 rounded-2xl bg-white p-8 shadow shadow-emerald-200 md:w-96">
+                {props.user.user_metadata.full_name && (
                   <div className="flex w-full justify-between">
-                    <p className="font-bold">Email:</p>
-                    <p>{props.user.email}</p>
+                    <p className="font-bold">Name:</p>
+                    <p>{props.user.user_metadata.full_name}</p>
                   </div>
-                  <div>
-                    <Button color="rose" onClick={signOut}>
-                      Logout
-                    </Button>
-                  </div>
+                )}
+                <div className="flex w-full justify-between">
+                  <p className="font-bold">Email:</p>
+                  <p>{props.user.email}</p>
                 </div>
-              )
-            }
+                <div>
+                  <Button color="rose" onClick={signOut}>
+                    Logout
+                  </Button>
+                </div>
+              </div>
+            )}
 
-            {
-              // === compares types as well as the value
-              pageName === "grades" && (
-                <div className="mx-auto grid max-w-5xl gap-16 lg:grid-cols-2">
-                  {!userGrades.isLoading && (
-                    <>
-                      {userGrades.data?.map((grade, i) => (
-                        <GradeListing
-                          key={i}
-                          grade={grade.grade_num}
-                          aidAmount={grade?.financial_aid}
-                          school={grade?.school_name ?? ""}
-                          link={`/grade-result/${grade.grade_id}`}
-                          location={grade?.in_out_loc as "inState" | "outState"}
-                        />
-                      ))}
-                    </>
-                  )}
-                </div>
-              )
-            }
+            {section === "grades" && (
+              <div className="mx-auto grid max-w-5xl gap-16 lg:grid-cols-2">
+                {!userGrades.isLoading && (
+                  <>
+                    {userGrades.data?.map((grade, i) => (
+                      <GradeListing
+                        key={i}
+                        grade={grade.grade_num}
+                        aidAmount={grade?.financial_aid}
+                        school={grade?.school_name ?? ""}
+                        link={`/grade-result/${grade.grade_id}`}
+                        location={grade?.in_out_loc as "inState" | "outState"}
+                      />
+                    ))}
+                  </>
+                )}
+              </div>
+            )}
 
-            {
-              // === compares types as well as the value
-              pageName === "colleges" && (
-                <div className="mx-auto grid max-w-5xl gap-16 lg:grid-cols-2">
-                  {!favoritedSchools.isLoading && (
-                    <>
-                      {favoritedSchools.data?.map((school, i) => (
-                        <FavoritedSchoolListing
-                          key={i}
-                          name={school.school_name ?? ""}
-                          websiteLink={"https://" + school.school_url ?? ""}
-                          priceCalculatorLink={
-                            school.school_price_calculator
-                              ? "https://" + school.school_price_calculator
-                              : ""
-                          }
-                        />
-                      ))}
-                    </>
-                  )}
-                </div>
-              )
-            }
+            {section === "colleges" && (
+              <div className="mx-auto grid max-w-5xl gap-16 lg:grid-cols-2">
+                {!favoritedSchools.isLoading && (
+                  <>
+                    {favoritedSchools.data?.map((school, i) => (
+                      <FavoritedSchoolListing
+                        key={i}
+                        name={school.school_name ?? ""}
+                        websiteLink={"https://" + school.school_url ?? ""}
+                        priceCalculatorLink={
+                          school.school_price_calculator
+                            ? "https://" + school.school_price_calculator
+                            : ""
+                        }
+                      />
+                    ))}
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </main>

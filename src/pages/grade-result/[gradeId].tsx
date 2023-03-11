@@ -2,152 +2,24 @@ import React, { useState } from "react";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { useUser } from "@supabase/auth-helpers-react";
 import { motion } from "framer-motion";
-
 import { FaHeart, FaLink, FaRegHeart } from "react-icons/fa";
 import { FiRefreshCw, FiShare } from "react-icons/fi";
-import { numberWithCommas } from "../../utils/formatters";
+
 import Header from "../../components/header";
 import Button from "../../components/button";
 import { useGrade } from "../../utils/hooks/use-grade";
 import { Database } from "../../utils/database.types";
 import { useSchool } from "../../utils/hooks/use-school";
-import { useUser } from "@supabase/auth-helpers-react";
-import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import {
   getFavoriteSchoolById,
   useDeleteFavoriteSchoolMutation,
   useFavoriteSchoolMutation,
 } from "../../utils/hooks/use-favorited-schools";
-import { calculateStudentPrice } from "../../utils/calculate-score";
 import LoadingSpinner from "../../components/loading-spinner";
-
-type SchoolInfoProps = {
-  tuition: number;
-  net_price: number;
-  grade_net_price: number;
-  median_6_salary: number;
-  median_7_salary: number;
-  median_8_salary: number;
-  median_9_salary: number;
-  median_10_salary: number;
-  graduation_rate: string;
-  transfer_rate: string;
-  acceptance_rate: string;
-  location: "in_state" | "out_of_state";
-  median_debt: number;
-  student_population: number;
-  roomboard_off: number;
-  roomboard_on: number;
-};
-
-const SchoolInfo = ({
-  tuition,
-  net_price,
-  grade_net_price,
-  median_6_salary,
-  median_7_salary,
-  median_8_salary,
-  median_9_salary,
-  median_10_salary,
-  graduation_rate,
-  transfer_rate,
-  acceptance_rate,
-  location,
-  median_debt,
-  student_population,
-  roomboard_off,
-  roomboard_on,
-}: SchoolInfoProps) => {
-  return (
-    <>
-      <ul>
-        <li className="flex justify-between">
-          <p className="font-bold">Tuition Per Year</p>
-          <p>{numberWithCommas(tuition, true)}</p>
-        </li>
-        <li className="flex justify-between">
-          <p className="font-bold">Net Price Per Year</p>
-          <p>{numberWithCommas(net_price, true)}</p>
-        </li>
-        <li className="flex justify-between">
-          <p className="font-bold">Undergrad Student Population</p>
-          <p>{numberWithCommas(student_population, false)}</p>
-        </li>
-        <li className="flex justify-between">
-          <p className="font-bold">Room/Board Per Year</p>
-          <p>{numberWithCommas(roomboard_on, true)}</p>
-        </li>
-        <li className="flex justify-between">
-          <p className="font-bold">Average 10 year Salary</p>
-          <p>{numberWithCommas(median_10_salary, true)}</p>
-        </li>
-        <details className="mb-4">
-          <summary className="text-black-500 cursor-pointer text-xs font-bold text-sky-500 hover:underline">
-            More Info
-          </summary>
-          <p className="text-black-500 text-sm">
-            Average 9 year salary: {numberWithCommas(median_9_salary, true)}
-            <br />
-            Average 8 year salary: {numberWithCommas(median_8_salary, true)}
-            <br />
-            Average 7 year salary: {numberWithCommas(median_7_salary, true)}
-            <br />
-            Average 6 year salary: {numberWithCommas(median_6_salary, true)}
-          </p>
-        </details>
-        <li className="flex justify-between">
-          <p className="font-bold ">Median Debt</p>
-          <p className="">{numberWithCommas(median_debt, true)}</p>
-        </li>
-        <li className="flex justify-between">
-          <p className="font-bold">Acceptance Rate</p>
-          <p>{acceptance_rate}</p>
-        </li>
-        <li className="flex justify-between">
-          <p className="font-bold">Transfer Rate</p>
-          <p>{transfer_rate}</p>
-        </li>
-        <li className="flex justify-between">
-          <p className="font-bold">Graduation Rate</p>
-          <p>{graduation_rate}</p>
-        </li>
-        <li className="flex justify-between">
-          <p className="font-bold">Your Location</p>
-          <p>{location === "in_state" ? "In-state" : "Out-of-state"}</p>
-        </li>
-        <li className="flex justify-between">
-          <p className="font-bold">Your Net Price</p>
-          <p>{numberWithCommas(grade_net_price, true)}</p>
-        </li>
-        <li className="flex justify-between">
-          <p className="font-bold">Price Difference</p>
-          {grade_net_price - net_price > 0 ? (
-            <p className="font-bold text-rose-600">
-              {numberWithCommas(grade_net_price - net_price, true)}
-            </p>
-          ) : (
-            <p className="font-bold text-emerald-600">
-              {numberWithCommas(Math.abs(grade_net_price - net_price), true)}
-            </p>
-          )}
-        </li>
-        <details>
-          <summary className="text-black-500 cursor-pointer text-xs font-bold text-sky-500 hover:underline ">
-            What is price difference?
-          </summary>
-          <p className="text-black-500 text-sm ">
-            Price difference is the aveage net tuition - your net tuition.
-            <br />
-            Green means you would save more than an average student
-            <br />
-            Red means you would spend more than an average student
-          </p>
-        </details>
-      </ul>
-    </>
-  );
-};
+import GradeData from "../../components/grade-result/grade-data";
 
 type PageProps = {
   grade: Database["public"]["Tables"]["grade"]["Row"];
@@ -246,12 +118,12 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
       </Head>
       <Header />
       <main className="flex min-h-screen flex-col items-center justify-center space-y-12 bg-emerald-200 px-8 pt-32 pb-28">
-        <div className="flex flex-col-reverse items-start justify-center md:flex-row md:space-x-8">
+        <div className="flex h-full flex-col items-stretch justify-center space-y-8 md:flex-row md:space-y-0 md:space-x-8">
           <motion.section
             transition={{ delay: 0.4 }}
             initial={{ y: 8, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="flex h-96 min-w-full flex-col items-center justify-center rounded-2xl bg-emerald-50 p-8 shadow-lg shadow-emerald-300 md:min-w-[20rem]"
+            className="flex min-w-full flex-col items-center justify-center rounded-2xl bg-emerald-50 p-8 shadow-lg shadow-emerald-300 md:min-w-[20rem]"
           >
             <p className="font-bold">Your grade:</p>
             {!grade.isLoading ? (
@@ -292,52 +164,9 @@ const GradeResultPage: NextPage<PageProps> = (props) => {
               )}
             </div>
             {schoolData ? (
-              <SchoolInfo
-                tuition={schoolData.latest.cost.tuition[location]}
-                median_6_salary={
-                  schoolData.latest.earnings["6_yrs_after_entry"].median
-                }
-                median_7_salary={
-                  schoolData.latest.earnings["7_yrs_after_entry"].mean_earnings
-                }
-                median_8_salary={
-                  schoolData.latest.earnings["8_yrs_after_entry"]
-                    .median_earnings
-                }
-                median_9_salary={
-                  schoolData.latest.earnings["9_yrs_after_entry"].mean_earnings
-                }
-                median_10_salary={
-                  schoolData.latest.earnings["10_yrs_after_entry"].median
-                }
-                student_population={schoolData.latest.student.size}
-                net_price={schoolData.latest.cost.avg_net_price.overall}
-                roomboard_off={schoolData.latest.cost.roomboard.offcampus}
-                roomboard_on={schoolData.latest.cost.roomboard.oncampus}
-                median_debt={
-                  schoolData.latest.aid.median_debt.completers.overall
-                }
-                grade_net_price={calculateStudentPrice(
-                  schoolData,
-                  props.grade?.financial_aid,
-                  location
-                )}
-                graduation_rate={
-                  (schoolData.latest.completion.consumer_rate * 100).toFixed(
-                    2
-                  ) + "%"
-                }
-                transfer_rate={
-                  (
-                    schoolData.latest.completion.transfer_rate["4yr"]
-                      .full_time * 100
-                  ).toFixed(2) + "%"
-                }
-                acceptance_rate={
-                  (
-                    schoolData.latest.admissions.admission_rate.overall * 100
-                  ).toFixed(2) + "%"
-                }
+              <GradeData
+                schoolData={schoolData}
+                financialAid={props.grade.financial_aid}
                 location={location}
               />
             ) : (
