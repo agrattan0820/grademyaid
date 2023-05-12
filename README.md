@@ -1,3 +1,5 @@
+# grademyaid
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
@@ -52,7 +54,7 @@ axios({
 - `school` contains only school contextual information (location, url, etc.)
 - `location` contains the latitude and longitude of the school
 
-### Cool fields
+### Cool College Scorecard Datapoints
 
 - `school.price_calculator_url`
 - `school.carnegie_size_setting` - gives us type of university, how big, and type of location
